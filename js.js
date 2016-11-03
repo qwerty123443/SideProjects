@@ -9073,6 +9073,7 @@ window.onload = () => {
 	var statsDiv = document.createElement('div');
 	var phonesDiv = document.createElement('div');
 
+	var date = document.createElement('p');
 	var phoneAmount = document.createElement('p');
 
 	for (var key in phones) {
@@ -9082,8 +9083,10 @@ window.onload = () => {
 		phonesDiv.appendChild(phoneText);
 	}
 
+	date.innerText = 'Date: 03-11-16';
 	phoneAmount.innerText = 'Amount of phones: ' + jsonArr.amount;
 
+	statsDiv.appendChild(date);
 	statsDiv.appendChild(phoneAmount);
 
 	document.body.appendChild(statsDiv);
