@@ -1,13 +1,32 @@
 # Fetch API
-I have created a fetch api for xhr requests. I have taken the xhr api and added the promises api to it.
+I have created a toast api that looks like the android toasts.
 
+## How to use
+#### Basic
 ```javascript
-fetchAPI('http://github.com').then( response => {
-  console.log(response);
-}).catch( err => {
-  console.error(err);
-});
-```
-Note that I have used the fat arrow functions here, you don't have to.
+// First create the new toast
+let toast = new Toast(1000);
 
-You can also add a response type after the url (only json and text are available). If you don't it defaults to text.
+// Let it toast
+toast.toast('Hi');
+```
+**Note that I have used ES16 functions in this api, it's not for production or you have to change it.**
+
+#### For buttons
+```javascript
+// Create a buttons array
+let buttons = [
+	{
+		'name': 'close', // Name is required.
+		'onclick': 'closeToast' // You can give the function name or use 'closeToast' to give the command to close the toast.
+	},
+	{
+		'name': 'lol',
+		'onclick': () => {console.log('hi')} // Fat arrow functions also work.
+	}
+];
+      
+let toast = new Toast(1000);
+
+toast.toast('Hi', buttons);
+```
