@@ -8,5 +8,6 @@ fetchAPI('http://github.com').then( response => {
   console.error(err);
 });
 ```
+Note that I have used the fat arrow functions here, you don't have to.
 
 You can also add a response type after the url (only json and text are available). If you don't it defaults to text.
