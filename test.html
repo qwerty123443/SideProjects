@@ -1,0 +1,37 @@
+<html>
+
+<head>
+	<title>title</title>
+
+	<script type="text/javascript" src="toast.js"></script>
+
+	<script type="text/javascript">
+		window.onload = () => {
+			let toast = new Toast(1000000);
+
+			let buttons = [
+				{
+					'name': 'close',
+					'onclick': 'closeToast'
+				},
+				{
+					'name': 'lol',
+					'onclick': () => {console.log('hi')}
+				}
+			];
+
+			toast.toast('Hi', buttons);
+
+			setTimeout( () => {
+				toast.toast('hi');
+			}, 1000);
+		}
+	</script>
+
+</head>
+
+<body>
+
+</body>
+
+</html>
