@@ -2,7 +2,7 @@
 I have created a toast api that looks like the android toasts.
 
 ## How to use
-#### Basic
+### Basic
 ```javascript
 // First create the new toast
 let toast = new Toast(1000);
@@ -12,7 +12,7 @@ toast.toast('Hi');
 ```
 **Note that I have used ES16 functions in this api, it's not for production or you have to change it.**
 
-#### For buttons
+### For buttons
 ```javascript
 // Create a buttons array
 let buttons = [
