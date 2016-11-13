@@ -5,7 +5,7 @@ I have created a toast api that looks like the android toasts.
 ### Basic
 ```javascript
 // First create the new toast
-let toast = new Toast(1000);
+let toast = new Toast(1000); // The number is the amount of miliseconds the toast must be displayed.
 
 // Let it toast
 toast.toast('Hi');
