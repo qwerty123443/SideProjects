@@ -1,0 +1,317 @@
+<html>
+
+<head>
+
+	<title>devRant</title>
+
+	<script type="text/javascript" src="toast.js"></script>
+
+	<style type="text/css">
+		#rants, #comments, #upvotes {
+			padding: 10px 0;
+			background-color: lightgray;
+		}
+
+		#rants div, #comments div, #upvotes div {
+			margin: 20px;
+			padding: 20px;
+			background-color: gray;
+		}
+
+		#rants div p, #comments div p, #upvotes div p {
+			color: white;
+		}
+
+		#upvotes div img {
+			width: auto;
+			max-height: 300px;
+		}
+
+		#upvotes a {
+			text-decoration: none;
+		}
+	</style>
+
+	<script type="text/javascript" id="functionality">
+		const devRant = {
+			'RANTS_PATH': 			'devrant/rants?app=3&sort=:sort&limit=:limit&skip=:limit',
+			'USERS_PATH': 			'users/:user_id?app=3&',
+			'SEARCH_PATH':			'devrant/search?app=3&term=:term',
+			'RANT_PATH': 			'devrant/rants/:rant_id?app=3',
+			'USER_ID_FROM_NAME': 	'get-user-id?username=:user_name&app=3'
+		}
+
+		let name = '';
+		let latestComment;
+
+		function getUserId(username) {
+			const url = `https://www.devrant.io/api/get-user-id?username=${username}&app=3`;
+
+			return new Promise( (resolve, reject) => {
+				get(url).then( response => {
+					resolve(response.user_id);
+				}).catch(error => {
+					reject(Error(error));
+				});
+			});
+		}
+
+		function getUserContent(userId) {
+			const url = `https://www.devrant.io/api/users/${userId}?app=3`;
+
+			return new Promise( (resolve, reject) => {
+				get(url).then( response => {
+					resolve(response);
+				}).catch(error => {
+					reject(Error(error));
+				});
+			});
+		}
+
+		function getRant(rantId) {
+			const url = `https://www.devrant.io/api/devrant/rants/${rantId}?app=3`;
+
+			return new Promise( (resolve, reject) => {
+				get(url).then( response => {
+					resolve(response);
+				}).catch(error => {
+					reject(Error(error));
+				});
+			});
+		}
+
+		function get(url) {
+			return new Promise( (resolve, reject) => {
+
+				var req = new XMLHttpRequest();
+
+				req.open('GET', url);
+
+				req.onload = function() {
+					if (req.status == 200) {
+						resolve(JSON.parse(req.response));
+					}
+					else {
+						reject(Error(req.statusText));
+					}
+				};
+
+				req.onerror = function() {
+					reject(Error("Network Error"));
+				};
+
+				req.send();
+			});
+		}
+
+		function outp(json) {
+			let user = json.profile;
+			let count = user.content.counts;
+			let content = user.content.content;
+
+			// Profile
+			let score = user.score;
+			let github = user.github;
+			let skills = user.skills;
+			let website = user.website;
+			let imageId = user.avatar.i;
+			let username = user.username;
+			let location = user.location;
+			let created_time = user.created_time;
+
+			document.body.innerHTML += `<img style="width:40%;height:auto" src="https://avatars.devrant.io/${imageId}">`;
+			document.body.innerHTML += `<p>${username}</p>`;
+			document.body.innerHTML += `<p>Skills: ${skills}</p>`;
+			document.body.innerHTML += `<p>Website: <a href="${website}" target="_blank">${website}</a></p>`;
+			document.body.innerHTML += `<p>Created time: ${created_time} (I have no idea what this means)</p>`;
+
+			document.body.innerHTML += `<p>&nbsp;</p>`;
+
+			// Content counts
+			let rants = count.rants;
+			let upvoted = count.upvoted;
+			let comments = count.comments;
+			let favorites = count.favorites;
+
+			document.body.innerHTML += `<p>Rants: ${rants}</p>`;
+			document.body.innerHTML += `<p>Upvoted: ${upvoted}</p>`;
+			document.body.innerHTML += `<p>Comments: ${comments}</p>`;
+			document.body.innerHTML += `<p>favorites: ${favorites}</p>`;
+
+			document.body.innerHTML += `<hr>`;
+
+			// Content content
+			rants = content.rants;
+			upvoted = content.upvoted;
+			comments = content.comments;
+			favorites = content.favorites;
+
+			let rantDiv = document.createElement('div');
+			let commentDiv = document.createElement('div');
+			let upvotedDiv = document.createElement('div');
+			let favoritesDiv = document.createElement('div');
+
+			rantDiv.id = 'rants';
+			upvotedDiv.id = 'upvotes';
+			commentDiv.id = 'comments';
+			favoritesDiv.id = 'favorites';
+
+			// Rants
+			rants.forEach( (object, key) => {
+				let div = document.createElement('div');
+				let text = object.text;
+				text = text.replaceAll('\n', '<br>');
+
+				div.innerHTML += `<p>${text}</p>`;
+
+				if (object.attached_image !== '') {
+					div.innerHTML += `<img src="${object.attached_image.url}">`;
+				}
+
+				rantDiv.appendChild(div);
+			});
+
+			// Comments
+			comments.forEach( (object, key) => {
+				let div = document.createElement('div');
+
+				div.innerHTML = `<p>Upvotes: ${object.score}</p><p>Content: ${object.body}</p>`;
+
+				commentDiv.appendChild(div);
+			});
+
+			latestComment = comments[0];
+
+			// Upvoted
+			if (upvoted.length > 0) {
+				for (let i = 0; i < 5; i++) {
+					let rant = upvoted[i];
+
+					let a = document.createElement('a');
+					let div = document.createElement('div');
+					let text = rant.text;
+
+					text = text.replaceAll('\n', '<br>');
+
+					div.innerHTML += `<p>${text}</p>`;
+
+					if (rant.attached_image !== '') {
+						div.innerHTML += `<img src="${rant.attached_image.url}">`;
+					}
+
+					a.target = '_blank';
+					a.href = `https://www.devrant.io/rants/${rant.id}`;
+
+					a.appendChild(div);
+					upvotedDiv.appendChild(a);
+				}
+			}
+
+			// Favorites
+			favorites.forEach( (object, key) => {
+				let div = document.createElement('div');
+				let text = object.text;
+				text = text.replaceAll('n', '<br>');
+
+				div.innerHTML = `<p>Favorites: ${text}</p>`;
+
+				favoritesDiv.appendChild(div);
+			});
+
+			// Outp
+			document.body.innerHTML += `<h1>Rants</h1>`;
+
+			document.body.appendChild(rantDiv);
+
+			document.body.innerHTML += `<hr>`;
+			document.body.innerHTML += `<h1>Comments</h1>`;
+
+			document.body.appendChild(commentDiv);
+
+			document.body.innerHTML += `<hr>`;
+			document.body.innerHTML += `<h1>Upvotes</h1>`;
+
+			document.body.appendChild(upvotedDiv);
+
+			document.body.innerHTML += `<hr>`;
+			document.body.innerHTML += `<h1>Favorites</h1>`;
+
+			document.body.appendChild(favoritesDiv);
+		}
+
+		String.prototype.replaceAll = function(search, replacement) {
+			var target = this;
+
+			return target.replace(new RegExp(search, 'g'), replacement);
+		}
+
+		function setUp(username) {
+			name = username;
+
+			// Get id from username
+			getUserId(name).then( userId => {
+				// Get all user activity
+				getUserContent(userId).then( userContent => {
+					document.body.innerHTML = '';
+
+					// Outp all
+					outp(userContent);
+
+					// Get last comment index
+					getRant(latestComment.rant_id).then( response => {
+						response.comments.forEach( (object, key) => {
+							if (object.body.indexOf('Netherlands') > -1) {
+								let username = object.user_username.toLowerCase();
+
+								if (username.indexOf(name) > -1) {
+									let toast = new Toast(2000);
+
+									toast.toast(`Your last comment is the ${key}th.`);
+									// console.log(`Your last comment is the ${key}th.`);
+								}
+							}
+						});
+					}).catch( err => {
+						console.log(err);
+					});
+				}).catch( err => {
+					console.log(err);
+				});
+			}).catch( err => {
+				document.body.innerHTML = '';
+
+				load();
+
+				let toast = new Toast(2000);
+				toast.toast('Username doesn\'t exist');
+				console.log('Username doesn\'t exist or there is an error at devRant, ¯\_(ツ)_/¯');
+			});
+		}
+
+		function load() {
+			let input = document.createElement('input');
+			let button = document.createElement('button');
+
+			input.type = 'text';
+			button.innerText = 'Submit';
+
+			document.body.appendChild(input);
+			document.body.appendChild(button);
+
+			button.addEventListener('click', () => {
+				let username = input.value;
+				document.body.innerHTML = '<p>Loading...</p>';
+				setUp(username);
+			}, false);
+		}
+
+		window.onload = load;
+	</script>
+
+</head>
+
+<body>
+
+</body>
+
+</html>

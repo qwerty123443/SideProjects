@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BubbleButt</title>
+
+	<style>
+		body {
+			top: 0;
+			left: 0;
+			padding: 0;
+			margin: 0;
+			position: absolute;
+		}
+
+		#left {
+			left: 10px;
+			bottom: 10px;
+			position: absolute;
+		}
+
+		#right {
+			right: 10px;
+			bottom: 10px;
+			position: absolute;
+		}
+
+		h1 {
+			top: 10px;
+			width: 100%;
+			text-align: center;
+			position: absolute;
+			font-family: sans-serif;
+		}
+	</style>
+
+	<script type="text/javascript">
+		class SphereObj {
+			constructor(id, scene) {
+				this.id = id;
+
+				this.geometry = new THREE.SphereGeometry(150, 100, 100); // 150, 100, 100
+				this.material = new THREE.MeshNormalMaterial({shading: THREE.SmoothShading});
+				this.mesh = new THREE.Mesh(this.geometry, this.material);
+				this.mesh.castShadow = true;
+
+				scene.add(this.mesh);
+
+				// console.log(this);
+			}
+		}
+	</script>
+</head>
+<body>
+	<script src="http://brangerbriz.net/labs/threejs_playGnd/js/three.min.js"></script>
+	<script src="http://brangerbriz.net/labs/threejs_playGnd/js/Detector.js"></script>
+
+	<script>
+
+		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+		
+		var camera, scene, renderer;
+		var rand = -100;
+		var sphere = [];
+
+		function setup() {
+
+			var W = window.innerWidth - 10, H = window.innerHeight - 10;
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize( W, H );
+			document.body.appendChild( renderer.domElement );
+
+			camera = new THREE.PerspectiveCamera( 50, W/H, 1, 10000 );
+			camera.position.z = 500;
+
+			scene = new THREE.Scene();
+			
+			
+			// paste your code from the geometryGUI here
+			for (var i = 0; i < 2; i++) {
+				sphere.push(new SphereObj(i, scene));
+			}
+
+			renderer.shadowMapEnabled = true;
+		}
+
+		var flubber = 5;
+
+		function draw() {
+
+			requestAnimationFrame( draw );
+
+			/*
+			
+			// experiment with code from the snippets menu here
+
+			if (rand >= 100) {
+				rand = -100;
+			} else {
+				rand++;
+			}
+
+			for (var i = 0; i < sphere.length; i++) {
+				//sphere[i].mesh.position.y = rand + Math.random();
+				//sphere[i].mesh.position.x = sphere[i].mesh.position.x + 1;
+				sphere[i].mesh.position.z = rand;
+			}
+			*/
+
+			sphere[1].mesh.position.x = Math.floor(Math.random() * flubber) + 1;
+			sphere[1].mesh.position.y = Math.floor(Math.random() * flubber) + 1;
+			sphere[0].mesh.position.x = (Math.floor(Math.random() * flubber) + 1) + 70;
+			sphere[0].mesh.position.y = (Math.floor(Math.random() * flubber) + 1);
+
+			renderer.render( scene, camera );
+		}
+
+		setup();
+		draw();
+
+	</script>
+
+	<script type="text/javascript">
+		var leftEl, rightEl;
+		var amount = 5;
+
+		//alert("Use Up, Down, Left, Right, W, S, A and D keys to move the objects.");
+
+		alert("Hold shift while moving your mouse from left to right to make the giggling more intence.");
+
+		document.addEventListener('keydown', function(evt) {
+			var key = evt.key;
+
+			switch(key) {
+				case "ArrowUp": 
+					sphere[0].mesh.position.y += amount;
+					console.log("up");
+					left.innerText = sphere[0].mesh.position.y + "   " + sphere[0].mesh.position.x;
+					break;
+				case "ArrowDown":
+					sphere[0].mesh.position.y -= amount;
+					console.log("down");
+					left.innerText = sphere[0].mesh.position.y + "   " + sphere[0].mesh.position.x;
+					break;
+				case "ArrowLeft":
+					sphere[0].mesh.position.x -= amount;
+					console.log("left");
+					left.innerText =  sphere[0].mesh.position.y + "   " + sphere[0].mesh.position.x;
+					break;
+				case "ArrowRight":
+					sphere[0].mesh.position.x += amount;
+					console.log("right");
+					left.innerText = sphere[0].mesh.position.y + "   " + sphere[0].mesh.position.x;
+					break;
+				case "w":
+					sphere[1].mesh.position.y += amount;
+					console.log("up");
+					right.innerText = sphere[1].mesh.position.y + "   " + sphere[1].mesh.position.x;
+					break;
+				case "s":
+					sphere[1].mesh.position.y -= amount;
+					console.log("s");
+					right.innerText = sphere[1].mesh.position.y + "   " + sphere[1].mesh.position.x;
+					break;
+				case "a":
+					sphere[1].mesh.position.x -= amount;
+					console.log("left");
+					left.innerText = sphere[1].mesh.position.y + "   " + sphere[1].mesh.position.x;
+					break;
+				case "d":
+					sphere[1].mesh.position.x += amount;
+					console.log("right");
+					left.innerText = sphere[1].mesh.position.y + "   " + sphere[1].mesh.position.x;
+					break;
+			}
+		});
+
+		function load(evt) {
+			console.log('Hi');
+
+			left = document.getElementById("left");
+			right = document.getElementById("right");
+
+			/*left.innerText = sphere[0].mesh.position.y + "   " + sphere[0].mesh.position.x;
+			right.innerText = sphere[1].mesh.position.y + "   " + sphere[1].mesh.position.x;*/
+
+			var canvas = document.querySelector("canvas");
+
+			canvas.addEventListener("mousemove", function(evt) {
+				if (evt.shiftKey) {
+					var x = Math.ceil(evt.x / 100);
+					flubber = x;
+				}
+			});
+		}
+
+		window.onload = load;
+	</script>
+
+	<h1>BubbleButt</h1>
+
+	
+	<!-- <p id="left">0</p>
+	<p id="right">0</p> -->
+	
+</body>
+</html>
