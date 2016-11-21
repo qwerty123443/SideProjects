@@ -1,4 +1,4 @@
-function fetchAPI(url, responseType) {
+function get(url, responseType) {
 	return new Promise( (resolve, reject) => {
 		var req = new XMLHttpRequest();
 
