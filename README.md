@@ -2,7 +2,7 @@
 I have created a fetch api for xhr requests. I have taken the xhr api and added the promises api to it.
 
 ```javascript
-fetchAPI('http://github.com').then( response => {
+get('http://github.com').then( response => {
   console.log(response);
 }).catch( err => {
   console.error(err);
