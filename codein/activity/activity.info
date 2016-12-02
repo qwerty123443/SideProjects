@@ -1,8 +1,0 @@
-[Activity]
-name = Changes
-activity_version = 3
-bundle_id = org.sugarlabs.HelloWeb
-exec = sugar-activity-web
-icon = activity-helloweb
-license = GPLv3
-
