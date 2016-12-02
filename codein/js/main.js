@@ -1,3 +1,5 @@
+var buttonsPressed = [];
+
 function mainJs() {
 	var randomElem = document.getElementById('random');
 
@@ -6,6 +8,23 @@ function mainJs() {
 	var allButtons = document.getElementById('dollars').querySelectorAll('input');
 
 	for (var i = 0; i < allButtons.length; i++) {
-		allButtons[i].value
+		var button = allButtons[i];
+
+		button.addEventListener('click', function() {
+			var value = this.value;
+
+			console.log(value);
+
+			for (var j = 0; j < buttonsPressed.length; j++) {
+				if (buttonsPressed[j].name == value) {
+					buttonsPressed[j].value++;
+				} else {
+					buttonsPressed.push({
+						name: value,
+						value: 1
+					});
+				}
+			}
+		});
 	}
 }
