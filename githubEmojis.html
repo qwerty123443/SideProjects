@@ -1,0 +1,72 @@
+<html>
+
+<head>
+
+	<title>GithubEmojis</title>
+
+	<script type="text/javascript">
+		const url = 'https://api.github.com/emojis?max=10';
+
+		function fetchEmojis() {
+			fetch(url).then( response => {
+				if (response.type === 'opaque') {
+					console.log('Received a response, but it\'s opaque so can\'t examine it');
+					return;
+				} else if (response.status !== 200) {
+					console.log('Looks like there was a problem. Status Code: ' + response.status);
+					return;
+				} else {
+					response.json().then( responseJson => {
+						let index = 0;
+						let emojiArray = [];
+
+						for (key in responseJson) {
+							if (index <= 100) {
+								// console.log(responseJson[key]);
+								emojiArray.push(key);
+								// document.body.innerHTML += `<img style="display: inline-block" src="${responseJson[key]}">`;
+							}
+
+							index++;
+						}
+
+						search(emojiArray, responseJson);
+					});
+				}
+			}).catch( err => {
+				console.error('An error occurred', err);
+			});
+		}
+
+		function search(emojiArray, json) {
+			document.getElementById('input').addEventListener('keyup', evt => {
+				let value = evt.target.value;
+				document.getElementById('outp').innerHTML = '';
+
+				if (value.length >= 2) {
+					emojiArray.forEach((object, key) => {
+						if (object.indexOf(value) > -1) {
+							console.log(object, emojiArray[object]);
+							document.getElementById('outp').innerHTML += `<img style="display: inline-block" src="${json[object]}">`;
+						}
+					});
+				}
+			});
+		}
+
+		fetchEmojis();
+	</script>
+
+</head>
+
+<body style="padding: 0; margin: 0; text-align: center;">
+
+	<h1 style="font-family: 'Arial';">Github Emoji search</h1>
+
+	<input type="text" id="input" autofocus="autofocus">
+
+	<div id="outp"></div>
+
+</body>
+
+</html>
