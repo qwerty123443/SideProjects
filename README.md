@@ -12,7 +12,7 @@ toast.toast('Hi');
 ```
 **Note that I have used ES16 functions in this api, it's not for production or you have to change it.**
 
-### For buttons
+### Buttons
 ```javascript
 // Create a buttons array
 let buttons = [
