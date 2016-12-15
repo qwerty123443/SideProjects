@@ -1,4 +1,4 @@
-# Fetch API
+# Toast API
 I have created a toast api that looks like the android toasts.
 
 ## How to use
