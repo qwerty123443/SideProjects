@@ -6,6 +6,8 @@
 		let checked = false;
 
 		function handleOrientation(event) {
+			console.log(event.gamma);
+			
 			const wheel = document.getElementById('wheel');
 			let absolute = event.absolute;
 			// let gamma = Math.abs(event.gamma);
