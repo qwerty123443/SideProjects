@@ -3,22 +3,30 @@
 <head>
 
 	<script type="text/javascript">
+		let checked = false;
+
 		function handleOrientation(event) {
 			const wheel = document.getElementById('wheel');
-
 			let absolute = event.absolute;
 			// let gamma = Math.abs(event.gamma);
 			let gamma = event.gamma;
 			let math = Math.floor(-gamma.map(90, 0, 0, 90));
 
-			console.log(gamma, math);
-
-			wheel.style.transform = `rotate(${math}deg)`;
+			// Check if phone is held the right way
+			if (checked) {
+				wheel.style.transform = `rotate(${math}deg)`;
+				wheel.src = 'https://openclipart.org/image/2400px/svg_to_png/202640/steering-wheel.png';
+			} else {
+				if (gamma >= 80) {
+					checked = true;
+					document.getElementById('feedBack').innerHTML = '';
+				} else {
+					document.getElementById('feedBack').innerHTML = 'Hold your phone sideways, as shown below';
+					wheel.style.transform = 'rotate(90deg)';
+					wheel.src = 'http://www.iconsdb.com/icons/preview/white/mobile-phone-8-xxl.png';
+				}
+			}
 		}
-
-		Number.prototype.map = function(start1, stop1, start2, stop2) {
-			return ((this - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
-		};
 
 		if (window.DeviceOrientationEvent) {
 			window.addEventListener('deviceorientation', handleOrientation, false);
@@ -32,8 +40,10 @@
 <body style="background-color: black; margin: 0; height: 100%; width: 100%; position: fixed;">
 
 	<!-- <div id="box" style="position: absolute; background-color: white; width: 100px; height: 100px;"></div> -->
+	
+	<p id="feedBack" style="color: white; text-align: center; font-family: 'Arial'; font-size: 200%">Hold your phone sideways, as shown below</p>
 
-	<img id="wheel" src="https://openclipart.org/image/2400px/svg_to_png/202640/steering-wheel.png" style="width: 80%; height: auto">
+	<img id="wheel" src="http://www.iconsdb.com/icons/preview/white/mobile-phone-8-xxl.png" style="width: 80%; height: auto">
 
 </body>
 
