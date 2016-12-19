@@ -1,0 +1,38 @@
+<html>
+
+<head>
+
+	<script type="text/javascript">
+		Number.prototype.map = function(start1, stop1, start2, stop2) {
+			return ((this - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
+		};
+
+		function handleOrientation(event) {
+			const wheel = document.getElementById('wheel');
+
+			let absolute = event.absolute;
+			// let alpha = Math.abs(event.alpha);
+			let alpha = event.alpha;
+			let math = Math.floor(alpha.map(90, 0, 0, 90));
+
+			console.log(alpha, math);
+
+			wheel.style.transform = `rotate(${math}deg)`;
+		}
+
+		if (window.DeviceOrientationEvent) {
+			window.addEventListener('deviceorientation', handleOrientation, false);
+		} else {
+			alert('Not supported');
+		}
+	</script>
+
+</head>
+
+<body style="background-color: black; margin: 0; height: 100%; width: 100%; position: fixed;">
+	<!-- <div id="box" style="position: absolute; background-color: white; width: 100px; height: 100px;"></div> -->
+
+	<img id="wheel" src="https://openclipart.org/image/2400px/svg_to_png/202640/steering-wheel.png" style="width: 80%; height: auto">
+</body>
+
+</html>
