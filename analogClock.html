@@ -1,0 +1,111 @@
+<html>
+
+<head>
+
+	<title>Analog Clock</title>
+
+	<style type="text/css">
+		#clock {
+			position: absolute;
+		}
+
+		#clock #back {
+			width: 100px;
+			height: 100px;
+			border-radius: 100%;
+			border: white 2px dotted;
+		}
+
+		#clock #pointers {
+			position: relative;
+		}
+
+		#clock #pointers div {
+			position: absolute;
+			border-radius: 20px;
+			transform-origin: bottom;
+		}
+
+		#clock #pointers #hour {
+			top: 20px;
+			/*width: 5px;*/
+			left: calc(50% - 1.5px);
+			height: calc(40px - 10px);
+			border: 3px lightblue double;
+			/*background-color: lightblue;*/
+		}
+
+		#clock #pointers #minute {
+			top: 10px;
+			/*width: 3px;*/
+			left: calc(50% - 1.25px);
+			border: 2.5px white ridge;
+			/*background-color: white;*/
+			height: calc(50px - 10px);
+		}
+
+		#clock #pointers #second {
+			top: 5px;
+			/*width: 2px;*/
+			left: calc(50% - 1px);
+			height: calc(50px - 5px);
+			border: 2px rgba(255, 255, 255, 0.8) inset;
+			/*background-color: rgba(255, 255, 255, 0.8);*/
+		}
+	</style>
+
+	<script type="text/javascript">
+		function load() {
+			clock();
+			setInterval(clock, 500);
+		}
+
+		function clock() {
+			const date = new Date();
+
+			let hour = date.getHours();
+			let minute = date.getMinutes();
+			let second = date.getSeconds();
+
+			hour = Math.floor(365 / 100 * (hour / 24 * 100));
+			minute = Math.floor(365 / 100 * (minute / 60 * 100));
+			second = Math.floor(365 / 100 * (second / 60 * 100));
+
+			const hourElem = document.getElementById('hour');
+			const minuteElem = document.getElementById('minute');
+			const secondElem = document.getElementById('second');
+
+			hourElem.style.transform = `rotate(${hour}deg)`;
+			minuteElem.style.transform = `rotate(${minute}deg)`;
+			secondElem.style.transform = `rotate(${second}deg)`;
+		}
+
+		window.onload = load;
+	</script>
+
+</head>
+
+<body style="background-color: #767272;">
+
+	<div id="clock">
+		<div id="pointers">
+			<div id="second"></div>
+			<div id="minute"></div>
+			<div id="hour"></div>
+		</div>
+
+		<div id="back"></div>
+	</div>
+
+	<!-- <svg height="500" width="500">
+		<g>
+			<line id="big" x1="50" y1="50" x2="50" y2="-100" stroke="white" stroke-width="3"/>
+			<line id="minute" x1="50" y1="50" x2="50" y2="-80" stroke="lightblue" stroke-width="5"/>
+		</g>
+
+		<circle cx="50" cy="50" r="40" stroke="white" stroke-width="3" fill="none" />
+	</svg> -->
+
+</body>
+
+</html>
