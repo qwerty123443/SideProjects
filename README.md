@@ -76,7 +76,7 @@ You can use:
 - **timingFunction** (defaults to 'ease')
 
 ### Buttons
-You can add buttons to the pop up
+You can add buttons to the pop up.
 
 ```javascript
 const buttons = [
@@ -87,10 +87,10 @@ const buttons = [
 ];
 ```
 
-** Name **<br>
+**Name**<br>
 Is the title of the button.
 
-** Onclick **<br>
+**Onclick**<br>
 *If I feel for it I will change the code so you can use all events, but now only onlick is available.*<br>
 You can set onclick to closePopUp to close the pop up (like the name suggests) or use direct functions like:
 ```javascript
