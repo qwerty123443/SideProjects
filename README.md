@@ -67,11 +67,11 @@ You can set custom transition properties.
 
 ```javascript
 const popUp = new PopUp({
-	'duration': 1000,
+	'duration': 500,
 	'timingFunction': 'ease'
 });
 ```
 
 You can use:
-- **duration** (= The transition-duration in miliseconds, defaults to 1000)
+- **duration** (= The transition-duration in miliseconds, defaults to 500)
 - **timingFunction** (defaults to 'ease')
