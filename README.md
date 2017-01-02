@@ -5,8 +5,7 @@ I've made easy to use material and/or flat APIs.<br>
 ## Toast API
 I have created a toast api that looks like the android toasts.
 
-### How to use
-#### Basic
+### Basic
 ```javascript
 // First create the new toast
 const toast = new Toast(1000); // The number is the amount of miliseconds the toast must be displayed.
@@ -15,7 +14,7 @@ const toast = new Toast(1000); // The number is the amount of miliseconds the to
 toast.toast('Hi');
 ```
 
-#### Buttons
+### Buttons
 ```javascript
 // Create a buttons array
 const buttons = [
@@ -75,3 +74,39 @@ const popUp = new PopUp({
 You can use:
 - **duration** (= The transition-duration in miliseconds, defaults to 500)
 - **timingFunction** (defaults to 'ease')
+
+### Buttons
+You can add buttons to the pop up
+
+```javascript
+const buttons = [
+	{
+		'name': 'Close',
+		'onclick': 'closePopUp'
+	}
+];
+```
+
+** Name **<br>
+Is the title of the button.
+
+** Onclick **<br>
+*If I feel for it I will change the code so you can use all events, but now only onlick is available.*<br>
+You can set onclick to closePopUp to close the pop up (like the name suggests) or use direct functions like:
+```javascript
+// ES6
+{
+	'onclick': () => {
+		console.log('Yay');
+	}
+}
+
+// OR
+{
+	'onclick': someFunction, 
+}
+
+function someFunction() {
+
+}
+```
