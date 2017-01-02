@@ -31,8 +31,25 @@
 				'timingFunction': 'linear'
 			});
 
-			popUp.show('Title', 'Text').then(() => {
+			const buttons = [
+			{
+				'name': 'close',
+				'onclick': 'closePopUp'
+			},
+			{
+				'name': 'lol',
+				'onclick': () => {console.log('hi')}
+			},
+			{
+				'name': 'hi',
+				'onclick': hi
+			}
+			];
+
+			popUp.show('Title', 'Text', buttons).then(() => {
 				console.log('Done');
+			}).catch(err => {
+				alert(err);
 			});
 		}
 	</script>
