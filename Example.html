@@ -25,6 +25,15 @@
 			setTimeout( () => {
 				toast.toast('hi');
 			}, 1000);
+			
+			popUp = new PopUp({
+				'duration': 1000,
+				'timingFunction': 'linear'
+			});
+
+			popUp.show('Title', 'Text').then(() => {
+				console.log('Done');
+			});
 		}
 	</script>
 
