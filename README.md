@@ -73,5 +73,5 @@ const popUp = new PopUp({
 ```
 
 You can use:
-- duration (= The transition-duration in miliseconds, defaults to 1000)
-- timingFunction (defaults to 'ease')
+- **duration** (= The transition-duration in miliseconds, defaults to 1000)
+- **timingFunction** (defaults to 'ease')
