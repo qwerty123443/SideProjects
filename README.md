@@ -1,5 +1,5 @@
 # Material Elements
-I've made easy to use material and/or flat APIs.
+I've made easy to use material and/or flat APIs.<br>
 **Note that I have used ES16 functions in this api, it's not for production or you have to change it or transpile.**
 
 ## Toast API
@@ -53,13 +53,13 @@ popUp.show('Hi');
 ```
 The Pop Up has three functions:
 
-**Show**
+**Show**<br>
 Show as you can guess shows the pop up with text and returns a [promise](https://developer.mozilla.org/nl/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
-**Close**
+**Close**<br>
 Close closes the pop up and returns a [promise](https://developer.mozilla.org/nl/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
-**Delete**
+**Delete**<br>
 Deletes the whole pop up.
 
 ### Animations
