@@ -4,9 +4,7 @@ class PopUp {
 
 		this.opened = false;
 		this.mainDiv = mainDiv;
-		this.buttonTimeouts = [];
 		this.animation = animation;
-		this.buttonClicked = false;
 
 		mainDiv.jsonStyle({
 			'top': '0px',
@@ -17,6 +15,7 @@ class PopUp {
 			'z-index': '100',
 			'display': 'none',
 			'position': 'fixed',
+			'cursor': 'pointer',
 			'background-color': 'rgba(0, 0, 0, 0.8)'
 		});
 
@@ -42,12 +41,10 @@ class PopUp {
 		}
 		/*		*/
 
-		mainDiv.onclick = () => {
-			setTimeout(() => {
-				if (!this.buttonClicked) {
-					this.close();
-				}
-			}, 1);
+		mainDiv.onclick = evt => {
+			if (evt.target === evt.currentTarget) {
+				this.close();
+			}
 		};
 
 		document.body.appendChild(mainDiv);
@@ -72,6 +69,7 @@ class PopUp {
 
 				div.jsonStyle({
 					'z-index': '1000',
+					'cursor': 'default',
 					'overflow': 'hidden',
 					'padding': '5px 20px',
 					'position': 'absolute',
@@ -127,33 +125,11 @@ class PopUp {
 							// Onclick
 							if (object.onclick == 'closePopUp') {
 								button.addEventListener('click', evt => {
-									this.buttonTimeouts.forEach((object, key) => {
-										clearInterval(object);
-									});
-
-									this.buttonClicked = true;
 									this.close();
-
-									const timeout = setTimeout(() => {
-										this.buttonClicked = false;
-									}, 5);
-
-									this.buttonTimeouts.push(timeout);
 								}, false);
 							} else {
 								button.onclick = evt => {
-									this.buttonTimeouts.forEach((object, key) => {
-										clearInterval(object);
-									});
-
-									this.buttonClicked = true;
 									object.onclick();
-
-									const timeout = setTimeout(() => {
-										this.buttonClicked = false;
-									}, 5);
-
-									this.buttonTimeouts.push(timeout);
 								}
 							}
 
