@@ -1,0 +1,198 @@
+<!--
+	- Add swipe
+	- Add key chortcuts
+-->
+
+
+<html>
+
+<head>
+
+	<title>Snappy Horizontal Slider</title>
+
+	<style type="text/css">
+		#container {
+			width: 80%;
+			height: 200px;
+			overflow: hidden;
+			position: relative;
+		}
+
+		#container:hover #controls #left, #container:hover #controls #right {
+			transform: translateX(0px);
+		}
+
+		#container:hover #controls #bullets {
+			transform: translateY(0px);
+		}
+
+		#container #controls #left {
+			left: 0px;
+			transform: translateX(-100%);
+		}
+
+		#container #controls #right {
+			right: 0px;
+			transform: translateX(100%);
+		}
+
+		#container #controls #left, #container #controls #right {
+			top: 50%;
+			z-index: 100;
+			border: none;
+			cursor: pointer;
+			background: none;
+			position: absolute;
+			will-change: transform;
+			transition: transform 0.3s ease;
+		}
+
+		#container #controls #bullets {
+			width: 100%;
+			bottom: 5px;
+			z-index: 100;
+			border: none;
+			position: absolute;
+			text-align: center;
+			will-change: transform;
+			transform: translateY(100%);
+			transition: transform 0.3s ease;
+		}
+
+		#container #controls #bullets button {
+			border: none;
+			cursor: pointer;
+			background: none;
+		}
+
+		#container #tabs-container {
+			width: 100%;
+			height: 100%;
+		}
+
+		#container #tabs-container div {
+			width: 90%;
+			height: 90%;
+			padding: 5%;
+			position: absolute;
+			display: inline-block;
+			will-change: transform;
+			background-color: white;
+			transition: transform 0.8s ease;
+			/*box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);*/
+		}
+
+		#container #tabs-container div/*:not(:first-child)*/ {
+			transform: translateX(100%);
+		}
+	</style>
+
+	<script type="text/javascript">
+		class SliderManager {
+			constructor(elem) {
+				this.index = 0;
+				this.left = document.getElementById('left');
+				this.right = document.getElementById('right');
+				this.tabs = document.getElementById('tabs-container').querySelectorAll('div');
+
+				this.tabs[0].style.transform = 'translateX(0px)';
+
+				this.tabs.forEach((object, key) => {
+					const bubble = document.createElement('button');
+
+					bubble.id = key;
+					bubble.innerText = '•';
+					bubble.addEventListener('click', evt => {
+						this.move(parseInt(evt.target.id));
+					});
+
+					document.getElementById('bullets').appendChild(bubble);
+				});
+
+				left.addEventListener('click', () => {
+					this.move(this.index + 1);
+				}, false);
+
+				right.addEventListener('click', () => {
+					this.move(this.index - 1);
+				}, false);
+
+				document.body.addEventListener('keyup', evt => {
+					if (evt.code === 'ArrowLeft') {
+						this.move(this.index + 1);
+					} else if (evt.code === 'ArrowRight') {
+						this.move(this.index - 1);
+					}
+				}, true);
+
+				// elem.addEventListener('mousein', this.toggleControls, false);
+				// elem.addEventListener('mouseout', this.toggleControls, false);
+			}
+
+			move(index) {
+				index = parseInt(index);
+
+				if (index < 0) {
+					index = this.tabs.length - 1;
+				} else if (index > this.tabs.length -1) {
+					index = 0;
+				}
+
+				this.tabs.forEach((object, key) => {
+					object.style.transition = 'transform 0.8s ease';
+
+					if (object === this.tabs[index]) {
+						object.style.transform = 'translateX(0px)';
+					} else if (key > index) {
+						object.style.transform = 'translateX(100%)';
+					} else if (key < index) {
+						object.style.transform = 'translateX(-100%)';
+					} else {
+						console.error('Wut?', object, key, index);
+						object.style.transform = 'translateX(0px)';
+					}
+				});
+
+				this.index = index;
+			}
+		}
+
+		function load() {
+			const sliderManager = new SliderManager(document.getElementById('container'));
+		}
+
+		window.onload = load;
+	</script>
+
+</head>
+
+<body style="background-color: #7a7474; padding: 0; margin: 0">
+
+	<div id="container">
+
+		<div id="controls">
+			<button id="left">L</button>
+			<button id="right">R</button>
+			<div id="bullets"></div>
+		</div>
+
+		<div id="tabs-container">
+			<div style="background-color: lightblue;">
+				<h1>Title</h1>
+				<p>Lorem ipsum Adipisicing do veniam sed cillum cupidatat laborum magna nostrud irure.</p>
+			</div>
+			<div>
+				<h1>Title two</h1>
+				<p>Lorem ipsum Ut Excepteur cillum reprehenderit consectetur et nostrud aliqua dolor eiusmod dolore nostrud sunt qui aliqua dolor occaecat.</p>
+			</div>
+			<div style="background-color: orange;">
+				<h1>Title Three</h1>
+				<p>Lorem ipsum Ut Excepteur cillum reprehenderit consectetur et nostrud aliqua dolor eiusmod dolore nostrud sunt qui aliqua dolor occaecat.</p>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+
+</html>
