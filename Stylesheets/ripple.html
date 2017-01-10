@@ -1,0 +1,84 @@
+<html>
+
+<head>
+
+	<title>Ripple</title>
+
+	<style type="text/css">
+		.ripple {
+			padding: 2%;
+			color: white;
+			border: none;
+			cursor: pointer;
+			overflow: hidden;
+			border-radius: 8px;
+			position: relative;
+			background-color: #0084FF;
+			text-transform: uppercase;
+		}
+
+		.ripple:active:before {
+			top: 40%;
+			left: 45%;
+			width: 10px;
+			height: 10px;
+			content: ' ';
+			position: absolute;
+			border-radius: 100%;
+			will-change: transform;
+			background-color: rgba(0 , 0, 0, 0.3);
+
+			animation-name: ripple;
+			animation-duration: 1.5s;
+			animation-direction: normal;
+			animation-fill-mode: forwards;
+			animation-timing-function: ease;
+		}
+
+		@keyframes ripple {
+			to {
+				opacity: 0;
+				transform: scale(100);
+			}
+		}
+	</style>
+
+	<script type="text/javascript">
+		function load() {
+			const rippleElem = document.querySelectorAll('.ripple');
+
+			rippleElem.forEach((object, key) => {
+				object.addEventListener('click', evt => {
+					// var str = window.getComputedStyle(object, ':before').getPropertyValue('content');
+					// console.log(str,  window.getComputedStyle(object, ':before').setProperyValue());
+
+					object.animate([
+						{ transform: 'translateY(0px)' },
+						{ transform: 'translateY(-300px)'}
+						], {
+						// timing options
+						duration: 1000,
+						iterations: Infinity}
+						);
+
+					// console.log(window.crypto);
+
+					// console.log(webkitRequestFileSystem((arg) => {
+					// 	console.log(arg);
+					// }));
+				});
+			});
+		}
+
+		// window.onload = load;
+	</script>
+
+</head>
+
+<body>
+
+	<button class="ripple">Click Me!</button>
+
+</body>
+
+</html>

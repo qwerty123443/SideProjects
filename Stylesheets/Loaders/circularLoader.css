@@ -1,0 +1,65 @@
+.circularLoader {
+	--width: 5px;
+	--color: blue;
+	--animation-rotate-duration: 1s;
+	--animation-circularLoader-duration: 3s;
+}
+
+.circularLoader svg {
+	padding: calc(var(--width) + 2px);
+
+	animation-name: rotate;
+	animation-fill-mode: forwards;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-duration: var(--animation-rotate-duration);
+}
+
+.circularLoader svg circle {
+	fill: none;
+	stroke: var(--color);
+	stroke-dasharray: 630;
+	will-change: transform;
+	stroke-dashoffset: 0px;
+	stroke-width: var(--width);
+
+	animation-fill-mode: forwards;
+	animation-name: circularLoader;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-duration: var(--animation-circularLoader-duration);
+}
+
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes circularLoader {
+	0% {
+		stroke-dashoffset: 10%;
+	}
+
+	50% {
+		stroke-dashoffset: 300%;
+	}
+
+	100% {
+		stroke-dashoffset: 10%;
+	}
+}
+
+@keyframes circularLoaderOld {
+	from {
+		stroke-dashoffset: 0px;
+	}
+
+	to {
+		stroke-dashoffset: 630%;
+	}
+}

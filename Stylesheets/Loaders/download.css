@@ -1,0 +1,27 @@
+.download {
+	/*--color: #3197FF;*/
+	--color: green;
+	--animation-download-duration: 1s;
+}
+
+.download svg polygon {
+	stroke: none;
+	fill: var(--color);
+	will-change: transform;
+
+	animation-name: download;
+	animation-fill-mode: forwards;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-duration: var(--animation-download-duration);
+}
+
+@keyframes download {
+	from {
+		transform: translateY(-100%);
+	}
+
+	to {
+		transform: translateY(100%);
+	}
+}

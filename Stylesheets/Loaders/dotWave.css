@@ -1,0 +1,46 @@
+.dotWave {
+	--color: #3197FF;
+	--animation-delay-diff: 0.15s;
+	--animation-dotwave-duration: 1s;
+}
+
+.dotWave svg {
+
+}
+
+.dotWave svg circle {
+	stroke: none;
+	fill: var(--color);
+	will-change: transform;
+
+	animation-name: dotWave;
+	animation-timing-function: ease;
+	animation-iteration-count: infinite;
+	animation-duration: var(--animation-dotwave-duration);
+}
+
+.dotWave svg circle:nth-last-child(1) {
+	animation-delay: calc(var(--animation-delay-diff) * 2);
+}
+
+.dotWave svg circle:nth-last-child(2) {
+	animation-delay: calc(var(--animation-delay-diff) * 1);
+}
+
+.dotWave svg circle:nth-last-child(3) {
+	animation-delay: calc(var(--animation-delay-diff) * 0);
+}
+
+@keyframes dotWave {
+	0% {
+		transform: translateY(0);
+	}
+
+	50% {
+		transform: translateY(60%);
+	}
+
+	100% {
+		transform: translateY(0);
+	}
+}
