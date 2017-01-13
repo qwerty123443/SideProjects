@@ -1,0 +1,92 @@
+<html>
+
+<head>
+
+	<title>Scroll Test</title>
+
+	<style type="text/css">
+		#scroll-to {
+			width: 200px;
+			height: 500px;
+			margin-top: 300%;
+			background-color: lightblue;
+		}
+	</style>
+
+	<script type="text/javascript">
+		class ScrollObj {
+			constructor(scrollToElem, scrollSpeed) {
+				this.scrollToElem = scrollToElem;
+				this.increaseAmount = scrollSpeed;
+			}
+
+			scroll() {
+				let tempTop = 0;
+				let tempLeft = 0;
+				const pos = getPosition(this.scrollToElem);
+
+				const intval = setInterval(() => {
+					if (tempTop >= pos.top && tempLeft >= pos.left) {
+						clearInterval(intval);
+					}
+
+					window.scrollTo(tempLeft, tempTop);
+
+					if (tempTop < pos.top) {
+						tempTop += increaseAmount;
+					}
+
+					if (tempLeft < pos.left) {
+						tempLeft += increaseAmount;
+					}
+				}, 1);
+			}
+
+			getPosition(el) {
+				let x = 0;
+				let y = 0;
+
+				while(el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop )) {
+					x += el.offsetLeft - el.scrollLeft;
+					y += el.offsetTop - el.scrollTop;
+					el = el.offsetParent;
+				}
+
+				return { top: y, left: x };
+			}
+		}
+	</script>
+
+	<script type="text/javascript">
+		function load() {
+			const scrollTo = document.getElementById('scroll-to');
+			const scrollBtn = document.getElementById('scroll-btn');
+
+			// scrollBtn.addEventListener('click', evt => {
+			// 	let tempTop = 0;
+			// 	let tempLeft = 0;
+			// 	const increaseAmount = 40;
+			// 	const pos = getPosition(scrollTo);
+
+			// 	evt.preventDefault();
+
+			
+			// });
+
+			const scrollObj = new ScrollObj(scrollTo);
+		}
+
+		window.onload = load;
+	</script>
+
+</head>
+
+<body>
+
+	<button id="scroll-btn">Scroll to elem</button>
+
+	<div id="scroll-to"></div>
+
+</body>
+
+</html>
