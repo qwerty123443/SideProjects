@@ -1,26 +1,25 @@
-/*
-	** TODO **
+// ** TODO **
 
-	- Add other event listeners
-	- Add animation support
-	- Add styles support (for buttons)
-*/
+// - Add other event listeners
+// - Add animation support
+// - Add styles support (for buttons)
+
 
 class Toast {
 	constructor(stayTime, animation, styles) {
 		this._error = false;
 
-		if (!stayTime) {
-			console.error('Toast stay time is not set');
-			this._error = true;
-			debugger;
-			return;
-		} else if (stayTime < 0) {
+		if (stayTime < 0) {
 			console.error('Toast stay time is lower than 1');
 			this._error = true;
 			debugger;
 			return;
 		} else {
+			if (!stayTime) {
+				stayTime = 2000;
+				console.warn('Toast stay time is not set, resetting to default');
+			}
+
 			this._error = false;
 			this.styles = styles;
 			this.stayTime = stayTime;
@@ -37,25 +36,25 @@ class Toast {
 				// Set position
 				switch (styles.position) {
 					case 'topLeft':
-						this._toastContainer.style.top = '20px';
-						this._toastContainer.style.left = '20px';
-						break;
+					this._toastContainer.style.top = '20px';
+					this._toastContainer.style.left = '20px';
+					break;
 					case 'topRight':
-						this._toastContainer.style.top = '20px';
-						this._toastContainer.style.right = '20px';
-						break;
+					this._toastContainer.style.top = '20px';
+					this._toastContainer.style.right = '20px';
+					break;
 					case 'bottomLeft':
-						this._toastContainer.style.left = '20px';
-						this._toastContainer.style.bottom = '20px';
-						break;
+					this._toastContainer.style.left = '20px';
+					this._toastContainer.style.bottom = '20px';
+					break;
 					case 'bottomRight':
-						this._toastContainer.style.right = '20px';
-						this._toastContainer.style.bottom = '20px';
-						break;
+					this._toastContainer.style.right = '20px';
+					this._toastContainer.style.bottom = '20px';
+					break;
 					default:
-						this._toastContainer.style.right = '20px';
-						this._toastContainer.style.bottom = '20px';
-						break;
+					this._toastContainer.style.right = '20px';
+					this._toastContainer.style.bottom = '20px';
+					break;
 				}
 			}
 
@@ -68,7 +67,7 @@ class Toast {
 			if (text) {
 				let toast = document.createElement('div');
 
-				toast.style.color= 'white';
+				toast.style.color = 'white';
 				toast.style.minWidth = '100px';
 				toast.style.maxWidth = '300px';
 				toast.style.maxHeight = '100px';
@@ -99,15 +98,15 @@ class Toast {
 
 					switch (type) {
 						case 'bottom':
-							toast.style.bottom = '-110%';
-							break;
+						toast.style.bottom = '-110%';
+						break;
 						case 'opacity':
-							toast.style.opacity = '0';
-							break;
+						toast.style.opacity = '0';
+						break;
 						default:
-							toast.style.opacity = '0';
-							console.log('Animation type is not correct, resetting to default');
-							break;
+						toast.style.opacity = '0';
+						console.log('Animation type is not correct, resetting to default');
+						break;
 					}
 				}
 
@@ -187,19 +186,21 @@ class Toast {
 				// Animation
 				window.requestAnimationFrame(() => {
 					window.requestAnimationFrame(() => {
-						const type = this.animation.type;
-
-						switch (type) {
-							case 'bottom':
+						if (this.animation) {
+							switch (this.animation.type) {
+								case 'bottom':
 								toast.style.bottom = '0px';
 								break;
-							case 'opacity':
+								case 'opacity':
 								toast.style.opacity = '1';
 								break;
-							default:
+								default:
 								toast.style.opacity = '1';
 								console.log('Animation type is not correct, resetting to default');
 								break;
+							}
+						} else {
+							toast.style.opacity = '1';
 						}
 
 						setTimeout(() => {
