@@ -108,6 +108,8 @@ class Toast {
 						console.log('Animation type is not correct, resetting to default');
 						break;
 					}
+				} else {
+					toast.style.opacity = '0';
 				}
 
 				let textElem = document.createElement('p');
