@@ -1,5 +1,9 @@
 <html>
 
+<!--
+	-Ease
+-->
+
 <head>
 
 	<title>Scroll Test</title>
@@ -16,14 +20,37 @@
 	<script type="text/javascript">
 		class ScrollObj {
 			constructor(scrollToElem, scrollSpeed) {
-				this.scrollToElem = scrollToElem;
-				this.increaseAmount = scrollSpeed;
+				this._intval;
+				this._active = false;
+
+				if (scrollToElem) {
+					this.scrollToElem = scrollToElem;
+				} else {
+					console.error('Scroll element not defined');
+					debugger;
+					return;
+				}
+
+				if (scrollSpeed) {
+					this.increaseAmount = scrollSpeed;
+				} else {
+					console.warn('Scroll speed not defined, setting to default');
+					this.increaseAmount = 20;
+				}
+
+				// No scroll!
+				window.addEventListener('scroll', evt => {
+					if (this._active) {
+						evt.preventDefault();
+						this._active = false;
+					}
+				}, false);
 			}
 
 			scroll() {
 				let tempTop = 0;
 				let tempLeft = 0;
-				const pos = getPosition(this.scrollToElem);
+				const pos = this.getPosition(this.scrollToElem);
 
 				const intval = setInterval(() => {
 					if (tempTop >= pos.top && tempLeft >= pos.left) {
@@ -33,13 +60,21 @@
 					window.scrollTo(tempLeft, tempTop);
 
 					if (tempTop < pos.top) {
-						tempTop += increaseAmount;
+						tempTop += this.increaseAmount;
 					}
 
 					if (tempLeft < pos.left) {
-						tempLeft += increaseAmount;
+						tempLeft += this.increaseAmount;
 					}
 				}, 1);
+
+				this._active = true;
+				this._intval = intval;
+			}
+
+			stop() {
+				this._active = false;
+				clearInterval(this._intval);
 			}
 
 			getPosition(el) {
@@ -58,9 +93,16 @@
 	</script>
 
 	<script type="text/javascript">
+		let scrollObj;
+
 		function load() {
 			const scrollTo = document.getElementById('scroll-to');
 			const scrollBtn = document.getElementById('scroll-btn');
+			scrollObj = new ScrollObj(scrollTo);
+
+			scrollBtn.addEventListener('click', evt => {
+				scrollObj.scroll();
+			});
 
 			// scrollBtn.addEventListener('click', evt => {
 			// 	let tempTop = 0;
@@ -70,10 +112,9 @@
 
 			// 	evt.preventDefault();
 
-			
+
 			// });
 
-			const scrollObj = new ScrollObj(scrollTo);
 		}
 
 		window.onload = load;
