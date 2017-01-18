@@ -67,7 +67,7 @@ class Toast {
 			if (text) {
 				let toast = document.createElement('div');
 
-				toast.style.color = 'white';
+				toast.style.color= 'white';
 				toast.style.minWidth = '100px';
 				toast.style.maxWidth = '300px';
 				toast.style.maxHeight = '100px';
@@ -153,7 +153,18 @@ class Toast {
 									this.remove(toast);
 								}, false);
 							} else {
-								button.addEventListener('click', object.onclick, false);
+								button.addEventListener('click', evt => {
+									object.onclick(evt);
+								}, false);
+							}
+
+							// Events
+							if (object.events) {
+								for (key in object.events) {
+									button.addEventListener(key, evt => {
+										object.events[key](evt);
+									}, false);
+								}
 							}
 
 							button.innerText = object.name;
@@ -188,21 +199,19 @@ class Toast {
 				// Animation
 				window.requestAnimationFrame(() => {
 					window.requestAnimationFrame(() => {
-						if (this.animation) {
-							switch (this.animation.type) {
-								case 'bottom':
-								toast.style.bottom = '0px';
-								break;
-								case 'opacity':
-								toast.style.opacity = '1';
-								break;
-								default:
-								toast.style.opacity = '1';
-								console.log('Animation type is not correct, resetting to default');
-								break;
-							}
-						} else {
+						const type = this.animation.type;
+
+						switch (type) {
+							case 'bottom':
+							toast.style.bottom = '0px';
+							break;
+							case 'opacity':
 							toast.style.opacity = '1';
+							break;
+							default:
+							toast.style.opacity = '1';
+							console.log('Animation type is not correct, resetting to default');
+							break;
 						}
 
 						setTimeout(() => {
