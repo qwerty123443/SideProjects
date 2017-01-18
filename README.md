@@ -33,7 +33,10 @@ const buttons = [
 	},
 	{
 		'name': 'Hi',
-		'onclick': hi
+		'onclick': hi,
+		'events': {
+			'mouseover': () => {console.log('Hovered!')}
+		}
 	}
 ];
       
