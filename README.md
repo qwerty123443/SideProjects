@@ -5,7 +5,7 @@ I've made easy to use material and/or flat APIs.<br>
 ## Toast API
 I have created a toast api that looks like the android toasts.
 
-HTML link
+HTML link:
 ```html
 <script type="text/javascript" src="http://testsite-vic.ml/Portfolio/JS/toast_v1.1.js"></script>
 ```
