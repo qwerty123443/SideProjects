@@ -7,7 +7,7 @@ I have created a toast api that looks like the android toasts.
 
 HTML link
 ```html
-<script type="text/javascript" src="http://testsite-vic.ml/Portfolio/JS/toast.js"></script>
+<script type="text/javascript" src="http://testsite-vic.ml/Portfolio/JS/toast_v1.1.js"></script>
 ```
 
 ### Basic
