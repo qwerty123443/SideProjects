@@ -1,0 +1,39 @@
+<html>
+
+<head>
+
+	<title>TTS</title>
+
+	<script type="text/javascript" src="JS/TTS.js"></script>
+
+	<script type="text/javascript">
+		let tts;
+
+		function load() {
+			tts = new TTS();
+
+			setTimeout(() => {
+				// tts.speak('Hi');
+
+				tts.setLang('en-GB');
+			}, 1000);
+		}
+
+		window.onload = load;
+	</script>
+
+</head>
+
+<body>
+
+	<p>
+		Lorem ipsum Velit in Ut do eiusmod fugiat velit Ut dolore sint laborum nisi laborum laboris dolor eiusmod irure do aute laborum non Excepteur esse commodo est dolore Excepteur Excepteur aliquip cillum sed cupidatat occaecat id eiusmod culpa.
+	</p>
+
+	<p>
+		Lorem ipsum Enim Ut quis cillum ad consectetur velit laborum nostrud aute consectetur Ut dolore ut in exercitation est.
+	</p>
+
+</body>
+
+</html>
