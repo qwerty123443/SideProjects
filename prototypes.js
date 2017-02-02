@@ -13,6 +13,18 @@ Array.prototype.random = function() {
 	return arr[Math.floor(Math.random() * arr.length)];
 }
 
+Array.prototype.remove = function(search) {
+	const arr = this;
+
+	arr.forEach((object, key) => {
+		if (object == search) {
+			arr.splice(key, 1);
+		}
+	});
+
+	return arr;
+}
+
 // Quickest way to sort
 Array.prototype.quickSort = function() {
 	if (this.length <= 1) {
