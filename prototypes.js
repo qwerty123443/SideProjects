@@ -14,15 +14,17 @@ Array.prototype.random = function() {
 }
 
 Array.prototype.remove = function(search) {
-	const arr = this;
+	// const arr = this;
 
-	arr.forEach((object, key) => {
-		if (object == search) {
-			arr.splice(key, 1);
-		}
-	});
+	// arr.forEach((object, key) => {
+	// 	if (object == search) {
+	// 		arr.splice(key, 1);
+	// 	}
+	// });
 
-	return arr;
+	// return arr;
+
+	return this.filter(elem => {return elem != search;});
 }
 
 // Quickest way to sort
@@ -55,6 +57,15 @@ Array.prototype.quickSort = function() {
 String.prototype.remove = function(substring) {
 	return this.replace(substring, '');
 };
+
+String.prototype.random = function(length) {
+	let newStr = '';
+	const chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+	for (let i = 0; i < length; i++) {
+		newStr += chars.random();
+	}
+}
 
 /* Numbers */
 /*
@@ -91,3 +102,22 @@ Object.prototype.jsonStyle = function(json) {
 
 	return this;
 };
+
+/* URL */
+Location.prototype.getAttributes = function() {
+	const json = {};
+	const url = window.location.search.substr(1);
+
+	url.split('&').forEach((object, key) => {
+		const regEx = /^(.+)=(.+)$/;
+		const values = regEx.exec(object);
+
+		let name = values[1];
+		let value = values[2];
+
+		json[name] = value;
+	});
+
+	return json;
+}
+// Use like: location.getAttributes()
