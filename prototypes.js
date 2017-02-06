@@ -121,3 +121,4 @@ Location.prototype.getAttributes = function() {
 	return json;
 }
 // Use like: location.getAttributes()
+// Returns all passed link attributes. For example: http://example.com?id=5,results in: {id: '5'}
