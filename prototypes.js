@@ -1,16 +1,42 @@
 /* Array */
 Array.prototype.contains = function(string) {
-	if (this.indexOf(string) >= 0) {
-		return true;
-	} else {
-		return false;
+	return this.indexOf(string) >= 0 ? true : false;
+};
+
+Array.prototype.search = function(string, caseSensitive) {
+	let regEx = new RegExp(string, 'gi');
+
+	if (caseSensitive) {
+		regEx = new RegExp(regEx, 'g');
 	}
+
+	return regEx.exec(this);
 };
 
 Array.prototype.random = function() {
 	const arr = this;
 
 	return arr[Math.floor(Math.random() * arr.length)];
+}
+
+Array.prototype.randomize = function() {
+	const array = this;
+	let currentIndex = array.length, temporaryValue, randomIndex;
+
+	  // While there remain elements to shuffle...
+	  while (0 !== currentIndex) {
+
+		// Pick a remaining element...
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+
+		// And swap it with the current element.
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+	}
+
+	return array;
 }
 
 Array.prototype.remove = function(search) {
@@ -36,9 +62,9 @@ Array.prototype.quickSort = function() {
 	const pivotPos = Math.floor(this.length / 2);
 	const pivotValue = this[pivotPos];
 
-	let less = [],
-	more = [],
-	same = [];
+	let less = [];
+	let more = [];
+	let same = [];
 
 	for (let i = 0; i < this.length; i++) {
 		if (this[i] === pivotValue) {
@@ -54,17 +80,45 @@ Array.prototype.quickSort = function() {
 };
 
 /* Strings */
-String.prototype.remove = function(substring) {
-	return this.replace(substring, '');
+String.prototype.remove = function(substring, caseSensitive) {
+	let regEx = new RegExp(substring, 'gi');
+
+	if (caseSensitive) {
+		regEx = new RegExp(regEx, 'g');
+	}
+
+	return this.replace(regEx, '');
+	// return this.replace(substring, '');
 };
 
-String.prototype.random = function(length) {
+String.prototype.random = function() {
+	return this.split('').randomize().reduce((one, two) => {
+		return one + two;
+	});
+}
+
+String.prototype.advancedSearch = function(substr, caseSensitive) {
+	let regEx = new RegExp(substr, 'g');
+
+	if (caseSensitive) {
+		regEx = new RegExp(regEx, 'g');
+	} else {
+		regEx = new RegExp(regEx, 'gi');
+	}
+
+	return [regEx, regEx.exec(this)];
+};
+
+
+String['random'] = function(length) {
 	let newStr = '';
 	const chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 	for (let i = 0; i < length; i++) {
 		newStr += chars.random();
 	}
+
+	return newStr;
 }
 
 /* Numbers */
@@ -121,4 +175,3 @@ Location.prototype.getAttributes = function() {
 	return json;
 }
 // Use like: location.getAttributes()
-// Returns all passed link attributes. For example: http://example.com?id=5,results in: {id: '5'}
