@@ -20,23 +20,11 @@ Array.prototype.random = function() {
 }
 
 Array.prototype.randomize = function() {
-	const array = this;
-	let currentIndex = array.length, temporaryValue, randomIndex;
+	return randomizeArray(this);
+}
 
-	  // While there remain elements to shuffle...
-	  while (0 !== currentIndex) {
-
-		// Pick a remaining element...
-		randomIndex = Math.floor(Math.random() * currentIndex);
-		currentIndex -= 1;
-
-		// And swap it with the current element.
-		temporaryValue = array[currentIndex];
-		array[currentIndex] = array[randomIndex];
-		array[randomIndex] = temporaryValue;
-	}
-
-	return array;
+Array.prototype.shuffle = function() {
+	return randomizeArray(this);
 }
 
 Array.prototype.remove = function(search) {
@@ -196,4 +184,22 @@ function factorial(n) {
 		return f[n];
 
 	return f[n] = factorial(n-1) * n;
+}
+
+function randomizeArray(array) {
+	let currentIndex = array.length, temporaryValue, randomIndex;
+
+	// While there remain elements to shuffle...
+	while (0 !== currentIndex) {
+		// Pick a remaining element...
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+
+		// And swap it with the current element.
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+	}
+
+	return array;
 }
