@@ -80,6 +80,23 @@ class Canvas {
 		this.ctx.fill();
 	}
 
+	arc(x, y, r, deg, color, strokeWidth) {
+		if (!color) {
+			color = 'rgb(0, 0, 255)';
+		}
+
+		if ((typeof color).toLowerCase() == 'object') {
+			this.ctx.strokeStyle = color.color;
+		} else {
+			this.ctx.strokeStyle = color;
+		}
+
+		this.ctx.beginPath();
+		this.ctx.lineWidth = strokeWidth;
+		this.ctx.arc(x, y, r, 1.5 * Math.PI, Math.radians(deg) - 1.5);
+		this.ctx.stroke();
+	}
+
 	line(x, y, x2, y2) {
 		this.ctx.beginPath();
 		this.ctx.moveTo(x, y);

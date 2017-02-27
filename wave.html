@@ -8,6 +8,8 @@
 
 	<script type="text/javascript">
 		let canvas;
+		let deg = 0;
+		let dir = 0;
 
 		function setup() {
 			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
@@ -16,16 +18,34 @@
 		}
 
 		function draw() {
-			canvas.background();
+			const amount = 2;
 
-			canvas.line(0, 0, 10, 10);
+			canvas.background();
+			canvas.arc(100, 75, 50, deg, '#ff00ff', 2);
+
+
+			if (dir == 0) {
+				deg -= amount;
+			} else {
+				deg += amount;
+			}
+
+			if (deg >= 358) {
+				dir = 0;
+			} else if (deg <= 0) {
+				dir = 1;
+			}
 		}
+
+		Math.radians = function(degrees) {
+			return degrees * Math.PI / 180;
+		};
 	</script>
 
 </head>
-<body>
+<body style="margin: 0; overflow: hidden;">
 
-	<canvas id="circleDiagram"></canvas>
+	<canvas id="canvas"></canvas>
 
 </body>
 </html>
