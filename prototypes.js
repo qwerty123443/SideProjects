@@ -129,6 +129,10 @@ Number.prototype.factorial = function() {
 	return factorial(this);
 };
 
+Number.prototype.randomBetween = function(min, max) {
+	return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 /* HTML Elements */
 Object.prototype.jsonStyle = function(json) {
 	for (key in json) {
@@ -173,6 +177,13 @@ Math.factorial = function(num) {
 	return factorial(num);
 };
 
+Math.radians = function(degrees) {
+	return degrees * Math.PI / 180;
+};
+
+Math.degrees = function(radians) {
+	return radians * 180 / Math.PI;
+};
 
 /* Universal functions */
 function factorial(n) {
