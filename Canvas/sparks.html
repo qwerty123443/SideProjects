@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Sparks</title>
+
+	<script type="text/javascript" src="canvas.js"></script>
+
+	<script type="text/javascript">
+		let canvas;
+		const sparksArr = [];
+
+		function setup() {
+			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
+
+			canvas.background();
+
+			canvas.canvas.addEventListener('click', evt => {
+				sparksArr.push(new Spark(canvas, evt.x, evt.y));
+			});
+		}
+
+		function draw() {
+			canvas.background();
+
+			sparksArr.forEach((object, key) => {
+				object.draw();
+				object.update();
+
+				if (object.sparks.length <= 0) {
+					sparksArr.remove(object);
+				}
+			});
+
+			const rand = Math.floor(Math.random() * 50) + 1;
+
+			if (rand > 49) {
+				sparksArr.push(new Spark(canvas, Math.floor(Math.random() * this.canvas.width), Math.floor(Math.random() * this.canvas.height)));
+			}
+		}
+
+		function getRandomColor() {
+			let color = '#';
+			const letters = '0123456789ABCDEF';
+
+			for (let i = 0; i < 6; i++ ) {
+				color += letters[Math.floor(Math.random() * 16)];
+			}
+
+			return color;
+		}
+
+		class Spark {
+			constructor(canvas, x, y) {
+				this.x = x;
+				this.y = y;
+				this.sparks = [];
+				this.canvas = canvas;
+
+				for (let i = 0; i < 50; i++) {
+					const moveTo = this.canvas.random2D().mult(Math.random() * 3);
+					const startX = this.x;
+					const startY = this.y;
+
+					this.sparks.push(new Particle(this.canvas, startX, startY, new Color(getRandomColor()), moveTo));
+				}
+			}
+
+			draw() {
+				this.sparks.forEach((object, key) => {
+					object.draw();
+
+					if (object.life <= 0) {
+						this.sparks.remove(object);
+					}
+				});
+			}
+
+			update() {
+				this.sparks.forEach((object, key) => {
+					object.update();
+
+					if (object.x + object.r > this.canvas.width || object.y + object.r > this.canvas.height) {
+						this.sparks.remove(object);
+					}
+				});
+			}
+		}
+
+		class Particle {
+			constructor(canvas, x, y, color, moveTo) {
+				this.x = x;
+				this.y = y;
+				this.r = 5;
+				this.color = color;
+				this.canvas = canvas;
+				this.moveTo = moveTo;
+				this.life = Math.floor(Math.random() * (100 - 50 + 1) + 50);
+			}
+
+			draw() {
+				this.canvas.circle(this.x, this.y, this.r, this.color);
+			}
+
+			update() {
+				this.life--;
+
+				this.color.opacity(this.life.map(0, 100, 0, 1));
+
+				this.x += this.moveTo.x;
+				this.y += this.moveTo.y;
+			}
+		}
+	</script>
+
+</head>
+<body style="padding: 0; margin: 0; overflow: hidden">
+
+	<canvas id="canvas"></canvas>
+
+</body>
+</html>
