@@ -68,7 +68,7 @@ class Canvas {
 
 	circle(x, y, r, color) {
 		if (!color) {
-			color = 'rgb(0, 0, 255)';
+			color = 'rgb(255, 255, 255)';
 		}
 
 		if ((typeof color).toLowerCase() == 'object') {
@@ -189,7 +189,7 @@ class Vector {
 		}
 	}
 
-	add(x, y, z) {
+	add(x, y) {
 		if (x instanceof Vector) {
 			this.x += x.x || 0;
 			this.y += x.y || 0;
@@ -201,6 +201,22 @@ class Vector {
 		} else {
 			this.x += x || 0;
 			this.y += y || 0;
+			return this;
+		}
+	}
+
+	sub(x, y) {
+		if (x instanceof Vector) {
+			this.x -= x.x || 0;
+			this.y -= x.y || 0;
+			return this;
+		} else if (x instanceof Array) {
+			this.x -= x[0] || 0;
+			this.y -= x[1] || 0;
+			return this;
+		} else {
+			this.x -= x || 0;
+			this.y -= y || 0;
 			return this;
 		}
 	}
