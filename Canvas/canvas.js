@@ -162,11 +162,6 @@ class Canvas {
 		this.ctx.fillRect(0, 0, this.width, this.height);
 		return this;
 	}
-
-	random2D() {
-		const angle = Math.random() * Math.PI * 2;
-		return new Vector(Math.cos(angle), Math.sin(angle));
-	}
 }
 
 class Vector {
@@ -294,6 +289,11 @@ Global.Vector.sub = function(v1, v2, target) {
 	return target;
 }
 
+Global.Vector.random2D = functio() {
+	const angle = Math.random() * Math.PI * 2;
+	return new Vector(Math.cos(angle), Math.sin(angle));
+}
+
 class Color {
 	constructor(color) {
 		this.type = null;
@@ -378,6 +378,10 @@ Array.prototype.remove = function(search) {
 Number.prototype.map = function(start1, stop1, start2, stop2) {
 	return ((this - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
 }
+
+Number.prototype.constrain = function(low, high) {
+	return Math.max(Math.min(this, high), low);
+};
 
 window.onload = load;
 window.onresize = resize;
