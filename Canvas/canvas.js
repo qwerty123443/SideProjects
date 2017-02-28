@@ -147,7 +147,12 @@ class Canvas {
 		return this;
 	}
 
-	square(x, y, w, h, color) {
+	square(x, y, r, color) {
+		this.rect(x, y, r, r, color);
+		return this;
+	}
+
+	rect(x, y, w, h, color) {
 		if (!color) {
 			color = 'rgb(255, 0, 0)';
 		}
