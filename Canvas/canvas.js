@@ -147,6 +147,21 @@ class Canvas {
 		return this;
 	}
 
+	square(x, y, w, h, color) {
+		if (!color) {
+			color = 'rgb(255, 0, 0)';
+		}
+
+		if ((typeof color).toLowerCase() == 'object') {
+			this.ctx.fillStyle = color.color;
+		} else {
+			this.ctx.fillStyle = color;
+		}
+
+		this.ctx.fillRect(x, y, w, h);
+		return this;
+	}
+
 	polygon(...vars) {
 		for (let i = 0; i < vars.length - 2; i += 2) {
 			this.circle(vars[i], vars[i + 1], 2);
@@ -180,8 +195,28 @@ class Canvas {
 		return this;
 	}
 
-	onClick(object, funtion) {
-		// if ()
+	/*
+	*	To use:
+	*	canvas.onClick({object: {
+	*		x: 0,
+	*		y: 0,
+	*		w: 100,
+	*		h: 100,
+	*		type: 'box'
+	*	}, function: () => {
+	*		console.log('Hi');
+	*	}});
+	*/
+
+	onClick(...array) {
+		array.forEach((object, key) => {
+			if (object.object.type == 'box' || object.object.type == 'square') {
+				if (mouseX < object.object.x + object.object.w && mouseX > object.object.x) {
+					if (mouseY < object.object.y + object.object.h && mouseY > object.object.y)
+						object.function();
+				}
+			}
+		});
 	}
 }
 
