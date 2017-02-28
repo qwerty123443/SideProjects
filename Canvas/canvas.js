@@ -162,6 +162,9 @@ class Canvas {
 
 class Vector {
 	constructor(x, y) {
+		x = x == null ? 0 : x;
+		y = y == null ? 0 : y;
+
 		this.x = x;
 		this.y = y;
 	}
