@@ -1,3 +1,4 @@
+let canvas;
 let mouseX = 0;
 let mouseY = 0;
 
@@ -59,10 +60,9 @@ class Canvas {
 		this.canvas.height = h;
 	}
 
-	/*mouse(x, y) {
-		this.background();
-		this.circle(x, y, 10);
-	}*/
+	point(x, y, color) {
+		this.circle(x, y, 2, color);
+	}
 
 	circle(x, y, r, color) {
 		if (!color) {
