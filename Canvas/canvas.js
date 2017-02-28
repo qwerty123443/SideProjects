@@ -1,6 +1,7 @@
 let canvas;
 let mouseX = 0;
 let mouseY = 0;
+let center = {x: 0, y: 0};
 const Global = {Vector: {}};
 
 function load() {
@@ -59,6 +60,10 @@ class Canvas {
 		this.height = h;
 		this.canvas.width = w;
 		this.canvas.height = h;
+
+		center.x = this.width / 2;
+		center.y = this.height / 2;
+
 		return this;
 	}
 
@@ -122,8 +127,20 @@ class Canvas {
 		return this;
 	}
 
-	line(x, y, x2, y2) {
+	line(x, y, x2, y2, strokeWidth, color) {
+		if (!color) {
+			color = 'rgb(0, 0, 255)';
+		}
+
+		if ((typeof color).toLowerCase() == 'object') {
+			this.ctx.strokeStyle = color.color;
+		} else {
+			this.ctx.strokeStyle = color;
+		}
+
 		this.ctx.beginPath();
+		this.ctx.strokeStyle = color;
+		this.ctx.lineWidth = strokeWidth;
 		this.ctx.moveTo(x, y);
 		this.ctx.lineTo(x2, y2);
 		this.ctx.stroke();
@@ -161,6 +178,10 @@ class Canvas {
 
 		this.ctx.fillRect(0, 0, this.width, this.height);
 		return this;
+	}
+
+	onClick(object, funtion) {
+		// if ()
 	}
 }
 
@@ -236,7 +257,6 @@ class Vector {
 	mult(n) {
 		this.x *= n || 0;
 		this.y *= n || 0;
-
 		return this;
 	}
 
@@ -382,6 +402,10 @@ Number.prototype.map = function(start1, stop1, start2, stop2) {
 Number.prototype.constrain = function(low, high) {
 	return Math.max(Math.min(this, high), low);
 };
+
+Math.randomBetween = function(min, max) {
+	return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 window.onload = load;
 window.onresize = resize;

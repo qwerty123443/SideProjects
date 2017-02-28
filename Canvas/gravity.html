@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Gravity</title>
+
+	<script type="text/javascript" src="canvas.js"></script>
+
+	<script type="text/javascript">
+		let particles = [];
+		let attractors = [];
+
+		function setup() {
+			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
+			canvas.background();
+
+			for (let i = 0; i < 100; i++) {
+				particles.push(new Particle(canvas, center.x, center.y));
+			}
+
+			// attractors.push(new Vector(center.x, center.y));
+
+			attractors.push(new Vector(0 + Math.randomBetween(0, 500), 0 + Math.randomBetween(0, 500)));
+			attractors.push(new Vector(canvas.width - Math.randomBetween(0, 500), 0 + Math.randomBetween(0, 500)));
+			attractors.push(new Vector(0 + Math.randomBetween(0, 500), canvas.height - Math.randomBetween(0, 500)));
+			attractors.push(new Vector(canvas.width - Math.randomBetween(0, 500), canvas.height - Math.randomBetween(0, 500)));
+
+			canvas.canvas.addEventListener('click', evt => {
+				attractors.push(new Vector(mouseX, mouseY));
+			});
+		}
+
+		function draw() {
+			// canvas.background();
+
+			attractors.forEach((object, key) => {
+				canvas.point(object.x, object.y, 'red');
+			});
+
+			particles.forEach((object, key) => {
+				attractors.forEach((attractor, key) => {
+					object.attracted(attractor);
+				});
+
+				object.update();
+				object.draw();
+			});
+		}
+
+		class Particle {
+			constructor(canvas, x, y) {
+				this.canvas = canvas;
+				this.pos = new Vector(x, y);
+				this.prev = new Vector(x, y);
+				this.vel = Global.Vector.random2D();
+				this.acc = new Vector();
+			}
+
+			draw() {
+				this.canvas.line(this.pos.x, this.pos.y, this.prev.x, this.prev.y, 0.1, 'rgba(255, 255, 255, 0.3)');
+				this.prev.x = this.pos.x;
+				this.prev.y = this.pos.y;
+			}
+
+			update() {
+				this.vel.add(this.acc);
+				this.pos.add(this.vel);
+				this.acc.mult(0);
+			}
+
+			attracted(target) {
+				const force = Global.Vector.sub(target, this.pos);
+				let dsquared = force.magSq();
+				dsquared = dsquared.constrain(25, 500);
+				const G = 50;
+				const magnitude = 1; //G / dsquared;
+				force.setMag(magnitude);
+				this.acc.add(force);
+			}
+		}
+	</script>
+
+</head>
+<body style="padding: 0; margin: 0; overflow: hidden">
+
+	<canvas id="canvas"></canvas>
+
+</body>
+</html>
