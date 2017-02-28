@@ -189,14 +189,28 @@ class Vector {
 		}
 	}
 
-	add(vector) {
-		return this;
+	add(x, y, z) {
+		if (x instanceof Vector) {
+			this.x += x.x || 0;
+			this.y += x.y || 0;
+			this.z += x.z || 0;
+			return this;
+		} else if (x instanceof Array) {
+			this.x += x[0] || 0;
+			this.y += x[1] || 0;
+			this.z += x[2] || 0;
+			return this;
+		} else {
+			this.x += x || 0;
+			this.y += y || 0;
+			this.z += z || 0;
+			return this;
+		}
 	}
 
 	mult(n) {
 		this.x *= n || 0;
 		this.y *= n || 0;
-		this.z *= n || 0;
 
 		return this;
 	}
