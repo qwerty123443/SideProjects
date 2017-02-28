@@ -289,7 +289,7 @@ Global.Vector.sub = function(v1, v2, target) {
 	return target;
 }
 
-Global.Vector.random2D = functio() {
+Global.Vector.random2D = function() {
 	const angle = Math.random() * Math.PI * 2;
 	return new Vector(Math.cos(angle), Math.sin(angle));
 }
