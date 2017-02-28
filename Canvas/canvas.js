@@ -1,6 +1,7 @@
 let canvas;
 let mouseX = 0;
 let mouseY = 0;
+const Global = {Vector: {}};
 
 function load() {
 	setup();
@@ -221,12 +222,76 @@ class Vector {
 		}
 	}
 
+	set(x, y) {
+		if (x instanceof p5.Vector) {
+			this.x = x.x || 0;
+			this.y = x.y || 0;
+			return this;
+		} else if (x instanceof Array) {
+			this.x = x[0] || 0;
+			this.y = x[1] || 0;
+			return this;
+		} else {
+			this.x = x || 0;
+			this.y = y || 0;
+			return this;
+		}
+	}
+
 	mult(n) {
 		this.x *= n || 0;
 		this.y *= n || 0;
 
 		return this;
 	}
+
+	magSq() {
+		const x = this.x, y = this.y;
+		return (x * x + y * y);
+	}
+
+	normalize() {
+		return this.mag() === 0 ? this : this.div(this.mag());
+	}
+
+	setMag(n) {
+		return this.normalize().mult(n);
+	}
+
+	copy() {
+		return new Vector(this.x, this.y);
+	}
+
+	div(n) {
+		this.x /= n;
+		this.y /= n;
+		return this;
+	}
+
+	limit(max) {
+		const mSq = this.magSq();
+
+		if(mSq > max * max) {
+	    	this.div(Math.sqrt(mSq)); //normalize it
+	    	this.mult(max);
+	    }
+	    return this;
+	}
+
+	mag(){
+		return Math.sqrt(this.magSq());
+	}
+}
+
+Global.Vector.sub = function(v1, v2, target) {
+	if (!target) {
+		target = v1.copy();
+	} else {
+		target.set(v1);
+	}
+
+	target.sub(v2);
+	return target;
 }
 
 class Color {
