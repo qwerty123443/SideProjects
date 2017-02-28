@@ -197,15 +197,17 @@ class Canvas {
 
 	/*
 	*	To use:
-	*	canvas.onClick({object: {
-	*		x: 0,
-	*		y: 0,
-	*		w: 100,
-	*		h: 100,
-	*		type: 'box'
-	*	}, function: () => {
-	*		console.log('Hi');
-	*	}});
+	*	canvas.canvas.addEventListener('click', evt => {
+	*		canvas.onClick({object: {
+	*			x: 0,
+	*			y: 0,
+	*			w: 100,
+	*			h: 100,
+	*			type: 'box'
+	*		}, function: () => {
+	*			console.log('Hi');
+	*		}});
+	*	});
 	*/
 
 	onClick(...array) {
