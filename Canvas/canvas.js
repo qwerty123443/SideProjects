@@ -58,10 +58,12 @@ class Canvas {
 		this.height = h;
 		this.canvas.width = w;
 		this.canvas.height = h;
+		return this;
 	}
 
 	point(x, y, color) {
 		this.circle(x, y, 2, color);
+		return this;
 	}
 
 	circle(x, y, r, color) {
@@ -78,6 +80,7 @@ class Canvas {
 		this.ctx.beginPath();
 		this.ctx.arc(x, y, r, 0, 2 * Math.PI, false);
 		this.ctx.fill();
+		return this;
 	}
 
 	arc(x, y, r, deg, color, strokeWidth) {
@@ -95,6 +98,7 @@ class Canvas {
 		this.ctx.lineWidth = strokeWidth;
 		this.ctx.arc(x, y, r, 1.5 * Math.PI, Math.radians(deg) - 1.5);
 		this.ctx.stroke();
+		return this;
 	}
 
 	arcTo(x, y, x2, y2, deg, color, strokeWidth) {
@@ -114,6 +118,7 @@ class Canvas {
 		this.ctx.lineWidth = strokeWidth;
 		this.ctx.arc(x, y, r / 4, Math.PI, 2 * Math.PI);
 		this.ctx.stroke();
+		return this;
 	}
 
 	line(x, y, x2, y2) {
@@ -121,6 +126,7 @@ class Canvas {
 		this.ctx.moveTo(x, y);
 		this.ctx.lineTo(x2, y2);
 		this.ctx.stroke();
+		return this;
 	}
 
 	polygon(...vars) {
@@ -131,6 +137,7 @@ class Canvas {
 		}
 
 		this.line(vars[0], vars[1], vars[vars.length - 2], vars[vars.length - 1]);
+		return this;
 	}
 
 	dist(x, y, x2, y2) {
@@ -152,6 +159,7 @@ class Canvas {
 		}
 
 		this.ctx.fillRect(0, 0, this.width, this.height);
+		return this;
 	}
 
 	random2D() {
@@ -179,6 +187,10 @@ class Vector {
 			const b = this.y - y;
 			return Math.sqrt(a * a + b * b);
 		}
+	}
+
+	add(vector) {
+		return this;
 	}
 
 	mult(n) {
