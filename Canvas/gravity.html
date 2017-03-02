@@ -45,8 +45,11 @@
 				object.update();
 				object.draw();
 			});
+		}
 
-			canvas.square(10, 10, 100, 100);
+		function clearAllAttractors() {
+			canvas.background();
+			attractors = [];
 		}
 
 		class Particle {
@@ -75,7 +78,7 @@
 				let dsquared = force.magSq();
 				dsquared = dsquared.constrain(25, 500);
 				const G = 50;
-				const magnitude = 1; //G / dsquared;
+				const magnitude = G / dsquared;
 				force.setMag(magnitude);
 				this.acc.add(force);
 			}
