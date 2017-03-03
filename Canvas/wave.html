@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Test</title>
+
+	<script type="text/javascript" src="canvas.js"></script>
+
+	<script type="text/javascript">
+		// let count = 0;
+
+		// function setup() {
+		// 	canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
+		// 	canvas.background();
+		// }
+
+		// function draw() {
+		// 	// canvas.background();
+
+		// 	// canvas.fillShape(points, 'rgb(52, 152, 219)');
+
+		// 	// points.forEach((object, key) => {
+		// 	// 	canvas.point(object.x, object.y);
+		// 	// });
+
+		// 	const k = Math.randomBetween(5, 10);
+
+		// 	canvas.point(count, (k * Math.sin(count / 10)) + canvas.height / 2, 'rgb(22, 0, 90)');
+
+		// 	count++;
+
+		// 	if (count > canvas.width) count = 0;
+		// }
+	</script>
+
+	<script type="text/javascript">
+		let count = 0;
+
+		function setup() {
+			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
+			canvas.background();
+		}
+
+		function draw() {
+			canvas.background('#6698FF');
+
+			const points = [];
+
+			points.push([0, canvas.height], [0, canvas.height / 2]);
+
+			points.push([canvas.width / 4, (10 * Math.sin(count / 20)) + canvas.height / 2]);
+			points.push([canvas.width / 4 + canvas.width / 4, (20 * Math.sin(count / 18)) + canvas.height / 2]);
+			points.push([canvas.width / 4 + 2 * (canvas.width / 4), (10 * Math.sin(count / 20)) + canvas.height / 2]);
+
+			points.push([canvas.width, canvas.height / 2], [canvas.width, canvas.height]);
+
+			canvas.circle(center.x, center.y, canvas.width / 5, '#FDB813');
+			canvas.ctx.filter = 'blur(50px)';
+			canvas.circle(center.x, center.y, canvas.width / 4, 'rgba(255, 225, 0, 0.5)');
+			canvas.ctx.filter = 'none';
+
+			canvas.fillShape(points, 'rgba(43, 101, 236, 0.8)');
+
+			count++;
+		}
+	</script>
+
+</head>
+<body style="padding: 0; margin: 0; overflow: hidden">
+
+	<canvas id="canvas"></canvas>
+
+</body>
+</html>

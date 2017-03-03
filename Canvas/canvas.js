@@ -81,6 +81,13 @@ class Canvas {
 		return this;
 	}
 
+	filter(filterName, amount) {
+		if (filterName == 'none')
+			this.ctx.filter = 'none';
+		else
+			this.ctx.filter = filterName + amount;
+	}
+
 	point(x, y, color) {
 		this.circle(x, y, 2, color);
 		return this;
@@ -221,6 +228,37 @@ class Canvas {
 
 		this.ctx.closePath();
 		this.ctx.fill();
+	}
+
+	wave(x, y, width, amplitude, step, frequency, color) {
+		step = step || 0.1;
+		width = width || 100;
+		frequency = frequency || 2;
+		amplitude = amplitude || 20;
+
+		if (!color) {
+			color = 'rgb(255, 0, 0)';
+		}
+
+		if ((typeof color).toLowerCase() == 'object') {
+			this.ctx.strokeStyle = color.color;
+		} else {
+			this.ctx.strokeStyle = color;
+		}
+
+		this.ctx.beginPath();
+		this.ctx.moveTo(x, y);
+
+		const c = width / Math.PI / (frequency * 2);
+
+		for(let i = 0; i < width; i += step){
+			const x = amplitude * Math.sin(i / c);
+			this.ctx.lineTo(i, 250 + x);
+		}
+
+		this.ctx.strokeStyle = color;
+
+		this.ctx.stroke();
 	}
 
 	dist(x, y, x2, y2) {
