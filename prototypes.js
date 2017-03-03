@@ -189,6 +189,30 @@ Math.randomBetween = function(min, max) {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+/* Console */
+console.colorLog = function(message, color) {
+	color = color || "black";
+
+	switch (color) {
+		case "success":
+		color = "Green";
+		break;
+		case "info":
+		color = "DodgerBlue";
+		break;
+		case "error":
+		color = "Red";
+		break;
+		case "warning":
+		color = "Orange";
+		break;
+		default:
+		color = color;
+	}
+
+	console.log("%c" + message, "color:" + color);
+}
+
 /* Universal functions */
 function factorial(n) {
 	const f = [];
