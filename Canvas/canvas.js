@@ -1,3 +1,4 @@
+let int;
 let canvas;
 let mouseX = 0;
 let mouseY = 0;
@@ -8,8 +9,16 @@ function load() {
 	setup();
 
 	setTimeout(() => {
-		const int = setInterval(draw, 1000 / 60);
+		loop();
 	}, 100);
+}
+
+function loop() {
+	int = setInterval(draw, 1000 / 60);
+}
+
+function noLoop() {
+	clearInterval(int);
 }
 
 function resize() {
@@ -64,6 +73,11 @@ class Canvas {
 		center.x = this.width / 2;
 		center.y = this.height / 2;
 
+		return this;
+	}
+
+	translate(x, y) {
+		this.ctx.moveTo(x, y);
 		return this;
 	}
 
@@ -237,7 +251,7 @@ class Vector {
 	}
 
 	dist(x, y) {
-		if ((typeof (x)).toLowerCase() == 'object') {
+		if (x instanceof Vector) {
 			const a = this.x - x.x;
 			const b = this.y - x.y;
 			return Math.sqrt(a * a + b * b);
@@ -446,7 +460,7 @@ Number.prototype.constrain = function(low, high) {
 };
 
 Math.randomBetween = function(min, max) {
-	return Math.floor(Math.random() * (max - min + 1) + min);
+	return Math.random() * (max - min + 1) + min;
 }
 
 window.onload = load;
