@@ -192,7 +192,7 @@ class Canvas {
 		return this;
 	}
 
-	fillShape(points, lineWidth, color) {
+	fillShape(points, color) {
 		if (!color) {
 			color = 'rgb(0, 0, 255)';
 		}
@@ -218,7 +218,6 @@ class Canvas {
 		});
 
 		this.ctx.fillStyle = color;
-		this.ctx.lineWidth = lineWidth;
 
 		this.ctx.closePath();
 		this.ctx.fill();
