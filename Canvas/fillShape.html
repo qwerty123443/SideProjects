@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Test</title>
+
+	<script type="text/javascript" src="canvas.js"></script>
+
+	<script type="text/javascript">
+		let count = 0;
+
+		function setup() {
+			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
+			canvas.background();
+		}
+
+		function draw() {
+			canvas.background();
+
+			canvas.fillShape([[0, 0], [0, canvas.height / 5], [canvas.width / 4, (10 * Math.sin(count / 5)) + canvas.height / 4], [canvas.width / 4 + canvas.width / 4, (20 * Math.sin(count / 15)) + canvas.height / 4], [canvas.width / 4 + 2 * (canvas.width / 4), (10 * Math.sin(count / 5)) + canvas.height / 4], [canvas.width, canvas.height / 5], [canvas.width, 0]], 'rgba(0, 0, 0, 1)');
+
+			count++;
+		}
+	</script>
+
+</head>
+<body style="padding: 0; margin: 0; overflow: hidden">
+
+	<canvas id="canvas"></canvas>
+
+</body>
+</html>
