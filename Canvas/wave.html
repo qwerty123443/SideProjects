@@ -2,36 +2,9 @@
 <html>
 <head>
 
-	<title>Test</title>
+	<title>Wave</title>
 
 	<script type="text/javascript" src="canvas.js"></script>
-
-	<script type="text/javascript">
-		// let count = 0;
-
-		// function setup() {
-		// 	canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
-		// 	canvas.background();
-		// }
-
-		// function draw() {
-		// 	// canvas.background();
-
-		// 	// canvas.fillShape(points, 'rgb(52, 152, 219)');
-
-		// 	// points.forEach((object, key) => {
-		// 	// 	canvas.point(object.x, object.y);
-		// 	// });
-
-		// 	const k = Math.randomBetween(5, 10);
-
-		// 	canvas.point(count, (k * Math.sin(count / 10)) + canvas.height / 2, 'rgb(22, 0, 90)');
-
-		// 	count++;
-
-		// 	if (count > canvas.width) count = 0;
-		// }
-	</script>
 
 	<script type="text/javascript">
 		let count = 0;
@@ -54,9 +27,13 @@
 
 			points.push([canvas.width, canvas.height / 2], [canvas.width, canvas.height]);
 
-			canvas.circle(center.x, center.y, canvas.width / 5, '#FDB813');
+			let size = canvas.width / 5;
+
+			if (canvas.width > canvas.height) size = canvas.height / 4;
+
+			canvas.circle(center.x, center.y, size, '#FDB813');
 			canvas.ctx.filter = 'blur(50px)';
-			canvas.circle(center.x, center.y, canvas.width / 4, 'rgba(255, 225, 0, 0.5)');
+			canvas.circle(center.x, center.y, size, 'rgba(255, 225, 0, 0.5)');
 			canvas.ctx.filter = 'none';
 
 			canvas.fillShape(points, 'rgba(43, 101, 236, 0.8)');

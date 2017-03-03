@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Curved Path</title>
+
+	<script type="text/javascript" src="canvas.js"></script>
+
+	<script type="text/javascript">
+		let mover;
+		let targetPos;
+		let mousePressed = {};
+
+		function setup() {
+			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
+			canvas.background();
+			mover = new Mover(canvas);
+
+			mousePressed.x = center.x;
+			mousePressed.y = center.y + 100;
+
+			canvas.canvas.addEventListener('click', evt => {
+				mousePressed.x = evt.x;
+				mousePressed.y = evt.y;
+			});
+		}
+
+		function draw() {
+			targetPos = new Vector(mousePressed.x, mousePressed.y);
+			canvas.background();
+			canvas.circle(mousePressed.x, mousePressed.y, 5, '#ff00ff');
+			mover.update();
+			mover.edges();
+			mover.display();
+		}
+
+		class Mover {
+			constructor(canvas) {
+				this.canvas = canvas;
+				this.location = new Vector(this.canvas.width / 2, this.canvas.height / 2);
+				this.velocity = new Vector();
+				this.acceleration = new Vector();
+			}
+
+			update() {
+				const mouse = targetPos;
+				mouse.sub(this.location);
+				mouse.setMag(0.5);
+				this.acceleration = mouse;
+				this.velocity.add(this.acceleration);
+
+				if (this.location.dist(mousePressed.x, mousePressed.y) < 5) {
+					this.velocity.mult(0);
+				}
+
+				this.location.add(this.velocity);
+				this.velocity.limit(5);
+			}
+
+			display() {
+				this.canvas.circle(this.location.x, this.location.y, 10);
+			}
+
+			edges() {
+				if (this.location.x > this.canvas.width) this.location.x = this.canvas.width;
+				else if (this.location.x < 0) this.location.x = 0;
+
+				if (this.location.y > this.canvas.height) this.location.y = this.canvas.height;
+				else if (this.location.y < 0) this.location.y = 0;
+			}
+		}
+	</script>
+
+</head>
+<body style="padding: 0; margin: 0; overflow: hidden">
+
+	<canvas id="canvas"></canvas>
+
+</body>
+</html>
