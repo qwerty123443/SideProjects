@@ -192,6 +192,38 @@ class Canvas {
 		return this;
 	}
 
+	fillShape(points, lineWidth, color) {
+		if (!color) {
+			color = 'rgb(0, 0, 255)';
+		}
+
+		if ((typeof color).toLowerCase() == 'object') {
+			this.ctx.strokeStyle = color.color;
+		} else {
+			this.ctx.strokeStyle = color;
+		}
+
+		this.ctx.beginPath();
+
+		if (points[0] instanceof Array)
+			this.ctx.moveTo(points[0][0], points[0][1]);
+		else
+			this.ctx.moveTo(points[0].x, points[0].y);
+
+		points.forEach((object, key) => {
+			if (object instanceof Array)
+				this.ctx.lineTo(object[0], object[1]);
+			else
+				this.ctx.lineTo(object.x, object.y);
+		});
+
+		this.ctx.fillStyle = color;
+		this.ctx.lineWidth = lineWidth;
+
+		this.ctx.closePath();
+		this.ctx.fill();
+	}
+
 	dist(x, y, x2, y2) {
 		const a = x - x2;
 		const b = y - y2;
