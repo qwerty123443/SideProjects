@@ -118,6 +118,10 @@ Number.prototype.map = function(start1, stop1, start2, stop2) {
 	return ((this - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
 };
 
+Number.prototype.pow = function(pow) {
+	return Math.pow(this, pow);
+}
+
 Number.prototype.between = function(a, b) {
 	let min = Math.min.apply(Math, [a, b]);
 	let max = Math.max.apply(Math, [a, b]);
@@ -241,4 +245,10 @@ function randomizeArray(array) {
 	}
 
 	return array;
+}
+
+function loop(func, amount) {
+	for (let i = 0; i < amount; i++) {
+		func(i);
+	}
 }
