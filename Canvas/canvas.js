@@ -458,7 +458,12 @@ Global.Vector.random2D = function() {
 }
 
 class Color {
-	constructor(color) {
+	constructor(...color) {
+		if (color.length == 1) color = color[0];
+		else if (color.length <= 3) color = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+		else if (color.length <= 4) color = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
+		else console.error('Nope');
+
 		this.type = null;
 		this.color = color;
 
@@ -511,7 +516,7 @@ class Color {
 			this.convertToRGB();
 		}
 
-		const result = this.color.match(/^rgba?\((\d+),\s?(\d+),\s?(\d+)(,\s?(.*))\)$/);
+		const result = this.color.match(/^rgba?\((\d+),\s?(\d+),\s?(\d+)(,\s?(.*))?\)$/);
 
 		return {r: result[1], g: result[2], b: result[3], a: result[5]};
 	}
@@ -522,6 +527,15 @@ class Color {
 		object['a'] = opacity;
 
 		this.color = `rgba(${object['r']}, ${object['g']}, ${object['b']}, ${object['a']})`;
+		return this;
+	}
+
+	inverse() {
+		const obj = this.toObject();
+
+		if (obj.a) this.color = `rgba(${255 - obj.r}, ${255 - obj.g}, ${255 - obj.b}, ${obj.a})`;
+		else this.color = `rgb(${255 - obj.r}, ${255 - obj.g}, ${255 - obj.b})`;
+
 		return this;
 	}
 }
