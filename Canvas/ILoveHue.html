@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>I Love HUE</title>
+
+	<script type="text/javascript" src="canvas.js"></script>
+	<script type="text/javascript" src="../prototypes.js"></script>
+
+	<script type="text/javascript">
+		const rows = 5;
+		const cols = 11;
+		const size = 40;
+
+		let points;
+		let amt = 0;
+
+		function setup() {
+			canvas = new Canvas(document.getElementById('canvas'), cols * size, rows * size);
+			canvas.background(0);
+
+			points = getPoints().shuffle();
+
+			let y = 0;
+
+			points.forEach((object, key) => {
+				canvas.box((key % cols) * size, y * size, size, object.col);
+				canvas.text(key, (key % cols) * size + size / 2 - 5, y * size + size / 2 + 5, 'black');
+
+				if (key % cols == 10) y++;
+			});
+
+			preventLoop();
+
+			document.getElementById('btn').addEventListener('click', loop);
+		}
+
+		function draw() {
+			canvas.background(0);
+
+			let y = 0;
+
+			points.forEach((object, key) => {
+				if (key <= amt) {
+					canvas.box(object.x, object.y, size, object.col);
+					// canvas.text(key, object.x, object.y, 'black');
+				} else {
+					canvas.box((key % cols) * size, y * size, size, object.col);
+					// canvas.text(key, (key % cols) * size + size / 2 - 5, y * size + size / 2 + 5, 'black');
+				}
+
+				if (key % cols == 10) y++;
+			});
+
+			amt++;
+		}
+
+		function getPoints() {
+			const arr = [];
+
+			for (let y = 0; y < rows; y++) {
+				for (let x = 0; x < cols; x++) {
+					const json = {};
+
+					let r = 0;
+					let g = 0;
+					let b = 255;
+
+					r = Math.floor(x.map(0, cols - 1, 0, 255));
+					b -= r;
+					g = Math.floor(y.map(0, rows - 1, 0, 255));
+
+					json.x = x * size;
+					json.y = y * size;
+					json.col = `rgb(${r}, ${g}, ${b})`;
+
+					arr.push(json);
+				}
+			}
+
+			return arr;
+		}
+	</script>
+
+</head>
+<body style="padding: 0; margin: 0; overflow: hidden">
+
+	<canvas id="canvas"></canvas>
+
+	<button id="btn">Solve</button>
+
+</body>
+</html>
