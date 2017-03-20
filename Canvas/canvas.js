@@ -2,6 +2,7 @@ let int;
 let canvas;
 let mouseX = 0;
 let mouseY = 0;
+let shouldLoop = true;
 let center = {x: 0, y: 0};
 const Global = {Vector: {}};
 
@@ -9,7 +10,8 @@ function load() {
 	setup();
 
 	setTimeout(() => {
-		loop();
+		if (shouldLoop) loop();
+		else console.log('Loop prevented');
 	}, 100);
 }
 
@@ -19,6 +21,10 @@ function loop() {
 
 function noLoop() {
 	clearInterval(int);
+}
+
+function preventLoop() {
+	shouldLoop = false;
 }
 
 function resize() {
