@@ -1,3 +1,5 @@
+const Prototypes = {};
+
 /* Array */
 Array.prototype.contains = function(string) {
 	return this.indexOf(string) >= 0 ? true : false;
@@ -20,11 +22,11 @@ Array.prototype.random = function() {
 }
 
 Array.prototype.randomize = function() {
-	return randomizeArray(this);
+	return Prototypes.randomizeArray(this);
 }
 
 Array.prototype.shuffle = function() {
-	return randomizeArray(this);
+	return Prototypes.randomizeArray(this);
 }
 
 Array.prototype.remove = function(search) {
@@ -178,7 +180,7 @@ Location.prototype.getAttributes = function() {
 
 /* Math */
 Math.factorial = function(num) {
-	return factorial(num);
+	return Prototypes.factorial(num);
 };
 
 Math.radians = function(degrees) {
@@ -218,7 +220,7 @@ console.colorLog = function(message, color) {
 }
 
 /* Universal functions */
-function factorial(n) {
+Prototypes.factorial = n => {
 	const f = [];
 
 	if (n == 0 || n == 1)
@@ -229,7 +231,7 @@ function factorial(n) {
 	return f[n] = factorial(n-1) * n;
 }
 
-function randomizeArray(array) {
+Prototypes.randomizeArray = array => {
 	let currentIndex = array.length, temporaryValue, randomIndex;
 
 	// While there remain elements to shuffle...
@@ -247,7 +249,7 @@ function randomizeArray(array) {
 	return array;
 }
 
-function loop(func, amount) {
+Prototypes.loop = (func, amount) => {
 	for (let i = 0; i < amount; i++) {
 		func(i);
 	}
