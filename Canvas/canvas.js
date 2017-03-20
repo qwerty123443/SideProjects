@@ -188,6 +188,10 @@ class Canvas {
 		return this;
 	}
 
+	box(x, y, size, color) {
+		this.rect(x, y, size, size, color);
+	}
+
 	polygon(...vars) {
 		for (let i = 0; i < vars.length - 2; i += 2) {
 			this.circle(vars[i], vars[i + 1], 2);
