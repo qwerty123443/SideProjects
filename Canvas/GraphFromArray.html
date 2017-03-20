@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Graph from array</title>
+
+	<script type="text/javascript" src="canvas.js"></script>
+
+	<script type="text/javascript">
+		function setup() {
+			canvas = new Canvas(document.getElementById('canvas'), 'auto', 200);
+			canvas.background();
+
+			document.getElementById('btn').addEventListener('click', evt => {
+				const points = document.getElementById('array').value.replace(/\s+/g, '').replace('[', '').replace(']', '').split(',');
+
+				if (points) {
+					canvas.background();
+
+					for (let i = 0; i < points.length - 1; i++) {
+						const object1 = -1 * Number(points[i]);
+						const object2 = -1 * Number(points[i + 1]);
+						const stepX = Number(document.getElementById('stepX').value);
+						const stepY = Number(document.getElementById('stepY').value);
+						canvas.line(i * stepX, object1 * stepY + canvas.height / 2, (i + 1) * stepX, object2 * stepY + canvas.height / 2);
+						canvas.point(i * stepX, object1 * stepY + canvas.height / 2, 2, true);
+						canvas.text(i * stepX + '-' + object1 * stepY, i * stepX, object1 * stepY + canvas.height / 2);
+					}
+				}
+			});
+
+			preventLoop();
+		}
+	</script>
+
+</head>
+<body style="padding: 0; margin: 0; overflow: hidden">
+
+	<canvas id="canvas"></canvas>
+
+	<label for="step">Step x</label>
+	<input type="number" id="stepX" value="50"><br>
+	<label for="step">Step y</label>
+	<input type="number" id="stepY" value="10"><br>
+	<textarea type="text" id="array">[0, 2, 5, 6, 8, 4, 1]</textarea><br>
+	<button id="btn">Calculate</button>
+
+</body>
+</html>
