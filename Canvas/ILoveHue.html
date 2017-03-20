@@ -25,7 +25,7 @@
 
 			points.forEach((object, key) => {
 				canvas.box((key % cols) * size, y * size, size, object.col);
-				canvas.text(key, (key % cols) * size + size / 2 - 5, y * size + size / 2 + 5, 'black');
+				// canvas.text(key, (key % cols) * size + size / 2 - 5, y * size + size / 2 + 5, 'black');
 
 				if (key % cols == 10) y++;
 			});
