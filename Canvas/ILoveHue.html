@@ -14,6 +14,7 @@
 
 		let points;
 		let amt = 0;
+		let frames = 0;
 
 		function setup() {
 			canvas = new Canvas(document.getElementById('canvas'), cols * size, rows * size);
@@ -52,7 +53,9 @@
 				if (key % cols == 10) y++;
 			});
 
-			amt++;
+			if (frames % 20 <= Number(document.getElementById('speed').value)) amt++;
+
+			frames++;
 		}
 
 		function getPoints() {
@@ -86,6 +89,9 @@
 <body style="padding: 0; margin: 0; overflow: hidden">
 
 	<canvas id="canvas"></canvas>
+
+	<label>Speed: </label>
+	<input type="range" id="speed" min="1" max="20">
 
 	<button id="btn">Solve</button>
 
