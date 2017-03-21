@@ -53,6 +53,8 @@
 				if (key % cols == 10) y++;
 			});
 
+			if (amt >= points.length) noLoop();
+
 			if (frames % 20 <= Number(document.getElementById('speed').value)) amt++;
 
 			frames++;
