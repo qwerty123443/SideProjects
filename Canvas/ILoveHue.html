@@ -44,7 +44,7 @@
 			points.forEach((object, key) => {
 				if (key <= amt) {
 					canvas.box(object.x, object.y, size, object.col);
-					canvas.text(key, object.x, object.y, 'black');
+					canvas.text(key, object.x + size / 2, object.y - size / 2, 'black');
 				} else {
 					canvas.box((key % cols) * size, y * size, size, object.col);
 					canvas.text(key, (key % cols) * size + size / 2 - 5, y * size + size / 2 + 5, 'black');
