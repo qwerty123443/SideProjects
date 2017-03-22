@@ -95,24 +95,29 @@ class Canvas {
 	}
 
 	point(x, y, color) {
-		this.circle(x, y, 2, color);
+		this.circle(x, y, 2, color, true);
 		return this;
 	}
 
-	circle(x, y, r, color) {
+	circle(x, y, r, color, fill) {
 		if (!color) {
 			color = 'rgb(255, 255, 255)';
 		}
 
 		if ((typeof color).toLowerCase() == 'object') {
 			this.ctx.fillStyle = color.color;
+			this.ctx.strokeStyle = color.color;
 		} else {
 			this.ctx.fillStyle = color;
+			this.ctx.strokeStyle = color;
 		}
 
 		this.ctx.beginPath();
 		this.ctx.arc(x, y, r, 0, 2 * Math.PI, false);
-		this.ctx.fill();
+
+		if (fill) this.ctx.fill();
+		else this.ctx.stroke();
+
 		return this;
 	}
 
@@ -388,7 +393,7 @@ class Vector {
 	}
 
 	set(x, y) {
-		if (x instanceof p5.Vector) {
+		if (x instanceof Vector) {
 			this.x = x.x || 0;
 			this.y = x.y || 0;
 			return this;
@@ -569,6 +574,14 @@ Number.prototype.constrain = function(low, high) {
 Math.randomBetween = function(min, max) {
 	return Math.random() * (max - min + 1) + min;
 }
+
+Math.radians = function(degrees) {
+	return degrees * Math.PI / 180;
+};
+
+Math.degrees = function(radians) {
+	return radians * 180 / Math.PI;
+};
 
 window.onload = load;
 window.onresize = resize;
