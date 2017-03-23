@@ -15,18 +15,13 @@
 			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
 			canvas.background();
 
-			canvas.canvas.addEventListener('click', evt => {
-				spawners.push(new Spawner(canvas, evt.pageX, evt.pageY, 5));
-			});
-
-			canvas.canvas.addEventListener('mousemove', evt => {
+			canvas.canvas.addEventListener('touchmove', evt => {
 				Prototypes.loop(i => {
-					const x = evt.clientX + Math.randomBetween(-10, 10);
-					const y = evt.clientY + Math.randomBetween(-10, 10);
-
-					particles.push(new Particle(canvas, x, y, new Color(colors.random())));
-				}, 5);
+					addParticles(evt.touches[i]);
+				}, evt.touches.length);
 			});
+
+			canvas.canvas.addEventListener('mousemove', addParticles);
 		}
 
 		function draw() {
@@ -40,6 +35,15 @@
 					object.draw();
 				}
 			});
+		}
+
+		function addParticles(evt) {
+			Prototypes.loop(i => {
+				const x = evt.clientX + Math.randomBetween(-10, 10);
+				const y = evt.clientY + Math.randomBetween(-10, 10);
+
+				particles.push(new Particle(canvas, x, y, new Color(colors.random())));
+			}, 5);
 		}
 
 		class Particle {
