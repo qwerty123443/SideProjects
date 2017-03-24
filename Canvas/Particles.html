@@ -73,7 +73,8 @@
 			update() {
 				this.life--;
 				// this.color.opacity(this.life.map(0, 50, 0, 1));
-				this.acc = new Vector(Math.randomBetween(-1.1, 0.1), Math.randomBetween(-1.1, 0.1));
+				// this.acc = new Vector(Math.randomBetween(-1.1, 0.1), Math.randomBetween(-1.1, 0.1));
+				this.acc = Global.Vector.random2D();
 				this.vel.add(this.acc);
 				this.vel.limit(2);
 				this.pos.add(this.vel);
