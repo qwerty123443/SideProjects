@@ -8,12 +8,18 @@
 	<script type="text/javascript" src="../prototypes.js"></script>
 
 	<script type="text/javascript">
+		let autoSpawn = false;
+		const spawners = [];
 		const particles = [];
-		const colors = [ '#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900', '#FF4E50', '#F9D423' ];
+		const colors = ['#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900', '#FF4E50', '#F9D423'];
 
 		function setup() {
 			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
 			canvas.background();
+
+			canvas.canvas.addEventListener('mousemove', evt => {
+				if (!autoSpawn) addParticles(evt);
+			});
 
 			canvas.canvas.addEventListener('touchmove', evt => {
 				evt.preventDefault();
@@ -23,11 +29,25 @@
 				}, evt.touches.length);
 			});
 
-			canvas.canvas.addEventListener('mousemove', addParticles);
+			window.addEventListener('keyup', evt => {
+				if (evt.code.toLowerCase() == 'enter') autoSpawn = !autoSpawn;
+				else if (evt.code.toLowerCase() == 'space') spawners.push(new Spawner(canvas, Prototypes.absoluteRand(canvas.width), Prototypes.absoluteRand(canvas.height), Math.randomBetween(100, 300)));
+			});
 		}
 
 		function draw() {
 			canvas.background();
+
+			if (autoSpawn && frameCount % 100 == 0) spawners.push(new Spawner(canvas, Prototypes.absoluteRand(canvas.width), Prototypes.absoluteRand(canvas.height), Math.randomBetween(100, 300)));
+
+			spawners.forEach((object, key) => {
+				if (object.life <= 0) spawners.splice(key, 1);
+				else {
+					object.edges();
+					object.spawn(5);
+					object.update();
+				}
+			});
 
 			particles.forEach((object, key) => {
 				if (object.edges()) particles.splice(key, 1);
@@ -37,6 +57,8 @@
 					object.draw();
 				}
 			});
+
+			canvas.text('Autospawn: ' + autoSpawn, canvas.width - 100, 20);
 		}
 
 		function addParticles(evt) {
@@ -46,6 +68,38 @@
 
 				particles.push(new Particle(canvas, x, y, new Color(colors.random())));
 			}, 5);
+		}
+
+		class Spawner {
+			constructor(canvas, x, y, life) {
+				this.life = life;
+				this.canvas = canvas;
+				this.acc = new Vector();
+				this.pos = new Vector(x, y);
+				this.vel = Global.Vector.random2D();
+			}
+
+			update() {
+				this.life--;
+				this.acc = Global.Vector.random2D();
+				this.acc.mult(5);
+				this.vel.add(this.acc);
+				this.pos.add(this.vel);
+			}
+
+			edges() {
+				if (this.pos.x > this.canvas.width || this.pos.x < 0) this.vel.mult(-1);
+				if (this.pos.y > this.canvas.height || this.pos.y < 0) this.vel.mult(-1);
+			}
+
+			spawn(amount) {
+				Prototypes.loop(i => {
+					const x = this.pos.x + Math.randomBetween(-10, 10);
+					const y = this.pos.y + Math.randomBetween(-10, 10);
+
+					particles.push(new Particle(this.canvas, x, y, new Color(colors.random())));
+				}, amount);
+			}
 		}
 
 		class Particle {
@@ -76,7 +130,7 @@
 				// this.acc = new Vector(Math.randomBetween(-1.1, 0.1), Math.randomBetween(-1.1, 0.1));
 				this.acc = Global.Vector.random2D();
 				this.vel.add(this.acc);
-				this.vel.limit(2);
+				this.vel.limit(2.5);
 				this.pos.add(this.vel);
 			}
 		}
@@ -85,7 +139,7 @@
 </head>
 <body style="padding: 0; margin: 0; overflow: hidden">
 
-	<canvas style="cursor: none" id="canvas"></canvas>
+	<canvas id="canvas" style="cursor: none;"></canvas>
 
 </body>
 </html>
