@@ -17,7 +17,7 @@
 			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
 			canvas.background();
 
-			canvas.canvas.addEventListener('touchstart', evt => {
+			canvas.canvas.addEventListener('touchend', evt => {
 				try {
 					canvas.canvas.requestFullscreen();
 				} catch(err) {
