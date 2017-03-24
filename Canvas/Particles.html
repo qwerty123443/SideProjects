@@ -8,14 +8,30 @@
 	<script type="text/javascript" src="../prototypes.js"></script>
 
 	<script type="text/javascript">
-		let autoSpawn = false;
 		const spawners = [];
 		const particles = [];
+		let autoSpawn = false;
 		const colors = ['#69D2E7', '#A7DBD8', '#E0E4CC', '#F38630', '#FA6900', '#FF4E50', '#F9D423'];
 
 		function setup() {
 			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
 			canvas.background();
+
+			canvas.canvas.addEventListener('touchstart', evt => {
+				try {
+					canvas.canvas.requestFullscreen();
+				} catch(err) {
+					try {
+						canvas.canvas.webkitRequestFullscreen();
+					} catch(err) {
+						try {
+							canvas.canvas.mozRequestFullScreen();
+						} catch(err) {
+							alert('No fullscreen for you...', err);
+						}
+					}
+				}
+			});
 
 			canvas.canvas.addEventListener('mousemove', evt => {
 				if (!autoSpawn) addParticles(evt);
