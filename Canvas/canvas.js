@@ -2,6 +2,7 @@ let int;
 let canvas;
 let mouseX = 0;
 let mouseY = 0;
+let frameCount = 0;
 let shouldLoop = true;
 let center = {x: 0, y: 0};
 const Global = {Vector: {}};
@@ -16,7 +17,10 @@ function load() {
 }
 
 function loop() {
-	int = setInterval(draw, 1000 / 60);
+	int = setInterval(() => {
+		draw();
+		frameCount++;
+	}, 1000 / 60);
 }
 
 function noLoop() {
