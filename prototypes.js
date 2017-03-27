@@ -69,6 +69,16 @@ Array.prototype.quickSort = function() {
 	return less.quickSort().concat(same, more.quickSort());
 };
 
+Array.prototype.max = function() {
+	let rec = 0;
+
+	this.forEach((object, key) => {
+		if ((typeof object).toLowerCase() == 'number') {
+			if (object > rec) rec = object;
+		}
+	});
+}
+
 /* Strings */
 String.prototype.remove = function(substring, caseSensitive) {
 	let regEx = new RegExp(substring, 'gi');
@@ -100,7 +110,7 @@ String.prototype.advancedSearch = function(substr, caseSensitive) {
 };
 
 
-String['random'] = function(length) {
+String.random = function(length) {
 	let newStr = '';
 	const chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
@@ -191,8 +201,11 @@ Math.degrees = function(radians) {
 	return radians * 180 / Math.PI;
 };
 
-Math.randomBetween = function(min, max) {
-	return Math.floor(Math.random() * (max - min + 1) + min);
+Math.randomBetween = function(min, max, floor) {
+	const randVal = Math.random() * (max - min + 1) + min;
+
+	if (floor) return Math.floor(randVal);
+	else return randVal;
 }
 
 /* Console */
@@ -253,4 +266,13 @@ Prototypes.loop = (func, amount) => {
 	for (let i = 0; i < amount; i++) {
 		func(i);
 	}
+}
+
+Prototypes.absoluteRand = function(min, max) {
+	if (!max) {
+		max = min;
+		min = 0;
+	}
+
+	return Math.randomBetween(min, max, true);
 }
