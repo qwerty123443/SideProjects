@@ -96,11 +96,12 @@ class Canvas {
 			this.ctx.filter = 'none';
 		else
 			this.ctx.filter = filterName + amount;
+
+		return this;
 	}
 
 	point(x, y, color) {
-		this.circle(x, y, 2, color, true);
-		return this;
+		return this.circle(x, y, 2, color, true);
 	}
 
 	circle(x, y, r, color, fill) {
@@ -138,7 +139,7 @@ class Canvas {
 
 		this.ctx.beginPath();
 		this.ctx.lineWidth = strokeWidth;
-		this.ctx.arc(x, y, r, 1.5 * Math.PI, Math.radians(deg) - 1.5);
+		this.ctx.arc(x, y, r, 1.5 * Math.PI, Math.toRadians(deg) - 1.5);
 		this.ctx.stroke();
 		return this;
 	}
@@ -200,6 +201,7 @@ class Canvas {
 		}
 
 		this.ctx.fillText(text, x, y);
+		return this;
 	}
 
 	rect(x, y, w, h, color) {
@@ -218,7 +220,7 @@ class Canvas {
 	}
 
 	box(x, y, size, color) {
-		this.rect(x, y, size, size, color);
+		return this.rect(x, y, size, size, color);
 	}
 
 	polygon(...vars) {
@@ -261,6 +263,7 @@ class Canvas {
 
 		this.ctx.closePath();
 		this.ctx.fill();
+		return this;
 	}
 
 	wave(x, y, width, amplitude, step, frequency, color) {
@@ -292,6 +295,7 @@ class Canvas {
 		this.ctx.strokeStyle = color;
 
 		this.ctx.stroke();
+		return this;
 	}
 
 	dist(x, y, x2, y2) {
@@ -335,11 +339,15 @@ class Canvas {
 		array.forEach((object, key) => {
 			if (object.object.type == 'box' || object.object.type == 'square') {
 				if (mouseX < object.object.x + object.object.w && mouseX > object.object.x) {
-					if (mouseY < object.object.y + object.object.h && mouseY > object.object.y)
+					if (mouseY < object.object.y + object.object.h && mouseY > object.object.y) {
 						object.function();
-				}
-			}
+						return true;
+					} else return false;
+				} else return false;
+			} else return false;
 		});
+
+		return false;
 	}
 }
 
@@ -453,6 +461,19 @@ class Vector {
 
 	mag(){
 		return Math.sqrt(this.magSq());
+	}
+
+	heading() {
+		return h = Math.atan2(this.y, this.x);
+	}
+
+	rotate(a) {
+		const mag = this.mag();
+		const newHeading = this.heading() + a;
+
+		this.x = Math.cos(newHeading) * mag;
+		this.y = Math.sin(newHeading) * mag;
+		return this;
 	}
 }
 
@@ -579,11 +600,11 @@ Math.randomBetween = function(min, max) {
 	return Math.random() * (max - min + 1) + min;
 }
 
-Math.radians = function(degrees) {
+Math.toRadians = function(degrees) {
 	return degrees * Math.PI / 180;
 };
 
-Math.degrees = function(radians) {
+Math.toDegrees = function(radians) {
 	return radians * 180 / Math.PI;
 };
 
