@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Fractal Tree</title>
+
+	<script type="text/javascript" src="canvas.js"></script>
+
+	<script type="text/javascript">
+		const leaves = [];
+		const branches = [];
+
+		function setup() {
+			canvas = new Canvas(document.getElementById('canvas'), 'auto', 'auto');
+			canvas.background();
+
+			const top = new Vector(canvas.width / 2, canvas.height);
+			const bottom = new Vector(canvas.width / 2, canvas.height - 100);
+			branches.push(new Branch(canvas, top, bottom));
+
+			canvas.canvas.addEventListener('click', evt => {
+				if (branches.length < 500) {
+					for (let i = branches.length - 1; i >= 0; i--) {
+						if (!branches[i].finished) {
+							const [left, right] = branches[i].branch();
+							branches.push(left, right);
+
+							if (Math.random() > 0.5) {
+								leaves.push(new Leaf(canvas, left.end.x, left.end.y));
+								leaves.push(new Leaf(canvas, right.end.x, right.end.y));
+							}
+						}
+					}
+				}
+			});
+		}
+
+		function draw() {
+			canvas.background();
+
+			branches.forEach((object, key) => {
+				object.show();
+			});
+
+			leaves.forEach((object, key) => {
+				if (object.edges()) {
+					leaves.splice(key, 1);
+				} else {
+					object.update();
+					object.show();
+				}
+			});
+		}
+
+		class Branch {
+			constructor(canvas, begin, end) {
+				this.randMax = 80;
+				this.randMin = 10;
+				this.end = end;
+				this.begin = begin;
+				this.canvas = canvas;
+				this.finished = false;
+				this.rotateVal = Math.toRadians(Math.randomBetween(this.randMin, this.randMax));
+			}
+
+			show() {
+				this.canvas.line(this.begin.x, this.begin.y, this.end.x, this.end.y, 1, 'white');
+			}
+
+			branch() {
+				const dir = Global.Vector.sub(this.end, this.begin);
+				dir.mult(2 / 3);
+				const leftDir = dir.copy().rotate(-this.rotateVal);
+				const rightDir = dir.copy().rotate(this.rotateVal);
+				const leftEnd = Global.Vector.add(this.end, leftDir);
+				const rightEnd = Global.Vector.add(this.end, rightDir);
+				const left = new Branch(this.canvas, this.end, leftEnd);
+				const right = new Branch(this.canvas, this.end, rightEnd);
+				this.finished = true;
+				return [left, right];
+			}
+		}
+
+		class Leaf {
+			constructor(canvas, x, y) {
+				this.canvas = canvas;
+				this.acc = new Vector();
+				this.vel = new Vector();
+				this.pos = new Vector(x, y);
+				this.color = Global.Color.random().color;
+			}
+
+			show() {
+				this.canvas.circle(this.pos.x, this.pos.y, 5, this.color, true);
+			}
+
+			update() {
+				this.acc = new Vector(0, 0.1);
+				this.vel.add(this.acc);
+				this.pos.add(this.vel);
+			}
+
+			edges() {
+				if (this.pos.x > this.canvas.width || this.pos.x < 0) return true;
+				if (this.pos.y > this.canvas.height || this.pos.y < 0) return true;
+				return false;
+			}
+		}
+	</script>
+
+</head>
+<body style="margin: 0; overflow: hidden">
+
+	<canvas id="canvas"></canvas>
+
+</body>
+</html>

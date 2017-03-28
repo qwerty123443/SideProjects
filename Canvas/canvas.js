@@ -5,7 +5,7 @@ let mouseY = 0;
 let frameCount = 0;
 let shouldLoop = true;
 let center = {x: 0, y: 0};
-const Global = {Vector: {}};
+const Global = {Vector: {}, Color: {}};
 
 function load() {
 	setup();
@@ -464,7 +464,7 @@ class Vector {
 	}
 
 	heading() {
-		return h = Math.atan2(this.y, this.x);
+		return Math.atan2(this.y, this.x);
 	}
 
 	rotate(a) {
@@ -475,6 +475,16 @@ class Vector {
 		this.y = Math.sin(newHeading) * mag;
 		return this;
 	}
+}
+
+Global.Vector.add = function(v1, v2, target) {
+	if (!target) {
+		target = v1.copy();
+	} else {
+		target.set(v1);
+	}
+	target.add(v2);
+	return target;
 }
 
 Global.Vector.sub = function(v1, v2, target) {
@@ -575,6 +585,19 @@ class Color {
 		return this;
 	}
 }
+
+Global.Color.random = function() {
+	let color = '#';
+	const letters = '0123456789ABCDEF';
+
+	for (var i = 0; i < 6; i++ ) {
+		color += letters[Math.floor(Math.random() * 16)];
+	}
+
+	return new Color(color);
+}
+
+
 
 Array.prototype.remove = function(search) {
 	const arr = this;
