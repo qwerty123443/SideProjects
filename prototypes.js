@@ -149,6 +149,11 @@ Number.prototype.constrain = function(low, high) {
 	return Math.max(Math.min(this, high), low);
 };
 
+/* Boolean */
+Boolean.prototype.random = function() {
+	return Math.random() > 0.5;
+}
+
 /* HTML Elements */
 Object.prototype.jsonStyle = function(json) {
 	for (key in json) {
