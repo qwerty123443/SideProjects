@@ -150,7 +150,7 @@ Number.prototype.constrain = function(low, high) {
 };
 
 /* Boolean */
-Boolean.prototype.random = function() {
+Boolean.random = function() {
 	return Math.random() > 0.5;
 }
 
