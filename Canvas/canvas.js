@@ -144,8 +144,8 @@ class Canvas {
 		return this;
 	}
 
-	arcTo(x, y, x2, y2, deg, color, strokeWidth) {
-		const r = x - x2;
+	arcTo(x, y, x2, y2, color, strokeWidth) {
+		const r = x2 - x;
 
 		if (!color) {
 			color = 'rgb(0, 0, 255)';
@@ -159,7 +159,8 @@ class Canvas {
 
 		this.ctx.beginPath();
 		this.ctx.lineWidth = strokeWidth;
-		this.ctx.arc(x, y, r / 4, Math.toDegrees(Math.PI), Math.toDegrees(2 * Math.PI));
+		console.log(x, y, r / 4, Math.PI, 2 * Math.PI);
+		this.ctx.arc(x, y, r / 4, Math.PI, 2 * Math.PI);
 		this.ctx.stroke();
 		return this;
 	}
