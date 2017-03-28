@@ -159,7 +159,7 @@ class Canvas {
 
 		this.ctx.beginPath();
 		this.ctx.lineWidth = strokeWidth;
-		this.ctx.arc(x, y, r / 4, Math.PI, 2 * Math.PI);
+		this.ctx.arc(x, y, r / 4, Math.toDegrees(Math.PI), Math.toDegrees(2 * Math.PI));
 		this.ctx.stroke();
 		return this;
 	}
