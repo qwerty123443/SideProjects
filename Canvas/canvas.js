@@ -2,6 +2,7 @@ let int;
 let canvas;
 let mouseX = 0;
 let mouseY = 0;
+let frameRate = 60;
 let frameCount = 0;
 let shouldLoop = true;
 let center = {x: 0, y: 0};
@@ -20,7 +21,7 @@ function loop() {
 	int = setInterval(() => {
 		draw();
 		frameCount++;
-	}, 1000 / 60);
+	}, 1000 / frameRate);
 }
 
 function noLoop() {
@@ -86,8 +87,14 @@ class Canvas {
 		return this;
 	}
 
+	frameRate(frameRate_) {
+		noLoop();
+		frameRate = frameRate_;
+		loop();
+	}
+
 	translate(x, y) {
-		this.ctx.moveTo(x, y);
+		this.ctx.translate(x, y);
 		return this;
 	}
 
@@ -224,14 +231,39 @@ class Canvas {
 		return this.rect(x, y, size, size, color);
 	}
 
-	polygon(...vars) {
-		for (let i = 0; i < vars.length - 2; i += 2) {
-			this.circle(vars[i], vars[i + 1], 2);
-			this.circle(vars[i + 2], vars[i + 3], 2);
-			this.line(vars[i], vars[i + 1], vars[i + 2], vars[i + 3]);
+	triangle(x, y, size, color, fill) {
+		const points = [-size + x, size / (10 / 6) + y, size + x, size / (10 / 6) + y, 0 + x, -size + y];
+
+		for (let i = 0; i < points.length; i += 2) {
+			this.point(points[i], points[i + 1]);
 		}
 
-		this.line(vars[0], vars[1], vars[vars.length - 2], vars[vars.length - 1]);
+		if (fill) this.fillShape(points, color);
+		else this.polygon(points, color);
+	}
+
+	polygon(points, color) {
+		// Allow vectors to be passed
+
+		if (!color) {
+			color = 'rgb(0, 0, 255)';
+		}
+
+		if ((typeof color).toLowerCase() == 'object') {
+			this.ctx.strokeStyle = color.color;
+		} else {
+			this.ctx.strokeStyle = color;
+		}
+
+		this.ctx.strokeStyle = color;
+
+		for (let i = 0; i < points.length - 2; i += 2) {
+			this.point(points[i], points[i + 1], color);
+			this.point(points[i + 2], points[i + 3], color);
+			this.line(points[i], points[i + 1], points[i + 2], points[i + 3], 1, color);
+		}
+
+		this.line(points[0], points[1], points[points.length - 2], points[points.length - 1], 1, color);
 		return this;
 	}
 
@@ -250,15 +282,23 @@ class Canvas {
 
 		if (points[0] instanceof Array)
 			this.ctx.moveTo(points[0][0], points[0][1]);
-		else
+		else if (points[0] instanceof Vector)
 			this.ctx.moveTo(points[0].x, points[0].y);
+		else
+			this.ctx.moveTo(points[0], points[1]);
 
-		points.forEach((object, key) => {
-			if (object instanceof Array)
-				this.ctx.lineTo(object[0], object[1]);
-			else
-				this.ctx.lineTo(object.x, object.y);
-		});
+		if (points[0] instanceof Array || points[0] instanceof Vector) {
+			points.forEach((object, key) => {
+				if (object instanceof Array)
+					this.ctx.lineTo(object[0], object[1]);
+				else if (points[0] instanceof Vector)
+					this.ctx.lineTo(object.x, object.y);
+			});
+		} else {
+			for (let i = 0; i < points.length; i += 2) {
+				this.ctx.lineTo(points[i], points[i + 1]);
+			}
+		}
 
 		this.ctx.fillStyle = color;
 
@@ -460,7 +500,7 @@ class Vector {
 	    return this;
 	}
 
-	mag(){
+	mag() {
 		return Math.sqrt(this.magSq());
 	}
 
@@ -624,12 +664,14 @@ Math.randomBetween = function(min, max) {
 	return Math.random() * (max - min + 1) + min;
 }
 
-Math.toRadians = function(degrees) {
-	return degrees * Math.PI / 180;
+Math.toRadians = function(degrees, pointUp) {
+	if (pointUp) return (degrees - 90) * Math.PI / 180;
+	else return degrees * Math.PI / 180;
 };
 
-Math.toDegrees = function(radians) {
-	return radians * 180 / Math.PI;
+Math.toDegrees = function(radians, pointUp) {
+	if (pointUp) return (radians * 180 / Math.PI) - 90;
+	else return radians * 180 / Math.PI;
 };
 
 window.onload = load;
