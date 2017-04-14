@@ -124,7 +124,10 @@ String.prototype.findList = function(listQualifiers) {
 	} else if (Array.isArray(listQualifiers)) {
 		// Find a way to turn an array into a regular expression
 	} else if ((typeof listQualifiers).toLowerCase() == 'string') {
-		// Find a way to turn a string into a regular expression
+		const listSlplit = '-';
+		const regText = listSlplit + '(\s+)?(.+)';
+
+		listQualifiers = new RegExp(regText);
 	} else {
 		console.warn('No valid list qualifiers given');
 	}
