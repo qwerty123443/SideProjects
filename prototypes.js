@@ -132,7 +132,7 @@ String.prototype.findList = function(listQualifiers) {
 		string = string.slice(0, -1);
 		string += ')(\s+)?(.+)';
 
-		listQualifiers = string;
+		listQualifiers = new RegExp(string);
 	} else if ((typeof listQualifiers).toLowerCase() == 'string') {
 		const listSlplit = '-';
 		const regText = listSlplit + '(\s+)?(.+)';
@@ -143,7 +143,7 @@ String.prototype.findList = function(listQualifiers) {
 	}
 
 	this.split('\n').forEach((object, key) => {
-		const strArr = object.match(/-(\s+)?(.+)/);
+		const strArr = object.match(regEx);
 
 		if (strArr) {
 			if (key == prevKey + 1) {
