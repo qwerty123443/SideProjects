@@ -109,7 +109,7 @@ String.prototype.advancedSearch = function(substr, caseSensitive) {
 	return [regEx, regEx.exec(this)];
 };
 
-String.prototype.empty = function() {
+String.prototype.isEmpty = function() {
 	return this.length < 0 || this == null || this == '';
 };
 
