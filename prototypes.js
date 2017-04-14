@@ -43,7 +43,7 @@ Array.prototype.remove = function(search) {
 	return this.filter(elem => {return elem != search;});
 }
 
-// Quickest way to sort
+// Quickest way to sort (the native sort function is still faster tho)
 Array.prototype.quickSort = function() {
 	if (this.length <= 1) {
 		return this;
@@ -107,6 +107,43 @@ String.prototype.advancedSearch = function(substr, caseSensitive) {
 	}
 
 	return [regEx, regEx.exec(this)];
+};
+
+String.prototype.empty = function() {
+	return this.length < 0 || this == null || this == '';
+};
+
+String.prototype.findList = function(listQualifiers) {
+	let prevKey = 0;
+	let regEx = /-(\s+)?(.+)/;
+
+	const listArr = [];
+
+	if (listQualifiers instanceof RegExp) {
+		regEx = listQualifiers;
+	} else if (Array.isArray(listQualifiers)) {
+		// Find a way to turn an array into a regular expression
+	} else if ((typeof listQualifiers).toLowerCase() == 'string') {
+		// Find a way to turn a string into a regular expression
+	} else {
+		console.warn('No valid list qualifiers given');
+	}
+
+	this.split('\n').forEach((object, key) => {
+		const strArr = object.match(/-(\s+)?(.+)/);
+
+		if (strArr) {
+			if (key == prevKey + 1) {
+				listArr[listArr.length - 1].push(strArr[2]);
+			} else {
+				listArr.push([strArr[2]]);
+			}
+
+			prevKey = key;
+		}
+	});
+
+	return listArr;
 };
 
 
@@ -198,12 +235,14 @@ Math.factorial = function(num) {
 	return Prototypes.factorial(num);
 };
 
-Math.radians = function(degrees) {
-	return degrees * Math.PI / 180;
+Math.toRadians = function(degrees, pointUp) {
+	if (pointUp) return (degrees - 90) * Math.PI / 180;
+	else return degrees * Math.PI / 180;
 };
 
-Math.degrees = function(radians) {
-	return radians * 180 / Math.PI;
+Math.toDegrees = function(radians, pointUp) {
+	if (pointUp) return (radians * 180 / Math.PI) - 90;
+	else return radians * 180 / Math.PI;
 };
 
 Math.randomBetween = function(min, max, floor) {
