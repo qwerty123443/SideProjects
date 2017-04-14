@@ -122,7 +122,17 @@ String.prototype.findList = function(listQualifiers) {
 	if (listQualifiers instanceof RegExp) {
 		regEx = listQualifiers;
 	} else if (Array.isArray(listQualifiers)) {
-		// Find a way to turn an array into a regular expression
+		let string = '(';
+		const arr = ['+', '-', '*'];
+
+		arr.forEach((object, key) => {
+			string += '\\' + object + '|';
+		});
+
+		string = string.slice(0, -1);
+		string += ')(\s+)?(.+)';
+
+		listQualifiers = string;
 	} else if ((typeof listQualifiers).toLowerCase() == 'string') {
 		const listSlplit = '-';
 		const regText = listSlplit + '(\s+)?(.+)';
