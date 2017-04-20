@@ -73,8 +73,8 @@ class Canvas {
 	}
 
 	resize(w, h) {
+		h = (h == 'auto' || h == null || h == '') ? window.innerHeight : h;
 		w = (w == 'auto' || w == null || w == '') ? document.body.clientWidth : w; // window.innerWidth
-		h = (h == 'auto' || h == null || h == '') ? document.body.clientHeight : h; // window.innerHeight
 
 		this.width = w;
 		this.height = h;
