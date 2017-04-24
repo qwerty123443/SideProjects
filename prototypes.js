@@ -332,6 +332,9 @@ Prototypes.absoluteRand = function(min, max) {
 	return Math.randomBetween(min, max, true);
 }
 
+
+// Use like Prototypes.IF([**Some true or false expresson (x < 1)**], [**function**]);
+// If the function array is smaller than the statements array than the rest of the statements will be executed with the last function in the functions arry
 Prototypes.IF = function(statements, func) {
 	if (statements.length > func.length) {
 		statements.forEach((object, key) => {
