@@ -30,17 +30,15 @@ Array.prototype.shuffle = function() {
 }
 
 Array.prototype.remove = function(search) {
-	// const arr = this;
+	this.forEach((object, key) => {
+		if (object == search) {
+			this.splice(key, 1);
+		}
+	});
 
-	// arr.forEach((object, key) => {
-	// 	if (object == search) {
-	// 		arr.splice(key, 1);
-	// 	}
-	// });
+	return this;
 
-	// return arr;
-
-	return this.filter(elem => {return elem != search;});
+	// return this.filter(elem => {return elem != search;});
 }
 
 // Quickest way to sort (the native sort function is still faster tho)
@@ -332,4 +330,32 @@ Prototypes.absoluteRand = function(min, max) {
 	}
 
 	return Math.randomBetween(min, max, true);
+}
+
+Prototypes.IF = function(statements, func) {
+	if (statements.length > func.length) {
+		statements.forEach((object, key) => {
+			if (func.length - 1 >= key) {
+				if (object) func[key]({
+					statement: object,
+					index: key,
+					function: func[key]
+				});
+			} else {
+				if (object) func[func.length - 1]({
+					statement: object,
+					index: key,
+					function: func[key]
+				});
+			}
+		});
+	} else {
+		statements.forEach((object, key) => {
+			if (object) func[key]({
+				statement: object,
+				index: key,
+				function: func[key]
+			});
+		});
+	}
 }
