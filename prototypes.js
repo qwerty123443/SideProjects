@@ -157,7 +157,6 @@ String.prototype.findList = function(listQualifiers) {
 	return listArr;
 };
 
-
 String.random = function(length) {
 	let newStr = '';
 	const chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -202,8 +201,19 @@ Boolean.random = function() {
 	return Math.random() > 0.5;
 }
 
+/* Object */
+Object.prototype.copy = function() {
+	const newObj = {};
+
+	for (key in this) {
+		newObj[key] = this[key];
+	}
+
+	return newObj;
+}
+
 /* HTML Elements */
-Object.prototype.jsonStyle = function(json) {
+HTMLElement.prototype.jsonStyle = function(json) {
 	for (key in json) {
 		// For some weird reason the for loop returns jsonStyle. I don't know why, someone please explain me.
 		if (key !== 'jsonStyle') {
@@ -288,15 +298,18 @@ console.colorLog = function(message, color) {
 }
 
 /* Universal functions */
-Prototypes.factorial = n => {
-	const f = [];
+Prototypes.factorial = num => {
+	if ((typeof num).toLowerCase() == 'number') {
+		if (num > 1) {
+			let rval = 1;
 
-	if (n == 0 || n == 1)
-		return 1;
-	if (f[n] > 0)
-		return f[n];
-
-	return f[n] = factorial(n-1) * n;
+			for (let i = 2; i <= num; i++)
+				rval = rval * i;
+			return rval;
+		} else return num;
+	} else {
+		return;
+	}
 }
 
 Prototypes.randomizeArray = array => {
@@ -361,4 +374,9 @@ Prototypes.IF = function(statements, func) {
 			});
 		});
 	}
+
+	return {statements: statements, functions: func};
 }
+
+// So you don't have to type Prototype out everytime
+const P = Prototypes.copy();
