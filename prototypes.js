@@ -176,9 +176,9 @@ String.random = function(length) {
 - beginningNumber(minCurrentRange, maxCurrentRange, minTargetRange, maxTargetRange)
 - https://p5js.org/reference/#/p5/map
 */
-Number.prototype.map = function(start1, stop1, start2, stop2) {
-	return ((this - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
-};
+Number.prototype.map = function(startMin, startMax, endMin, endMax) {
+	return (this / (startMax - startMin)) * (endMax - endMin) + endMin;
+}
 
 Number.prototype.pow = function(pow) {
 	return Math.pow(this, pow);
@@ -201,7 +201,7 @@ Number.prototype.constrain = function(low, high) {
 
 /* Boolean */
 Boolean.random = function() {
-	return Math.random() > 0.5;
+	return Math.random() >= 0.5;
 }
 
 /* Object */
