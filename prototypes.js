@@ -1,5 +1,8 @@
 const Prototypes = {};
 
+// So you don't have to type Prototype out everytime
+const P = Prototypes;
+
 /* Array */
 Array.prototype.contains = function(string) {
 	return this.indexOf(string) >= 0 ? true : false;
@@ -377,6 +380,3 @@ Prototypes.IF = function(statements, func) {
 
 	return {statements: statements, functions: func};
 }
-
-// So you don't have to type Prototype out everytime
-const P = Prototypes.copy();
