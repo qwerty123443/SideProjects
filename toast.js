@@ -34,6 +34,7 @@ class Toast {
 			}
 
 			this._toastContainer = document.createElement('div');
+			this._toastContainer.id = 'toast';
 			this._toastContainer.style.right = '20px';
 			this._toastContainer.style.bottom = '20px';
 			this._toastContainer.style.position = 'fixed';
