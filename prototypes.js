@@ -204,6 +204,11 @@ Boolean.random = function() {
 	return Math.random() >= 0.5;
 }
 
+Boolean.rectCircleColliding = function(circle, rect) {
+	return Prototypes.rectCircleColliding(circle, rect);
+}
+
+
 /* Object */
 Object.prototype.copy = function() {
 	const newObj = {};
@@ -274,6 +279,10 @@ Math.randomBetween = function(min, max, floor) {
 
 	if (floor) return Math.floor(randVal);
 	else return randVal;
+}
+
+Math.rectCircleColliding = function(circle, rect) {
+	return Prototypes.rectCircleColliding(circle, rect);
 }
 
 /* Console */
@@ -379,4 +388,19 @@ Prototypes.IF = function(statements, func) {
 	}
 
 	return {statements: statements, functions: func};
+}
+
+Prototypes.rectCircleColliding = function(circle, rect) {
+	const distX = Math.abs(circle.x - rect.x - rect.w / 2);
+	const distY = Math.abs(circle.y - rect.y - rect.h / 2);
+
+	if (distX > (rect.w / 2 + circle.r)) return false;
+	if (distY > (rect.h / 2 + circle.r)) return false;
+
+	if (distX <= (rect.w/2)) return true;
+	if (distY <= (rect.h/2)) return true;
+
+	const dx = distX - rect.w / 2;
+	const dy = distY - rect.h / 2;
+	return (dx * dx + dy * dy <= (circle.r * circle.r));
 }
