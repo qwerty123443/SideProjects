@@ -75,7 +75,7 @@ class Canvas {
 
 		this.resize(w, h);
 
-		this.canvas.addEventListener('mousemove', mouse);
+		// this.canvas.addEventListener('mousemove', mouse);
 	}
 
 	resize(w, h) {
@@ -208,10 +208,18 @@ class Canvas {
 		return this;
 	}
 
-	text(text, x, y, color) {
+	text(text, x, y, color, size, textAlign) {
 		if (!color) {
 			color = 'rgb(255, 255, 255)';
 		}
+
+		if (size)
+			this.ctx.font = size + 'px sans-serif';
+		else this.ctx.font = '10px sans-serif';
+
+		if (!textAlign || (typeof textAlign).toLowerCase() != 'string')
+			this.ctx.textAlign = 'center';
+		else this.ctx.textAlign = textAlign;
 
 		if ((typeof color).toLowerCase() == 'object') {
 			this.ctx.fillStyle = color.color;
@@ -369,6 +377,17 @@ class Canvas {
 		}
 
 		this.ctx.fillRect(0, 0, this.width, this.height);
+		return this;
+	}
+
+	connect(points, strokeWidth, color) {
+		for (let i = 0; i < points.length - 1; i++) {
+			const one = points[i];
+			const two = points[i + 1];
+
+			this.line(one.x, one.y, two.x, two.y, strokeWidth, color);
+		}
+
 		return this;
 	}
 
@@ -713,4 +732,4 @@ Math.rectCircleColliding = function(circle, rect) {
 }
 
 window.onload = load;
-window.onresize = resize;
+// window.onresize = resize;
