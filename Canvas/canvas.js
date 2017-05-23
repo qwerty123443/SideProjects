@@ -4,6 +4,7 @@ let mouseX = 0;
 let mouseY = 0;
 let frameRate = 60;
 let frameCount = 0;
+let looping = false;
 let shouldLoop = true;
 let center = {x: 0, y: 0};
 const Global = {Vector: {}, Color: {}};
@@ -18,17 +19,22 @@ function load() {
 }
 
 function loop() {
-	int = setInterval(() => {
-		draw();
-		frameCount++;
-	}, 1000 / frameRate);
+	if ((typeof draw).toLowerCase() == 'function') {
+		looping = true;
+		int = setInterval(() => {
+			draw();
+			frameCount++;
+		}, 1000 / frameRate);
+	}
 }
 
 function noLoop() {
+	looping = false;
 	clearInterval(int);
 }
 
 function preventLoop() {
+	looping = false;
 	shouldLoop = false;
 }
 
@@ -192,7 +198,12 @@ class Canvas {
 		return this;
 	}
 
-	square(x, y, r, color) {
+	square(x, y, r, color, center) {
+		if (center) {
+			x = x - r / 2;
+			y = y - r / 2;
+		}
+
 		this.rect(x, y, r, r, color);
 		return this;
 	}
@@ -673,6 +684,33 @@ Math.toDegrees = function(radians, pointUp) {
 	if (pointUp) return (radians * 180 / Math.PI) - 90;
 	else return radians * 180 / Math.PI;
 };
+
+
+// var circle = {
+//     x: 100,
+//     y: 290,
+//     r: 10
+// };
+// var rect = {
+//     x: 100,
+//     y: 100,
+//     w: 40,
+//     h: 100
+// };
+Math.rectCircleColliding = function(circle, rect) {
+	const distX = Math.abs(circle.x - rect.x - rect.w / 2);
+	const distY = Math.abs(circle.y - rect.y - rect.h / 2);
+
+	if (distX > (rect.w / 2 + circle.r)) return false;
+	if (distY > (rect.h / 2 + circle.r)) return false;
+
+	if (distX <= (rect.w / 2)) return true;
+	if (distY <= (rect.h / 2)) return true;
+
+	const dx = distX - rect.w / 2;
+	const dy = distY - rect.h / 2;
+	return (dx * dx + dy * dy <= (circle.r * circle.r));
+}
 
 window.onload = load;
 window.onresize = resize;
