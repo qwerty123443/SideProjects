@@ -54,7 +54,7 @@
 				started = true;
 			});
 
-			obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), 2, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+			obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), 3, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 		}
 
 		function draw() {
@@ -69,7 +69,7 @@
 
 			canvas.connect(trail, 4, '#2196f3');
 
-// 			if (!moving) trail.length = 0;
+			if (!moving) trail.length = 0;
 
 			player.update();
 			player.draw();
@@ -106,7 +106,7 @@
 				// Check if passed tpast a certain point and spawn a new
 				if (object.pos.y >= Math.randomBetween(-10, 10) + ((canvas.height / 3)) && object.hasSpawned == false) {
 					object.hasSpawned = true;
-					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), 2, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), 3, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 				}
 			});
 
