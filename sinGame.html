@@ -24,6 +24,7 @@
 		let moving = false;
 		let started = false;
 
+		const speed = 3;
 		const trail = [];
 		const obstacles = [];
 		const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#f1c40f", "#e67e22", "#e74c3c", "#f39c12", "#d35400", "#c0392b"];
@@ -54,7 +55,7 @@
 				started = true;
 			});
 
-			obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), 3, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+			obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 		}
 
 		function draw() {
@@ -63,7 +64,7 @@
 			trail.forEach((object, key) => {
 				if (object.y > canvas.height) trail.splice(key, 1);
 				else {
-					if (moving) object.y += 2;
+					if (moving) object.y += speed;
 				}
 			});
 
@@ -106,7 +107,7 @@
 				// Check if passed tpast a certain point and spawn a new
 				if (object.pos.y >= Math.randomBetween(-10, 10) + ((canvas.height / 3)) && object.hasSpawned == false) {
 					object.hasSpawned = true;
-					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), 3, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 				}
 			});
 
