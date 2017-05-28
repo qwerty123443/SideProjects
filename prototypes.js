@@ -115,6 +115,7 @@ String.prototype.isEmpty = function() {
 };
 
 String.prototype.findList = function(...listQualifiers) {
+	let func;
 	let prevKey = 0;
 	let regEx = /(-)(\s+)?(.+)/;
 
@@ -122,6 +123,11 @@ String.prototype.findList = function(...listQualifiers) {
 
 	if (listQualifiers.length == 1) {
 		listQualifiers = listQualifiers[0];
+
+		if (listQualifiers.function) {
+			func = listQualifiers.function;
+			listQualifiers  = listQualifiers.qualifiers;
+		}
 
 		if (listQualifiers instanceof RegExp) {
 			regEx = listQualifiers;
@@ -158,10 +164,14 @@ String.prototype.findList = function(...listQualifiers) {
 		const strArr = object.match(regEx);
 
 		if (strArr) {
+			let elmt = strArr[3];
+
+			if (func) elmt = func(elmt);
+
 			if (key == prevKey + 1) {
-				listArr[listArr.length - 1].listElements.push(strArr[3]);
+				listArr[listArr.length - 1].listElements.push(elmt);
 			} else {
-				listArr.push({listElements: [strArr[3]], index: key, match: strArr, regExp: regEx});
+				listArr.push({listElements: [elmt], index: key, match: strArr, regExp: regEx});
 			}
 
 			prevKey = key;
@@ -424,10 +434,15 @@ Prototypes.rectCircleColliding = function(circle, rect) {
 
 // Add index
 const str = "tekst\ntekst\n-lol\n+lol\n-lol\n\nkaas is vies\n\n-lol\n-lfgfjg";
-console.log(str.findList('-', '+'));
+console.log(str.findList({qualifiers: ['-', '+'], function: lol}));
 
 let outp = '';
 str.split('\n').forEach((object, key) => {
 	outp += key + '&nbsp;&nbsp;&nbsp;&nbsp;' + object + '<br>';
 });
 document.write(outp);
+
+function lol(obj) {
+	console.log('LOL', obj);
+	return `<span>${obj}</span>`;
+}
