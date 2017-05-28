@@ -453,16 +453,3 @@ Prototypes.rectCircleColliding = function(circle, rect) {
 	const dy = distY - rect.h / 2;
 	return (dx * dx + dy * dy <= (circle.r * circle.r));
 }
-
-
-function load() {
-	const thing = "tekst\ntekst\n-lol\n+lol\n-lol\n\nkaas is vies\n\n-lol\n-lfgfjg";
-	const str = thing.findList({qualifiers: ['-', '+'], function: lol});
-	console.log(str);
-
-	function lol(obj) {return `<span style="color: green">${obj}</span>`};
-
-	document.body.innerHTML = thing + "<hr>" + str.newString;
-}
-
-window.onload = load;
