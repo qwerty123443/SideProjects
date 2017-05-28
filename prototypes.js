@@ -158,13 +158,10 @@ String.prototype.findList = function(...listQualifiers) {
 		const strArr = object.match(regEx);
 
 		if (strArr) {
-			console.log(prevKey, key);
-			// console.log(strArr);
-
 			if (key == prevKey + 1) {
-				listArr[listArr.length - 1].push(strArr[3]);
+				listArr[listArr.length - 1].listElements.push(strArr[3]);
 			} else {
-				listArr.push([strArr[3]]);
+				listArr.push({listElements: [strArr[3]], index: key, match: strArr, regExp: regEx});
 			}
 
 			prevKey = key;
@@ -425,3 +422,12 @@ Prototypes.rectCircleColliding = function(circle, rect) {
 }
 
 
+// Add index
+const str = "tekst\ntekst\n-lol\n+lol\n-lol\n\nkaas is vies\n\n-lol\n-lfgfjg";
+console.log(str.findList('-', '+'));
+
+let outp = '';
+str.split('\n').forEach((object, key) => {
+	outp += key + '&nbsp;&nbsp;&nbsp;&nbsp;' + object + '<br>';
+});
+document.write(outp);
