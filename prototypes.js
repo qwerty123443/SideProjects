@@ -114,43 +114,57 @@ String.prototype.isEmpty = function() {
 	return this.length < 0 || this == null || this == '';
 };
 
-String.prototype.findList = function(listQualifiers) {
+String.prototype.findList = function(...listQualifiers) {
 	let prevKey = 0;
-	let regEx = /-(\s+)?(.+)/;
+	let regEx = /(-)(\s+)?(.+)/;
 
 	const listArr = [];
 
-	if (listQualifiers instanceof RegExp) {
-		regEx = listQualifiers;
-	} else if (Array.isArray(listQualifiers)) {
-		let string = '(';
-		const arr = ['+', '-', '*'];
+	if (listQualifiers.length == 1) {
+		listQualifiers = listQualifiers[0];
 
-		arr.forEach((object, key) => {
+		if (listQualifiers instanceof RegExp) {
+			regEx = listQualifiers;
+		} else if (Array.isArray(listQualifiers)) {
+			let string = '(';
+
+			listQualifiers.forEach((object, key) => {
+				string += '\\' + object + '|';
+			});
+
+			string = string.slice(0, -1);
+			string += ')(\s+)?(.+)';
+
+			regEx = new RegExp(string);
+		} else if ((typeof listQualifiers).toLowerCase() == 'string') {
+			const regText = `(${listQualifiers})(\s+)?(.+)`;
+
+			regEx = new RegExp(regText);
+		}
+	} else if (listQualifiers.length > 1) {
+		let string = '(';
+
+		listQualifiers.forEach((object, key) => {
 			string += '\\' + object + '|';
 		});
 
 		string = string.slice(0, -1);
 		string += ')(\s+)?(.+)';
 
-		listQualifiers = new RegExp(string);
-	} else if ((typeof listQualifiers).toLowerCase() == 'string') {
-		const listSlplit = '-';
-		const regText = listSlplit + '(\s+)?(.+)';
-
-		listQualifiers = new RegExp(regText);
-	} else {
-		console.warn('No valid list qualifiers given');
+		regEx = new RegExp(string);
 	}
 
 	this.split('\n').forEach((object, key) => {
 		const strArr = object.match(regEx);
 
 		if (strArr) {
+			console.log(prevKey, key);
+			// console.log(strArr);
+
 			if (key == prevKey + 1) {
-				listArr[listArr.length - 1].push(strArr[2]);
+				listArr[listArr.length - 1].push(strArr[3]);
 			} else {
-				listArr.push([strArr[2]]);
+				listArr.push([strArr[3]]);
 			}
 
 			prevKey = key;
@@ -159,6 +173,10 @@ String.prototype.findList = function(listQualifiers) {
 
 	return listArr;
 };
+
+String.prototype.forEach = function(func) {
+	for (let i = 0; i < this.length; i++) func(this[i], i);
+}
 
 String.random = function(length) {
 	let newStr = '';
@@ -170,6 +188,7 @@ String.random = function(length) {
 
 	return newStr;
 }
+
 
 /* Numbers */
 /*
@@ -404,3 +423,5 @@ Prototypes.rectCircleColliding = function(circle, rect) {
 	const dy = distY - rect.h / 2;
 	return (dx * dx + dy * dy <= (circle.r * circle.r));
 }
+
+
