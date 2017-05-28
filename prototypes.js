@@ -92,7 +92,7 @@ String.prototype.remove = function(substring, caseSensitive) {
 	// return this.replace(substring, '');
 };
 
-String.prototype.random = function() {
+String.prototype.randomize = function() {
 	return this.split('').randomize().reduce((one, two) => {
 		return one + two;
 	});
@@ -117,9 +117,16 @@ String.prototype.isEmpty = function() {
 String.prototype.findList = function(...listQualifiers) {
 	let func;
 	let prevKey = 0;
+	let newStr = '';
+	let convertToUL = false;
 	let regEx = /(-)(\s+)?(.+)/;
 
 	const listArr = [];
+
+	if (listQualifiers[listQualifiers.length - 1] === true) {
+		convertToUL = true;
+		listQualifiers.splice(-1, 1);
+	}
 
 	if (listQualifiers.length == 1) {
 		listQualifiers = listQualifiers[0];
@@ -160,25 +167,41 @@ String.prototype.findList = function(...listQualifiers) {
 		regEx = new RegExp(string);
 	}
 
+	let html = '';
+
 	this.split('\n').forEach((object, key) => {
 		const strArr = object.match(regEx);
 
 		if (strArr) {
 			let elmt = strArr[3];
 
-			if (func) elmt = func(elmt);
+			if (func) {
+				if (convertToUL) elmt = func(elmt);
+				else elmt = func(strArr[1] + elmt);
+			}
 
 			if (key == prevKey + 1) {
 				listArr[listArr.length - 1].listElements.push(elmt);
+				html += `<li>${elmt}</li>`;
 			} else {
+				html += '<ul>';
+				html += `<li>${elmt}</li>`;
 				listArr.push({listElements: [elmt], index: key, match: strArr, regExp: regEx});
 			}
 
 			prevKey = key;
-		}
+			newStr += object.replace(strArr.input, elmt) + '\n';
+		} else {
+			if (html.substr(-5) == '</li>') html += '</ul>';
+			html += object + '<br>';
+			newStr += object + '\n';
+		};
 	});
 
-	return listArr;
+	if (html.substr(-5) == '</li>') html += '</ul>';
+	if (!html.isEmpty() && convertToUL === true) newStr = html;
+
+	return {outp: listArr, newString: newStr.slice(0, -1)};
 };
 
 String.prototype.forEach = function(func) {
@@ -432,17 +455,14 @@ Prototypes.rectCircleColliding = function(circle, rect) {
 }
 
 
-// Add index
-const str = "tekst\ntekst\n-lol\n+lol\n-lol\n\nkaas is vies\n\n-lol\n-lfgfjg";
-console.log(str.findList({qualifiers: ['-', '+'], function: lol}));
+function load() {
+	const thing = "tekst\ntekst\n-lol\n+lol\n-lol\n\nkaas is vies\n\n-lol\n-lfgfjg";
+	const str = thing.findList({qualifiers: ['-', '+'], function: lol});
+	console.log(str);
 
-let outp = '';
-str.split('\n').forEach((object, key) => {
-	outp += key + '&nbsp;&nbsp;&nbsp;&nbsp;' + object + '<br>';
-});
-document.write(outp);
+	function lol(obj) {return `<span style="color: green">${obj}</span>`};
 
-function lol(obj) {
-	console.log('LOL', obj);
-	return `<span>${obj}</span>`;
+	document.body.innerHTML = thing + "<hr>" + str.newString;
 }
+
+window.onload = load;
