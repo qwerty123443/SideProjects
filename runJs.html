@@ -1,0 +1,234 @@
+<!--
+	- All console things add them to the
+	- Take arrays in arrays into a count
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+	<title>RunJS</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+	<link rel="shortcut icon" href="https://raw.githubusercontent.com/Dharmoslap/RunJS/master/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="https://raw.githubusercontent.com/Dharmoslap/RunJS/master/favicon.ico" type="image/x-icon">
+	<meta http-equiv="cleartype" content="on">
+
+</head>
+<style>
+
+
+	html{
+		height: 100%;
+	}
+	body {
+		min-height: 100%;
+	}
+
+	body{
+		margin:0;
+		padding: 0;
+		width: 100%;
+		height: 100%;
+		font-family: sans-serif;
+		text-align: center;
+		padding-top:40px;
+	}
+
+	#dropzone {
+		min-height: 150px;
+		width: 250px;
+		border: 1px solid blue;
+		margin: 10px;
+		padding: 10px;
+	}
+	#info{
+		margin: 10px;
+	}
+	.running{
+		color: green;
+	}
+	.not-compatible{
+		color: red;
+	}
+
+	#console {
+		overflow: hidden;
+		padding-left: 10%;
+		background-color: rgba(0, 0, 0, 0.2);
+	}
+
+	#console p {
+		margin: 0;
+		padding: 10px;
+		overflow: hidden;
+		text-align: left;
+		text-overflow: ellipsis;
+		border-bottom: 1px solid gray;
+		font-family: 'monospace', sans-serif;
+	}
+
+	#console p #string {
+		color: red;
+	}
+
+	#console p #type {
+		color: purple;
+	}
+
+	#console .warn {
+		color: brown;
+		border-bottom: 1px solid yellow;
+		background-color: rgba(255, 255, 0, 0.3);
+	}
+
+	#console .error {
+		color: red;
+		border-bottom: 1px solid red;
+		background-color: rgba(255, 0, 0, 0.3);
+	}
+
+	#console .info {
+		color: gray;
+		font-style: italic;
+	}
+
+	#console .array, #console .object {
+		font-style: italic;
+	}
+</style>
+<body>
+
+	<h1>RunJS</h1>
+	<br>
+
+	<input type="file" id="file"><button id="submit">Submit</button><br>
+
+	<p>To run .js file just drag it and drop it on this page</p>
+
+
+	<div id="info"></div>
+
+	<div id="console"></div>
+
+	<script>
+		const reader = new FileReader();
+
+		function load() {
+			const fileDropzone = document.body;
+			const fileInput = document.getElementById('file');
+			const submitBtn = document.getElementById('submit');
+
+			function cancel(e) {
+				if (e.preventDefault) { e.preventDefault(); }
+				return false;
+			}
+
+			fileDropzone.addEventListener('drop', analizeFile);
+			fileInput.addEventListener('change', analizeFile);
+			submitBtn.addEventListener('click', analizeFile);
+
+			// Tells the browser that we *can* drop on this target
+			fileDropzone.addEventListener('dragover', cancel);
+			fileDropzone.addEventListener('dragenter', cancel);
+		}
+
+		function analizeFile(e) {
+			e = e || window.event;
+			if (e.preventDefault) { e.preventDefault(); }
+
+			const el = document.getElementById('info');
+			const fileInput = document.getElementById('file');
+			const consoleElem = document.getElementById('console');
+			const file = fileInput.files[0];
+
+			consoleElem.innerHTML = '';
+
+			if (file) {
+				console.log(file.type);
+
+				console.clear();
+
+				if (file.type.indexOf('javascript') > -1) {
+					reader.onload = loadFile;
+					reader.readAsText(file);
+					console.log('Running ' + file.name);
+					el.className = "running";
+					el.innerText = 'Running ' + file.name;
+				} else {
+					el.className = "not-compatible";
+					el.innerText = 'Please drop just .js files';
+				}
+			} else {
+				window.location.reload();
+			}
+		}
+
+		function loadFile(evt) {
+			let text = reader.result;
+			text = text.replace(/console\.(log|error|warn|assert)\((.+)\)/gi, 'interceptConsole($2, "$1")');
+			eval(text);
+		}
+
+		function interceptConsole(...args) {
+			// Add icons
+			// Add line num identification
+			const consoleElem = document.getElementById('console');
+			let type = args.splice(args.length - 1, 1)[0].toLowerCase();
+			let text = args.reduce((one, two) => {return one + ' ' + two});
+
+			console[type](args);
+
+			if (text === true || text === false) {
+				text = `<span id="type">${text}</span>`;
+			} else if (Array.isArray(text)) {
+				let str = '[';
+
+				text.forEach((object, key) => {
+					str += '<span id="string">"' + object + '"</span>, ';
+				});
+
+				str = str.slice(0, -2);
+				str += ']';
+
+				text =  'Array: ' + str + ' (' + text.length + ')';
+				type += ' array';
+			} else if ((typeof text).toLowerCase() == 'object') {
+				let str = '{';
+				for (key in text)
+					str += `<span id="type">${key}</span>: <span id="string">"${text[key]}"</span>, `;
+				str = str.slice(0, -2);
+				str += '}';
+				text = 'Object: ' + str;
+				type += ' object';
+			}
+
+			if (type == 'clear') {
+				consoleElem.innerHTML = '';
+				consoleElem.innerHTML = '<p class="info">Console was cleared</p>';
+			} else if (type == 'assert') {
+				if (!text) consoleElem.innerHTML += `<p class="error">Assertion failed</p>`;
+			} else {
+				consoleElem.innerHTML += `<p class="${type}">${text}</p>`;
+			}
+		}
+
+		function keyPressed(evt) {
+			if (evt.key.toLowerCase() == 'f5') {
+				evt.preventDefault();
+				analizeFile();
+			}
+		}
+
+		window.onbeforeunload = evt => {
+			return "Dude, are you sure you want to leave? Think of the kittens!";
+		}
+
+		window.onload = load;
+		window.onkeydown = keyPressed;
+	</script>
+</body>
+
+</html>
