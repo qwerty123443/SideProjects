@@ -80,6 +80,14 @@ Array.prototype.max = function() {
 	});
 }
 
+Array.prototype.swap = function(indexOne, indexTwo) {
+	const array = this;
+	const temporaryValue = array[indexOne];
+	array[indexOne] = array[indexTwo];
+	array[indexTwo] = temporaryValue;
+	return array;
+}
+
 /* Strings */
 String.prototype.remove = function(substring, caseSensitive) {
 	let regEx = new RegExp(substring, 'gi');
@@ -374,27 +382,25 @@ Prototypes.factorial = num => {
 }
 
 Prototypes.randomizeArray = array => {
-	let currentIndex = array.length, temporaryValue, randomIndex;
+	let randomIndex;
+	let temporaryValue;
+	let currentIndex = array.length;
 
 	// While there remain elements to shuffle...
 	while (0 !== currentIndex) {
 		// Pick a remaining element...
 		randomIndex = Math.floor(Math.random() * currentIndex);
-		currentIndex -= 1;
+		currentIndex--;
 
 		// And swap it with the current element.
-		temporaryValue = array[currentIndex];
-		array[currentIndex] = array[randomIndex];
-		array[randomIndex] = temporaryValue;
+		array.swap(currentIndex, randomIndex);
 	}
 
 	return array;
 }
 
 Prototypes.loop = (func, amount) => {
-	for (let i = 0; i < amount; i++) {
-		func(i);
-	}
+	for (let i = 0; i < amount; i++) func(i);
 }
 
 Prototypes.absoluteRand = function(min, max) {
@@ -408,7 +414,7 @@ Prototypes.absoluteRand = function(min, max) {
 
 
 // Use like Prototypes.IF([**Some true or false expresson (x < 1)**], [**function**]);
-// If the function array is smaller than the statements array than the rest of the statements will be executed with the last function in the functions arry
+// If the function array is smaller than the statements array than the rest of the statements will be executed with the last function in the functions array
 Prototypes.IF = function(statements, func) {
 	if (statements.length > func.length) {
 		statements.forEach((object, key) => {
