@@ -168,48 +168,54 @@
 
 		function loadFile(evt) {
 			let text = reader.result;
-			text = text.replace(/console\.(log|error|warn|assert)\((.+)\)/gi, 'interceptConsole($2, "$1")');
+			text = text.replace(/console\.(log|error|warn|assert)\((.+)\)/gi, 'interceptConsole([$2], "$1")');
+			console.log(text);
 			eval(text);
 		}
 
-		function interceptConsole(...args) {
+		function interceptConsole(args, type) {
 			// Add icons
 			// Add line num identification
+			let text = '';
 			const consoleElem = document.getElementById('console');
-			let type = args.splice(args.length - 1, 1)[0].toLowerCase();
-			let text = args.reduce((one, two) => {return one + ' ' + two});
 
-			console[type](args);
+			console[type](...args);
 
-			if (text === true || text === false) {
-				text = `<span id="type">${text}</span>`;
-			} else if (Array.isArray(text)) {
-				let str = '[';
+			args.forEach((object, key) => {
+				const elem = object;
 
-				text.forEach((object, key) => {
-					str += '<span id="string">"' + object + '"</span>, ';
-				});
+				if (elem === true || elem === false) {
+					text += `<span id="type">${text}</span>`;
+				} else if (Array.isArray(elem)) {
+					let str = '[';
 
-				str = str.slice(0, -2);
-				str += ']';
+					elem.forEach((object, key) => {
+						str += '<span id="string">"' + object + '"</span>, ';
+					});
 
-				text =  'Array: ' + str + ' (' + text.length + ')';
-				type += ' array';
-			} else if ((typeof text).toLowerCase() == 'object') {
-				let str = '{';
-				for (key in text)
-					str += `<span id="type">${key}</span>: <span id="string">"${text[key]}"</span>, `;
-				str = str.slice(0, -2);
-				str += '}';
-				text = 'Object: ' + str;
-				type += ' object';
-			}
+					str = str.slice(0, -2);
+					str += ']';
+
+					text +=  'Array: ' + str + ' (' + elem.length + ')&nbsp;&nbsp;';
+					type += ' array';
+				} else if ((typeof elem).toLowerCase() == 'object') {
+					let str = '{';
+
+					for (key in text)
+						str += `<span id="type">${key}</span>: <span id="string">"${elem[key]}"</span>, `;
+
+					str = str.slice(0, -2);
+					str += '}';
+					text += 'Object: ' + str;
+					type += ' object';
+				}
+			});
 
 			if (type == 'clear') {
 				consoleElem.innerHTML = '';
 				consoleElem.innerHTML = '<p class="info">Console was cleared</p>';
 			} else if (type == 'assert') {
-				if (!text) consoleElem.innerHTML += `<p class="error">Assertion failed</p>`;
+				if (args.filter(obj => {return obj == false}).length > 0) consoleElem.innerHTML += `<p class="error">Assertion failed</p>`;
 			} else {
 				consoleElem.innerHTML += `<p class="${type}">${text}</p>`;
 			}
