@@ -21,16 +21,16 @@
 		let player;
 		let score = 0;
 		let moveTime = 10;
+		let smallspeed = 2;
 		let moving = false;
 		let started = false;
-		let smallspeed = 5;
 		let gameover = false;
 
 		let up = 0;
 		let framesup = 0;
 		let framesdown = 0;
 
-		const speed = smallspeed;
+		const speed = 5;
 		const trail = [];
 		const obstacles = [];
 		const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#f1c40f", "#e67e22", "#e74c3c", "#f39c12", "#d35400", "#c0392b"];
@@ -67,6 +67,7 @@
 					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 					loop();
 				}
+
 				framesdown += 1;
 				moveTime = 10;
 				moving = true;
@@ -77,18 +78,21 @@
 				moving = false;
 				started = true;
 			});
+
 			obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 		}
 
 		function draw() {
-			framesup += up
-			if (framesup >= 30 && combo.combo > 0){
-					combo.combo = 0;
-					combo.ticks = 0;  
-					framesdown = 0;
-					framesup = 0;
-					up = 0;
+			framesup += up;
+
+			if (framesup >= 30 && combo.combo > 0) {
+				combo.combo = 0;
+				combo.ticks = 0;
+				framesdown = 0;
+				framesup = 0;
+				up = 0;
 			}
+
 			canvas.background('#CCCCCC');
 			canvas.connect(trail, 4, '#2196f3');
 
@@ -131,6 +135,7 @@
 					w: object.size,
 					h: object.size
 				};
+
 				// Check collision
 				if (Math.rectCircleColliding(circle, rect)) gameOver();
 
@@ -151,9 +156,7 @@
 
 		function gameOver() {
 			gameover = true;
-			obstacles.pop(); // lol
-			obstacles.pop(); 
-			obstacles.pop();
+			obstacles.length = 0;
 			score = 0;
 			time = 0;
 			combo.combo = 0;
@@ -163,6 +166,7 @@
 			canvas.text('YOU LOST', center.x, center.y, 'red', 50);
 			canvas.text('SCORE: ' + Math.round(score), center.x, center.y + 50, 'white', 30);
 		}
+
 		class Combo {
 			constructor() {
 				this.onscreen = false;
@@ -246,15 +250,15 @@
 				smallspeed -= speed / 120;
 				if (smallspeed < 0) smallspeed = 0
 			}
-			draw() {
-				this.canvas.square(this.pos.x, this.pos.y, this.size, this.color, false);
-			}
+		draw() {
+			this.canvas.square(this.pos.x, this.pos.y, this.size, this.color, false);
 		}
+	}
 
-		Array.prototype.random = function() {
-			return this[Math.floor(Math.random() * this.length)];
-		}
-	</script>
+	Array.prototype.random = function() {
+		return this[Math.floor(Math.random() * this.length)];
+	}
+</script>
 
 </head>
 <body>
