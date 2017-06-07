@@ -23,8 +23,14 @@
 		let moveTime = 10;
 		let moving = false;
 		let started = false;
+		let smallspeed = 5;
+		let gameover = false;
 
-		const speed = 3;
+		let up = 0;
+		let framesup = 0;
+		let framesdown = 0;
+
+		const speed = smallspeed;
 		const trail = [];
 		const obstacles = [];
 		const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#f1c40f", "#e67e22", "#e74c3c", "#f39c12", "#d35400", "#c0392b"];
@@ -32,48 +38,85 @@
 		function setup() {
 			canvas = new Canvas(document.getElementById('canvas'), 300, 500);
 			player = new Player(canvas);
+			combo = new Combo();
 
 			// Keyboard
 			window.addEventListener('keydown', evt => {
+				if (gameover & !moving){
+					gameover = false;
+					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+					loop();
+				}
+				up = 0;
+				framesup = 0;
+				framesdown += 1;
 				moveTime = 10;
 				moving = true;
 			});
 
 			window.addEventListener('keyup', evt => {
+				up = 1
 				moving = false;
 				started = true;
 			});
 
 			// Touch
 			window.addEventListener('touchstart', evt => {
+				if (gameover & !moving){
+					gameover = false;
+					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+					loop();
+				}
+				framesdown += 1;
 				moveTime = 10;
 				moving = true;
 			});
 
 			window.addEventListener('touchend', evt => {
+				up += 1
+				if (up >= 15 && combo.combo > 0){
+					combo.combo = 0;
+					combo.ticks = 0;  
+					framesdown = 0;
+					up = 0;
+				}
 				moving = false;
 				started = true;
 			});
-
 			obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 		}
 
 		function draw() {
+			framesup += up
+			if (framesup >= 30 && combo.combo > 0){
+					combo.combo = 0;
+					combo.ticks = 0;  
+					framesdown = 0;
+					framesup = 0;
+					up = 0;
+			}
 			canvas.background('#CCCCCC');
+			canvas.connect(trail, 4, '#2196f3');
 
 			trail.forEach((object, key) => {
 				if (object.y > canvas.height) trail.splice(key, 1);
-				else {
-					if (moving) object.y += speed;
-				}
+				else if (moving) object.y += speed;
 			});
 
-			canvas.connect(trail, 4, '#2196f3');
+			
+
 
 			if (!moving) trail.length = 0;
 
 			player.update();
 			player.draw();
+
+			// For collision detection
+			const circle = {
+				x: player.pos.x,
+				y: player.pos.y,
+				r: player.size
+			};
 
 			obstacles.forEach((object, key) => {
 				object.draw();
@@ -82,18 +125,14 @@
 					if (moving) {
 						object.move();
 						score += 0.05;
-					} else moveTime -= 0.02;
+					} else {
+						object.stop();
+						moveTime -= 0.02;
+					}
 				}
 
 				// Check off-screen
 				if (object.pos.y - object.size > canvas.height) obstacles.splice(key, 1);
-
-				// Check collision
-				const circle = {
-					x: player.pos.x,
-					y: player.pos.y,
-					r: player.size
-				};
 
 				const rect = {
 					x: object.pos.x,
@@ -101,28 +140,79 @@
 					w: object.size,
 					h: object.size
 				};
-
+				// Check collision
 				if (Math.rectCircleColliding(circle, rect)) gameOver();
 
-				// Check if passed tpast a certain point and spawn a new
+				// Check if past a certain point and spawn a new obstacle
 				if (object.pos.y >= Math.randomBetween(-10, 10) + ((canvas.height / 3)) && object.hasSpawned == false) {
 					object.hasSpawned = true;
 					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 				}
+				combo.update()
 			});
 
 			if (moveTime <= 0) gameOver();
 
 			canvas.background('rgba(255, 255, 255, 0.5)');
-			const color = (Math.round(moveTime) <= 5) ? 'red' : 'white';
-			canvas.text(Math.round(moveTime), 10, 25, color, 20, 'left');
+			canvas.text(Math.round(moveTime), 10, 25, (moveTime <= 5) ? 'red' : 'white', 20, 'left');
 			canvas.text(Math.round(score), canvas.width - 10, 25, 'white', 20, 'right');
 		}
 
 		function gameOver() {
+			gameover = true;
+			obstacles.pop(); // lol
+			obstacles.pop(); 
+			obstacles.pop();
+			score = 0;
+			time = 0;
+			combo.combo = 0;
+			framesup = 0;
+			framesdown = 0;
 			noLoop();
+			draw();
 			canvas.text('YOU LOST', center.x, center.y, 'red', 50);
 			canvas.text('SCORE: ' + Math.round(score), center.x, center.y + 50, 'white', 30);
+		}
+		class Combo {
+			constructor() {
+				this.onscreen = false;
+				this.ticks = 0;
+				this.combo = 0;
+			}
+
+			update() {
+				if ((framesdown + 1)% 100 == 0 && !this.onscreen ) {
+					this.combo += 1;
+					this.ticks = 0;
+					this.scored = false;
+					this.onscreen = true;
+				}
+				if (this.onscreen){
+					this.ticks += 1;
+					if (this.combo == 1) {
+						canvas.text("combo 1!", center.x, center.y, 'blue', 20);
+					}
+					else if (this.combo == 2) {
+						canvas.text("combo 2!", center.x, center.y, 'blue', 20);
+					}
+					else if (this.combo == 3)  {
+						canvas.text("combo 3!", center.x, center.y, 'blue', 20);
+					}
+					else if (this.combo == 4) {
+						canvas.text("combo 4!", center.x, center.y, 'blue', 20);
+					}
+					else if (this.combo >= 5) {
+						canvas.text("combo 5+!", center.x, center.y, 'blue', 20);
+					}
+					if (this.ticks > 120) {
+						this.onscreen = false;
+					}
+					if (!this.scored) {
+						this.scored = true;
+						score += this.combo * 10
+					}
+				}
+			}
 		}
 
 		class Player {
@@ -158,8 +248,14 @@
 
 			move() {
 				this.pos.y += this.speed;
+				smallspeed = speed;
 			}
 
+			stop() {
+				this.pos.y += smallspeed;
+				smallspeed -= speed / 120;
+				if (smallspeed < 0) smallspeed = 0
+			}
 			draw() {
 				this.canvas.square(this.pos.x, this.pos.y, this.size, this.color, false);
 			}
