@@ -30,11 +30,11 @@ function loop() {
 			if (looping) {
 				draw();
 				frameCount++;
-				reqestAnimationFrame(l);	
+				requestAnimationFrame(l);	
 			}
 		}
 		
-		reqestAnimationFrame(l);
+		requestAnimationFrame(l);
 	}
 }
 
