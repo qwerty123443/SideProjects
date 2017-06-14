@@ -21,16 +21,26 @@ function load() {
 function loop() {
 	if ((typeof draw).toLowerCase() == 'function') {
 		looping = true;
-		int = setInterval(() => {
-			draw();
-			frameCount++;
-		}, 1000 / frameRate);
+// 		int = setInterval(() => {
+// 			draw();
+// 			frameCount++;
+// 		}, 1000 / frameRate);
+		
+		function l() {
+			if (looping) {
+				draw();
+				frameCount++;
+				reqestAnimationFrame(l);	
+			}
+		}
+		
+		reqestAnimationFrame(l);
 	}
 }
 
 function noLoop() {
 	looping = false;
-	clearInterval(int);
+// 	clearInterval(int);
 }
 
 function preventLoop() {
