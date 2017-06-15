@@ -27,10 +27,10 @@
 		let gameover = false;
 
 		let up = 0;
+		let speed = 5;
 		let framesup = 0;
 		let framesdown = 0;
 
-		const speed = 5;
 		const trail = [];
 		const obstacles = [];
 		const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#f1c40f", "#e67e22", "#e74c3c", "#f39c12", "#d35400", "#c0392b"];
@@ -42,6 +42,9 @@
 
 			// Keyboard
 			window.addEventListener('keydown', evt => {
+				if (evt.ctrlKey) speed = 15;
+				else speed = 5;
+				
 				if (gameover & !moving){
 					gameover = false;
 					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
