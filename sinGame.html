@@ -286,6 +286,11 @@ SOFTWARE.
 		return this[Math.floor(Math.random() * this.length)];
 	}
 </script>
+	
+<!--  Compatibility check	 -->
+	<script type="text/javascript">
+		if (!('forEach' in Array)) alert('Your browser is not supported. Download the latest Chrome or Firefox');
+	</script>
 
 </head>
 <body>
