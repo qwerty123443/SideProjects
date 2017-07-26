@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Custom Select Element</title>
+
+	<style type="text/css" class="customStyle">
+		body {
+			font-family: 'Arial', sans-serif;
+		}
+
+		custom-select {
+			width: 200px;
+			display: flex;
+			background-color: lightgray;
+		}
+
+		custom-select option {
+			flex: 1;
+			color: white;
+			padding: 10px;
+			font-size: 1em;
+			cursor: pointer;
+			overflow: hidden;
+			text-align: center;
+			white-space: nowrap;
+			font-family: inherit;
+			text-overflow: ellipsis;
+		}
+
+		custom-select option[selected] {
+			background-color: lightblue;
+		}
+
+		custom-select option:active {
+			outline: inherit;
+		}
+	</style>
+
+	<script type="text/javascript">
+		class customSelect extends HTMLElement {
+			constructor() {
+				super();
+
+				if (this.hasAttribute('select-color')) {
+					for (let i = 0; i < document.styleSheets[0].rules.length; i++) {
+						const rule = document.styleSheets[0].rules[i];
+
+						if (rule.selectorText.toLowerCase() == 'custom-select option[selected]')
+							rule.style.backgroundColor = this.getAttribute('select-color');
+					}
+				}
+
+				// Setting ARIA labels
+				this.options.forEach((object, key) => {
+					object.setAttribute('tabindex', '1');
+					object.setAttribute('role', 'button');
+					object.setAttribute('aria-label', `Select item '${object.innerText}'`);
+
+					object.addEventListener('click', evt => this.elementClicked(evt, this));
+					object.addEventListener('keypress', evt => this.elementKeyPressed(evt, this));
+				});
+			}
+
+			get options() {
+				const outp = [];
+				const children = this.childNodes;
+
+				for (let i = 0; i < children.length; i++) {
+					const elem = children[i];
+
+					if (elem.nodeName.toLowerCase() == 'option')
+						outp.push(elem);
+				}
+
+				return outp;
+			}
+
+			get selected() {
+				const options = this.options;
+
+				for (let i = 0; i < options.length; i++) {
+					if (options[i].hasAttribute('selected')) return options[i];
+				}
+
+				return null;
+			}
+
+			elementClicked(evt, referenceToCustomElem) {
+				const selected = referenceToCustomElem.selected;
+
+				if (selected != evt.target) {
+					if (selected) selected.removeAttribute('selected');
+					evt.target.setAttribute('selected', '');
+				}
+			}
+
+			elementKeyPressed(evt, referenceToCustomElem) {
+				if (evt.keyCode === 32 || evt.keyCode === 13) {
+					evt.preventDefault();
+					referenceToCustomElem.elementClicked(evt, referenceToCustomElem);
+				}
+			}
+
+			disconnectedCallback() {
+				this.options.forEach((object, key) => {
+					object.removeEventListener('click', this.elementClicked);
+				});
+			}
+		}
+
+		window.onload = () => {
+			customElements.define('custom-select', customSelect);
+		}
+	</script>
+
+</head>
+<body>
+
+	<custom-select select-color="lightgreen">
+		<option>One</option>
+		<option>Two</option>
+		<option>Three</option>
+	</custom-select>
+
+</body>
+</html>
