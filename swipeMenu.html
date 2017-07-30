@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Swipe Menu</title>
+
+	<style type="text/css">
+		body {
+			top: 0;
+			left: 0;
+			margin: 0;
+			width: 100%;
+			height: auto;
+			position: absolute;
+		}
+
+		#menu {
+			width: 90%;
+			height: auto;
+			margin: 0 auto;
+			transform: scaleY(0);
+			transform-origin: top;
+			will-change: transform;
+			background-color: lightgray;
+			transition: transform .3s ease;
+		}
+
+		#menu[active] {
+			transform: scaleY(1);
+		}
+	</style>
+
+	<script type="text/javascript">
+		const moveTrajectory = [];
+
+		function load() {
+			const menu = document.getElementById('menu');
+
+			// window.addEventListener('click', evt => {
+				// if (menu.hasAttribute('active'))
+				// 	menu.removeAttribute('active');
+				// else menu.setAttribute('active', '');
+			// });
+
+			window.addEventListener('touchstart', evt => {
+				moveTrajectory.length = 0;
+			});
+
+			window.addEventListener('touchend', evt => {
+				Array.prototype.average = function() {
+					return this.reduce((one, two) => {return one + two}) / this.length;
+				}
+
+				Array.prototype.ascending = function () {
+					let prevVal = Number.MIN_SAFE_INTEGER;
+
+					for (let i = 0; i < this.length; i++) {
+						if (this[i] < prevVal) return false;
+						prevVal = this[i];
+					}
+
+					return true;
+				}
+
+				// Only want the Y-values, because checking from top to bottom.
+				const yVals = moveTrajectory.map(val => {return val.screenY});
+
+				// Only want ascending, because you want from top to bottom.
+				if (yVals.ascending())
+					menu.setAttribute('active', '');
+				else menu.removeAttribute('active');
+			});
+
+			window.addEventListener('touchmove', evt => {
+				moveTrajectory.push(evt.touches[0]);
+			});
+		}
+
+		window.onload = load;
+	</script>
+
+</head>
+<body>
+
+	<div id="menu">
+		<h1>Menu</h1>
+		<p>Text</p>
+		<p>Text</p>
+		<p>Text</p>
+	</div>
+
+</body>
+</html>
