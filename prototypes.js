@@ -459,3 +459,31 @@ Prototypes.rectCircleColliding = function(circle, rect) {
 	const dy = distY - rect.h / 2;
 	return (dx * dx + dy * dy <= (circle.r * circle.r));
 }
+
+
+/*
+Will be given an array with 5 numbers.
+The first 2 numbers represent a range, and the next two numbers represent another range.
+The final number in the array is X.
+The goal of this function is to determine if both ranges overlap by at least X numbers.
+For example, in the array [4, 10, 2, 6, 3] the ranges 4 to 10 and 2 to 6 overlap by at least 3 numbers (4, 5, 6), so your program should return true.
+
+@param array of ranges ([4, 10, 2, 6, 3]). The first two represent a range, the second two represent the second range. The last value is the overlap value.
+@return boolean; returns true if the ranges overlap by the amount of the last value in the array.
+*/
+
+Prototypes.overlap = function overlap(arr) {
+	if (arr.length == 5) {
+		const highestFirstSet = Math.max(arr[0], arr[1]);
+		const lowestFirstSet = Math.min(arr[0], arr[1]);
+		const highestSecondSet = Math.max(arr[2], arr[3]);
+		const lowestSecondSet = Math.min(arr[2], arr[3]);
+
+		const highestFirst = Math.max(highestFirstSet, highestSecondSet);
+		const lowestSecond = Math.min(lowestFirstSet, lowestSecondSet);
+
+		if (Math.max(highestFirst, lowestSecond) - Math.min(highestFirst, lowestSecond) + 1 >= arr[arr.length -1 ])
+			return true;
+		else return false;
+	} else return Error("Amount of values in array not correct.");
+}
