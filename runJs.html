@@ -169,7 +169,6 @@
 		function loadFile(evt) {
 			let text = reader.result;
 			text = text.replace(/console\.(log|error|warn|assert)\((.+)\)/gi, 'interceptConsole([$2], "$1")');
-			console.log(text);
 			eval(text);
 		}
 
@@ -202,13 +201,13 @@
 					let str = '{';
 
 					for (key in text)
-						str += `<span id="type">${key}</span>: <span id="string">"${elem[key]}"</span>, `;
+						str += `<span id="${type}">${key}</span>: <span id="string">"${elem[key]}"</span>, `;
 
 					str = str.slice(0, -2);
 					str += '}';
 					text += 'Object: ' + str;
 					type += ' object';
-				}
+				} else text += `<span id="${type}">${args}</span>`;
 			});
 
 			if (type == 'clear') {
