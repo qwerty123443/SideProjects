@@ -44,12 +44,15 @@
 		margin: 10px;
 		padding: 10px;
 	}
+
 	#info{
 		margin: 10px;
 	}
+
 	.running{
 		color: green;
 	}
+
 	.not-compatible{
 		color: red;
 	}
@@ -184,7 +187,7 @@
 				const elem = object;
 
 				if (elem === true || elem === false) {
-					text += `<span id="type">${text}</span>`;
+					text += `<span id="type">${elem}</span>`;
 				} else if (Array.isArray(elem)) {
 					let str = '[';
 
@@ -200,7 +203,7 @@
 				} else if ((typeof elem).toLowerCase() == 'object') {
 					let str = '{';
 
-					for (key in text)
+					for (key in elem)
 						str += `<span id="${type}">${key}</span>: <span id="string">"${elem[key]}"</span>, `;
 
 					str = str.slice(0, -2);
