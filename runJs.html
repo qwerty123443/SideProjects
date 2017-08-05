@@ -189,16 +189,7 @@
 				if (elem === true || elem === false) {
 					text += `<span id="type">${elem}</span>`;
 				} else if (Array.isArray(elem)) {
-					let str = '[';
-
-					elem.forEach((object, key) => {
-						str += '<span id="string">"' + object + '"</span>, ';
-					});
-
-					str = str.slice(0, -2);
-					str += ']';
-
-					text +=  'Array: ' + str + ' (' + elem.length + ')&nbsp;&nbsp;';
+					text +=  'Array: ' + JSON.stringify(elem) + ' (' + elem.length + ')&nbsp;&nbsp;';
 					type += ' array';
 				} else if ((typeof elem).toLowerCase() == 'object') {
 					let str = '{';
