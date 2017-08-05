@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<!--
+		TODO: main[active] div {transform: scale();
+	-->
+
+	<title>Cool Keyboard</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+	<style type="text/css">
+		body {
+			top: 0;
+			left: 0;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			background-color: black;
+			font-family: 'Inconsolata', sans-serif;
+		}
+
+		main {
+			border: 0;
+			margin: 5%;
+			width: 90%;
+			height: 90%;
+			position: relative;
+			border-radius: 5px;
+			box-sizing: border-box;
+			/*border: 2px solid #6fc0ba;*/
+			/*box-shadow: 0 0 2px #005b8e, inset 0 0 2px #005b8e;*/
+		}
+
+		main .textarea {
+			left: 0;
+			top: 10px;
+			width: 80%;
+			color: white;
+			margin: 0 10%;
+			max-height: 65%;
+			overflow: hidden;
+			position: absolute;
+		}
+
+		main .textarea p {
+			overflow-wrap: break-word;
+		}
+
+		main .textarea > span {
+			font-size: .8em;
+		}
+
+		main .textarea .mainLine {
+			color: lightblue;
+			color: #f45e61;
+		}
+
+		main .keyboard-holder {
+			left: 0;
+			width: 100%;
+			bottom: 10px;
+			position: absolute;
+		}
+
+		main .keyboard-holder .keyboard {
+			width: 470px;
+			margin: auto;
+			background-color: transparent;
+		}
+
+		main .keyboard-holder .keyboard div {
+			float: left;
+			width: 35px;
+			height: 20px;
+			color: #00eeee;
+			cursor: pointer;
+			font-size: 12px;
+			margin-top: 5px;
+			padding-top: 10px;
+			text-align: center;
+			border-radius: 5px;
+			text-transform: uppercase;
+			background-color: transparent;
+		}
+
+
+
+		/* Border animation */
+		main {
+			opacity: 0;
+			position: relative;
+			vertical-align: middle;
+			transition: opacity .5s ease;
+		}
+
+		main * {
+			opacity: 0;
+			transition: opacity .8s 1.3s ease;
+		}
+
+		main[active] * {
+			opacity: 1;
+		}
+
+		main::before, main::after {
+			z-index: -1;
+			content: '';
+			width: 100%;
+			height: 100%;
+			box-sizing: inherit;
+			position: absolute;
+		}
+
+		main.draw[active] {
+			opacity: 1;
+			box-shadow: 0 0 2px #005b8e, inset 0 0 2px #005b8e;
+		}
+
+		main.draw::before {
+			top: 0;
+			left: 0;
+		}
+
+		main.draw::after {
+			right: 0;
+			bottom: 0;
+		}
+
+		main.draw::before, main.draw::after {
+			width: 0;
+			height: 0;
+			border-radius: 5px;
+			border: 2px solid transparent;
+		}
+
+		main.draw[active]::before {
+			border-top-color: #6fc0ba;
+			border-right-color: #6fc0ba;
+			transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;
+		}
+
+		main.draw[active]::before, main.draw[active]::after {
+			width: 100%;
+			height: 100%;
+		}
+
+		main.draw[active]::after {
+			border-left-color: #6fc0ba;
+			border-bottom-color: #6fc0ba;
+			transition: border-color 0s ease-out 0.5s, width 0.25s ease-out 0.5s, height 0.25s ease-out 0.75s;
+		}
+	</style>
+
+	<script type="text/javascript">
+		let dir = '~';
+
+		function load() {
+			document.querySelectorAll('.keyboard div').forEach((object, key) => {
+				object.addEventListener('click', evt => activateElem(evt.target));
+			});
+
+			setTimeout(() => {
+				document.querySelector('main').setAttribute('active', '');
+			}, 500);
+
+			window.addEventListener('keydown', evt => {
+				if (!evt.ctrlKey) {
+					evt.preventDefault();
+					try {
+						activateElem(document.getElementById('k-' + evt.keyCode));
+					} catch (err) {}
+				}
+			});
+
+			Array.from(document.querySelector('.options').querySelectorAll('button')).forEach((object, key) => {
+				object.addEventListener('click', evt => {
+					runSpecialCommand(evt.target.getAttribute('commands').split(/\s+\&\&\s+/));
+				});
+			});
+		}
+
+		function activateElem(elem) {
+			if (elem.innerText.toLowerCase() == '&nbsp;' || elem.innerText.length == 1) {
+				document.getElementById('commands').innerText += elem.innerText.toLowerCase();
+			} else if (elem.innerText == 'BACK') {
+				const text = document.getElementById('commands').innerText;
+				try {
+					document.getElementById('commands').innerText = text.substring(0, text.length - 1);
+				} catch (err) {}
+			} else if (elem.innerText == 'ENTER') executeCommand();
+
+			elem.animate([
+				{backgroundColor: 'transparent'},
+				{backgroundColor: 'white'},
+				{backgroundColor: 'transparent'}
+				], {
+					duration: 300,
+					timingFunction: 'ease'
+				});
+		}
+
+		function executeCommand() {
+			const userInp = document.createElement('p');
+			const commandOutp = document.createElement('span');
+			const textarea = document.querySelector('.textarea');
+			const mainLine = document.querySelector('.mainLine');
+			const commands = document.getElementById('commands');
+
+			if (commands.innerText.length > 0) {
+				userInp.innerHTML = mainLine.outerHTML + commands.innerText;
+				commandOutp.innerText = getCommand(commands.innerText);
+				commands.innerText = '';
+				mainLine.innerText = mainLine.innerText.replace(/\:(.+)\$/, `:${dir}$`);
+				textarea.insertBefore(userInp, textarea.children[textarea.children.length - 1]);
+				textarea.insertBefore(commandOutp, textarea.children[textarea.children.length - 1]);
+				textarea.scrollTop = textarea.scrollHeight;
+			}
+		}
+
+		function getCommand(inp) {
+			inp = inp.toLowerCase();
+
+			const commands = {
+				help: args => {
+					let cmds = '';
+
+					for (cmd in commands)
+						cmds += cmd + ', ';
+
+					return 'Available commands: ' + cmds.substring(0, cmds.length - 2);
+				},
+
+				/*cd: args => {
+					if (args.length > 0)
+						dir = '/' + args[0] + '/';
+
+					return dir;
+				},*/
+
+				run: args => {
+					if (args.length > 0) {
+						switch(args[0]) {
+							case 'game.exe':
+							return 'W.I.P';
+							break;
+							default:
+							return;
+							break;
+						}
+					} else return 'No params';
+				},
+
+				echo: args => {
+					return args.join(' ');
+				}
+			}
+
+			const args = inp.split(/\s+/);
+			const command = args.shift();
+
+			if (command in commands)
+				return commands[command](args);
+			else return 'Command not found. Run \'help\' for all the commands.';
+		}
+
+		function runSpecialCommand(commands) {
+			function handleCommand(commands) {
+				doKeys(commands[0].split('')).then(() => {
+					executeCommand();
+					if (commands.length > 1) {
+						commands.shift();
+
+						setTimeout(() => {
+							handleCommand(commands);
+						}, 50);
+					}
+				}).catch(err => {
+					console.log(err);
+				});
+			}
+
+			function doKeys(vals) {
+				return new Promise((resolve, reject) => {
+					try {
+						function doKey(keys) {
+							const key = keys[0];
+
+							if (key.length == 1) {
+								let charCode = key.toUpperCase().charCodeAt(0);
+								if (charCode == 46) charCode = 190;
+								activateElem(document.getElementById('k-' + charCode));
+								setTimeout(() => {
+									if (keys.length > 1) {
+										keys.shift();
+										doKey(keys);
+									} else resolve();
+								}, 50);
+							} else reject();
+						}
+
+						doKey(vals);
+					} catch (err) {
+						console.log(err);
+						reject(err);
+					}
+				});
+			}
+
+			handleCommand(commands);
+		}
+
+		window.onload = load;
+	</script>
+
+</head>
+<body>
+
+	<main class="draw">
+
+		<div class="options">
+			<button commands="run game.exe">Game</button>
+		</div>
+
+		<div class="textarea">
+			<p><span class="mainLine">root@ultradevice:~$&nbsp;</span><span id="commands"></span></p>
+		</div>
+
+		<div class="keyboard-holder">
+			<div class="keyboard">
+				<div id="k-27">ESC</div>
+				<div id="k-49">1</div>
+				<div id="k-50">2</div>
+				<div id="k-51">3</div>
+				<div id="k-52">4</div>
+				<div id="k-53">5</div>
+				<div id="k-54">6</div>
+				<div id="k-55">7</div>
+				<div id="k-56">8</div>
+				<div id="k-57">9</div>
+				<div id="k-48">0</div>
+				<div id="k-189">_</div>
+				<div id="k-8">BACK</div>
+
+				<div style="clear: both; margin-left: 10px;" id="k-9">TAB</div>
+				<div id="k-81">q</div>
+				<div id="k-87">w</div>
+				<div id="k-69">e</div>
+				<div id="k-82">r</div>
+				<div id="k-84">t</div>
+				<div id="k-89">y</div>
+				<div id="k-85">u</div>
+				<div id="k-73">i</div>
+				<div id="k-79">o</div>
+				<div id="k-80">p</div>
+				<div id="k-219">()</div>
+
+				<div style="clear: both; margin-left: 20px;" id="k-500">CAPS</div>
+				<div id="k-65">a</div>
+				<div id="k-83">s</div>
+				<div id="k-68">d</div>
+				<div id="k-70">f</div>
+				<div id="k-71">g</div>
+				<div id="k-72">h</div>
+				<div id="k-74">j</div>
+				<div id="k-75">k</div>
+				<div id="k-76">l</div>
+				<div id="k-186">;</div>
+				<div id="k-13">ENTER</div>
+
+				<div style="clear: both; margin-left: 5px;" id="k-16">SHIFT</div>
+				<div id="k-90">z</div>
+				<div id="k-88">x</div>
+				<div id="k-67">c</div>
+				<div id="k-86">v</div>
+				<div id="k-66">b</div>
+				<div id="k-78">n</div>
+				<div id="k-77">m</div>
+				<div id="k-188">,</div>
+				<div id="k-190">.</div>
+				<div id="k-191">/</div>
+				<div id="k-0">SHIFT</div>
+
+				<div id="k-32" style="clear: both; width: 300px; height: 5px; border: 1px solid #00eeee; border-radius: 3px; margin-top: 10px; margin-left: 80px;">&nbsp;</div>
+			</div>
+		</div>
+	</main>
+
+</body>
+</html>
