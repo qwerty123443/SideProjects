@@ -638,6 +638,10 @@ class Color {
 		throw new Error('Bad Hex');
 	}
 
+	toString() {
+		return this.color;	
+	}
+	
 	toObject() {
 		if (this.type == 'HEX') {
 			this.convertToRGB();
