@@ -7,10 +7,6 @@ const arr = [
 'Happy - Pharell williams.mp3',
 'Talk me down - Troye Sivan.mp3'
 ],
-'ShitSongs',
-[
-'I have poo.mp3'
-],
 'More folders',
 [
 'Folder1',
