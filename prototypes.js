@@ -44,6 +44,27 @@ Array.prototype.remove = function(search) {
 	// return this.filter(elem => {return elem != search;});
 }
 
+
+/*
+For grouping an array to an array containing arrays of the specified length.
+
+@param length of the arrays within
+@return array;
+@example [1, 2, 3, 4, 5, 6].group(3); => [[1, 2, 3], [4, 5, 6]]
+*/
+Array.prototype.group = function(length) {
+	const arr = [];
+
+	for (let i = 0; i < this.length / length; i += length) {
+		arr[i] = [];
+
+		for (let j = 0; j < length; j++)
+			arr[i][j] = this[i + j]
+	}
+
+	return arr;
+}
+
 // Quickest way to sort (the native sort function is still faster tho)
 Array.prototype.quickSort = function() {
 	if (this.length <= 1) {
@@ -276,6 +297,21 @@ Object.prototype.copy = function() {
 
 	return newObj;
 }
+
+/*Object.prototype.tree = function(func) {
+	function treeObject(obj, func) {
+		for (val in obj) {
+			if ((typeof obj[val]).toLowerCase() == 'object') treeObject(obj[val], func);
+			else {
+				try {
+					func(obj[val], val);
+				} catch (err) {}
+			}
+		}
+	}
+
+	treeObject(this, func);
+}*/
 
 /* HTML Elements */
 HTMLElement.prototype.jsonStyle = function(json) {
