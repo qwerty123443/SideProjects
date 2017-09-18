@@ -24,7 +24,7 @@ def check(dirOne, dirTwo):
 			if (os.path.isdir(dirOne + "/" + val)):
 				print("Folder '" + val + "' is not in '" + dirOne[:-1] + "'")
 			elif (os.path.isfile(dirOne + "/" + val)):
-				print("'" + val + "' not in '" + dirOne[:-1] + "'")
+				print("'" + val + "' not in '" + dirTwo[:-1] + "'")
 			else:
 				print("Something went wrong...")
 				exit(0)
@@ -33,7 +33,7 @@ def check(dirOne, dirTwo):
 				check(dirOne + val + "/", dirTwo + val + "/")
 			elif (os.path.isfile(dirOne + "/" + val)):
 				if (not isFileContentsTheSame(dirOne + "/" + val, dirTwo + "/" + val)):
-					print("'" + val + "' is in '" + dirOne[:-1] + "', but the contents changed")
+					print("'" + val + "' is in '" + dirTwo[:-1] + "', but the contents changed")
 			else:
 				print('Something went wrong...')
 				exit(0)
@@ -54,3 +54,5 @@ if (os.path.isdir(oldDir) and os.path.isdir(newDir)):
 	check(newDir, oldDir)
 else:
 	print("One or both of the given values is not a directory")
+
+input()
