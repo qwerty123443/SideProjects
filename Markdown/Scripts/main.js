@@ -174,7 +174,8 @@ function parseMKWN(string) {
 			match.forEach((object, key) => {
 				const match = object.match(regEx);
 
-				str = str.replace(match[0], `<code type="${match[3]}">${match[4].replace(/\n/g, '<br>')}</code>`);
+				// str = str.replace(match[0], `<code type="${match[3]}">${match[4].replace(/\n/g, '<br>')}</code>`);
+				str = str.replace(match[0], `<pre><code class="${match[3]} hljs">${match[4].replace(/\n/g, '<br>')}</code></pre>`);
 			});
 		}
 
