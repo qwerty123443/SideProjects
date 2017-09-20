@@ -164,59 +164,24 @@ function parseMKWN(string) {
 		return markdown;
 	}
 
-	/*function rest(markdown) {
-		const arr = markdown.split('<br>');
+	function codeBlock(markdown) {
+		let str = markdown.replace(new RegExp(splitStr, 'g'), '\n');
 
-		arr.forEach((object, key) => {
-			// object = object.replace('  ', '<br>');
+		const regEx = /((```)(\w+)?)\n((.+|\n+)+)\n(```)/;
+		const match = str.match(new RegExp(regEx, 'g'));
 
-			// Headings
-			if (object.match(/(##?#?#?#?#?)\s(.+)/)) {
-				const val = object.match(/(##?#?)\s?(.+)/);
+		if (match) {
+			match.forEach((object, key) => {
+				const match = object.match(regEx);
 
-				if (val[1].length < 7) {
-					object = object.replace(val[0], `<h${val[1].length}>${val[2]}</h${val[1].length}>`);
-				} else {
-					console.error('Can\'t have more than three # signs');
-				}
-				// HR
-			} else if (object.match(/^(--+)$/)) {
-				object = object.replace(/-+/, '<hr>');
-				// Code block
-			} else if (object.match(/\`(.+)\`/)) {
-				object = object.replace(/\`(.+)\`/, `<code>$1</code>`);
-				// Crossed out text
-			} else if (object.match(/(\~\~)(.+)(\~\~)/)) {
-				object = object.replace(/(\~\~)(.+)(\~\~)/, `<del>$2</del>`);
-				// Bold text
-			} else if (object.match(/(\*\*|\_\_)(.+)(\*\*|\_\_)/)) {
-				object = object.replace(/(\*\*)(.+)(\*\*)/, `<b>$2</b>`).replace(/(\_\_)(.+)(\_\_)/, `<b>$2</b>`);
-				// Italic text
-			} else if (object.match(/(\*|\_)(.+)(\*|\_)/)) {
-				object = object.replace(/(\*)(.+)(\*)/, `<i>$2</i>`).replace(/(\_)(.+)(\_)/, `<i>$2</i>`);
-				// Links
-			} else if (object.match(/\[(.+)\](\((.+)\))?/)) {
-				const regex = /\[(.+)\](\((.+)\))?/;
-
-				if (object.match(regex)[3])
-					object = object.replace(regex, '<a href="$3">$1</a>');
-				else
-					object = object.replace(regex, '<a href="$1">$1</a>');
-			} else if (object.match(/^\s+$/) || object.length < 1) {
-					// object = '<br>';
-					// Maybe add this back in some other way
-				} else {
-					object = `<p>${object}</p>`;
-				}
-
-				// object = object.replace(' ', '&nbsp;');
-				arr[key] = object;
+				str = str.replace(match[0], `<code type="${match[3]}">${match[4].replace(/\n/g, '<br>')}</code>`);
 			});
+		}
 
-		return arr.reduce((one, two) => {
-			return one + two;
-		});
-	}*/
+		return str.replace(/\n/g, splitStr);
+	}
+
+
 
 	string = string.replace(/\n/g, splitStr);
 
@@ -224,6 +189,7 @@ function parseMKWN(string) {
 	string = headings(string);
 	string = horLn(string);
 	string = links(string);
+	string = codeBlock(string);
 	string = lists(string);
 
 	string = string.replace(new RegExp(splitStr + splitStr, 'g'), '<br>');
