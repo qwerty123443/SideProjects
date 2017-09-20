@@ -1,0 +1,50 @@
+<html>
+
+<head>
+
+	<title>Markdown</title>
+
+	<style type="text/css">
+	/* Test*/
+	* {
+		margin: 0;
+	}
+</style>
+
+<script type="text/javascript" src="Scripts/main.js"></script>
+<script type="text/javascript">
+	function load() {
+		document.getElementById('btn').addEventListener('click', parse);
+
+		document.getElementById('text').addEventListener('keyup', parse);
+
+			// let text = '# Heading\nText  Linebreak\nNog meer tekst\n*Italics*, _Italic_, **Bold 1**, __Bold 2__, ~~Scratch This~~, `monospace`.\n\nHorizontal rule:\n\n---\n\n\nBullet list:\n\n\t+ apples\n\t* oranges\n\t- pears\n\nNumbered list:\n\n\t1. apples\n\t2. oranges\n\t3. pears\n\nA [link](http://example.com).\n Dit is tekst [http://google.com], nog meer tekst.\n';
+			let text = '+ Test\n+ Hi\n+ Lol\n\n# Heading 1\nYay. Ik heb zin in pannenkoeken.\n**Kaas** Pannenkoek **test** woord *yay*\n[test](http://google.com)';
+			text += '\n\n```javascript\nCode\nBlock\n```';
+
+			document.getElementById('text').innerText = text;
+			parse();
+		}
+
+		function parse() {
+			const html = parseMKWN(document.getElementById('text').value);
+
+			document.getElementById('outp').innerHTML = html;
+		}
+
+		window.onload = load;
+	</script>
+
+</head>
+
+<body>
+
+	<textarea id="text" style="width: 400px; height: 300px"></textarea>
+	<br>
+	<button id="btn">Parse!</button>
+
+	<div id="outp"></div>
+
+</body>
+
+</html>
