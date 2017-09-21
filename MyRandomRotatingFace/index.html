@@ -14,6 +14,7 @@
 		<script>
 			var container;
 			var thing;
+			let num = 0;
 
 						var camera, scene, renderer;
 
@@ -145,6 +146,7 @@
 						}
 
 						function render() {
+							num++;
 
 							if (thing) {
 								// thing.rotation.x += 0.01;
@@ -161,7 +163,7 @@
 							// camera.lookAt( scene.position );
 
 							camera.rotation.y = 0.5;
-							camera.rotation.z += 0.1;
+							camera.rotation.z += Math.sin(num / 100);
 							thing.rotation.y += 0.05;
 
 							renderer.render( scene, camera );
