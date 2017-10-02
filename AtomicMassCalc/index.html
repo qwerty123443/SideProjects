@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<script type="text/javascript">
+		let objArr;
+
+		fetch('periodicTable.json').then(response => {
+			response.json().then(json => {
+				objArr = json.elements.map(val => {
+					return {symbol: val.symbol, atomic_mass: val.atomic_mass}
+				});
+
+				document.body.innerHTML = '<input id="inp" placeholder="C6H12O6" autofocus="autofocus" value="C6H12O6"/>';
+				document.body.innerHTML += '<button onclick="calculate()">Calculate</button>';
+
+				calculate();
+			}).catch(err => {console.log(err);});
+		}).catch(err => {
+			console.error('An error occurred', err);
+		});
+
+		function calculate() {
+			let outp = 0;
+			const val = document.getElementById('inp').value.toUpperCase();
+
+			if (val) {
+				val.split(/([A-Z]{1,2}[0-9]+)/).filter(val => {if (val.toString().trim() != '') return val;}).forEach((object, key) => {
+					const match = object.match(/([A-Z]{1,2})([0-9]+)/);
+					const lett = match[1];
+					const num = match[2];
+
+					console.log('Finding all letters in arr');
+					for (let i = 0; i < objArr.length; i++) {
+						if (objArr[i].symbol.toUpperCase() == lett) {
+							outp += num * objArr[i].atomic_mass;
+							break;
+						}
+					}
+
+				});
+
+				document.body.innerHTML += `<br><b id="outp">${outp}</b><button onclick="copyToCB()">Copy to clipboard</button>`;
+			} else alert('Nope');
+		}
+
+		function copyToCB() {
+			const outpElem = document.getElementById('outp');
+			const elem = document.createElement('textarea');
+
+			elem.style.width = '0px';
+			elem.style.height = '0px';
+			elem.style.opacity = '0';
+			elem.innerText = outpElem.innerText;
+			document.body.appendChild(elem);
+			elem.select();
+
+			try {
+				const successful = document.execCommand('copy');
+				const msg = successful ? 'successful' : 'unsuccessful';
+				console.log('Copying text command was ' + msg);
+			} catch (err) {
+				console.log('Oops, unable to copy');
+			}
+		}
+	</script>
+
+</head>
+<body>
+
+	<p>Laden</p>
+
+</body>
+</html>
