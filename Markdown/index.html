@@ -23,8 +23,12 @@
 		document.getElementById('text').addEventListener('keyup', parse);
 
 			// let text = '# Heading\nText  Linebreak\nNog meer tekst\n*Italics*, _Italic_, **Bold 1**, __Bold 2__, ~~Scratch This~~, `monospace`.\n\nHorizontal rule:\n\n---\n\n\nBullet list:\n\n\t+ apples\n\t* oranges\n\t- pears\n\nNumbered list:\n\n\t1. apples\n\t2. oranges\n\t3. pears\n\nA [link](http://example.com).\n Dit is tekst [http://google.com], nog meer tekst.\n';
-			let text = '+ Test\n+ Hi\n+ Lol\n\n# Heading 1\nYay. I like pancakes.\n**Cheese** Pancake **test** word *yay*\n[Link to google](http://google.com)';
-			text += '\n\n```javascript\nconsole.log(\'test\')\nlet k = \'test\'\n```';
+			// let text = '+ Test\n+ Hi\n+ Lol\n\n# Heading 1\nYay. I like pancakes.\n**Cheese** Pancake **test** word *yay*\n[Link to google](http://google.com)';
+			// text += '\n\n```javascript\nconsole.log(\'test\')\nlet k = \'test\'\n```';
+
+			let text = "# Music Stream Plugin\n\n## Install a plugin\n- Download the repository\n- Extract the .zip file in the /MusicStream/Plugins/ directory\n- ???\n- Profit\n\n## Create a plugin\nTake a look at the [example](/tree/master/Example/)\n\n#### API\nThe *index.js* file looks on startup in the Plugins directory. It loops though every directory and searches for an *index.js* file. So **there should be an *index.js* file in the root of your plugin directory.**\n\n##### Index.js\nThe *index.js* file can contain two objects:\n- *clientJS*: This object requires:\n- *filePath*: The path of the file you want to manipulate (for example: '/Audio/index.html').\n- *script*: The script file you want to insert. This file has to be within the plugin directory.\n- *server*: This function is used to create a request handler for the server. This object is a function that receives the following arguments:\n- *app*: This is the [Express](https://expressjs.com/) server handler. (See the example for more information).\n- *utils*: This is a reference to the utils object found in *index.js* with useful functions.\n- *path*: The directory of the plugin.";
+
+			text += '\n\nThe script specified in *clientJS* can have a function \`\`\`loaded\`\`\` which will be executed on \`\`\`window.onload\`\`\`';
 
 			document.getElementById('text').innerText = text;
 			parse();

@@ -150,7 +150,7 @@ function parseMKWN(string) {
 			let val = '';
 
 			if (object.match(/\[(.+)\](\((.+)\))?/)) {
-				const regex = /\[(.+)\](\((.+)\))?/;
+				const regex = /\[(.+)\](\(((https?|\/)(\:|\/|\w+|\.|\?|\&)+)\))?/;
 
 				if (object.match(regex)[3])
 					val = object.replace(regex, '<a target="_blank" href="$3">$1</a>');
@@ -167,15 +167,21 @@ function parseMKWN(string) {
 	function codeBlock(markdown) {
 		let str = markdown.replace(new RegExp(splitStr, 'g'), '\n');
 
-		const regEx = /((```)(\w+)?)\n((.+|\n+)+)\n(```)/;
+		const regEx = /(```(.+)```|((```)(\w+)?)\n((.+|\n+)+)\n(```))/;
 		const match = str.match(new RegExp(regEx, 'g'));
 
 		if (match) {
 			match.forEach((object, key) => {
 				const match = object.match(regEx);
 
-				// str = str.replace(match[0], `<code type="${match[3]}">${match[4].replace(/\n/g, '<br>')}</code>`);
-				str = str.replace(match[0], `<pre><code class="${match[3]} hljs">${match[4].replace(/\n/g, '<br>')}</code></pre>`);
+				console.log(match);
+
+				if (match[6]) {
+					// str = str.replace(match[0], `<code type="${match[3]}">${match[4].replace(/\n/g, '<br>')}</code>`);
+					str = str.replace(match[0], `<pre><code class="${match[5]} hljs">${match[6].replace(/\n/g, '<br>')}</code></pre>`);
+				} else {
+					str = str.replace(match[0], `<code>${match[2]}</code>`);
+				}
 			});
 		}
 
