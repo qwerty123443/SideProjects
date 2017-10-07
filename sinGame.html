@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+
 <!--
 MIT License
 
@@ -22,280 +28,341 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<!DOCTYPE html>
-<html>
-<head>
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-86984024-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments)};
+        gtag('js', new Date());
+        gtag('config', 'UA-86984024-1');
+    </script>
 
-	<title>SineGame</title>
+    <title>SineGame</title>
 
-	<style type="text/css">
-		body {
-			margin: 0;
-			width: 100%;
-			height: 100%;
-			display: flex;
-			position: absolute;
-			align-items: center;
-			justify-content: center;
-		}
-	</style>
+    <style type="text/css">
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            position: absolute;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-	<script type="text/javascript" src="Canvas/canvas.js"></script>
-	<script type="text/javascript">
-		let player;
-		let score = 0;
-		let moveTime = 10;
-		let smallspeed = 2;
-		let moving = false;
-		let started = false;
-		let gameover = false;
+        #highscores {
+            right: 0px;
+            position: absolute;
+        }
+    </style>
 
-		let up = 0;
-		let speed = 5;
-		let framesup = 0;
-		let framesdown = 0;
+    <script type="text/javascript" src="Canvas/canvas.js"></script>
+    <script type="text/javascript">
+        let player;
+        let score = 0;
+        let moveTime = 10;
+        let smallspeed = 2;
+        let moving = false;
+        let started = false;
+        let gameover = false;
+        let name = '';
 
-		const trail = [];
-		const obstacles = [];
-		const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#f1c40f", "#e67e22", "#e74c3c", "#f39c12", "#d35400", "#c0392b"];
+        let up = 0;
+        let speed = 5;
+        let framesup = 0;
+        let framesdown = 0;
 
-		function setup() {
-			canvas = new Canvas(document.getElementById('canvas'), 300, 500);
-			player = new Player(canvas);
-			combo = new Combo();
+        const trail = [];
+        const obstacles = [];
+        const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#f1c40f", "#e67e22", "#e74c3c", "#f39c12", "#d35400", "#c0392b"];
 
-			// Keyboard
-			window.addEventListener('keydown', evt => {
-				if (evt.ctrlKey) speed = 15;
-				else speed = 5;
-				
-				if (gameover & !moving){
-					gameover = false;
-					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
-					loop();
-				}
-				up = 0;
-				framesup = 0;
-				framesdown += 1;
-				moveTime = 10;
-				moving = true;
-			});
+        function setup() {
+            canvas = new Canvas(document.getElementById('canvas'), 300, 500);
+            player = new Player(canvas);
+            combo = new Combo();
 
-			window.addEventListener('keyup', evt => {
-				up = 1
-				moving = false;
-				started = true;
-			});
+            // Keyboard
+            window.addEventListener('keydown', evt => {
+                if (evt.ctrlKey) speed = 15;
+                else speed = 5;
 
-			// Touch
-			window.addEventListener('touchstart', evt => {
-				if (gameover & !moving){
-					gameover = false;
-					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
-					loop();
-				}
+                if (gameover & !moving){
+                    gameover = false;
+                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+                    loop();
+                }
+                up = 0;
+                framesup = 0;
+                framesdown += 1;
+                moveTime = 10;
+                moving = true;
+            });
 
-				framesdown += 1;
-				moveTime = 10;
-				moving = true;
-			});
+            window.addEventListener('keyup', evt => {
+                up = 1
+                moving = false;
+                started = true;
+            });
 
-			window.addEventListener('touchend', evt => {
-				up = 1;
-				moving = false;
-				started = true;
-			});
+            // Touch
+            window.addEventListener('touchstart', evt => {
+                evt.preventDefault();
+                if (gameover & !moving){
+                    gameover = false;
+                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+                    loop();
+                }
 
-			obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
-		}
+                framesdown += 1;
+                moveTime = 10;
+                moving = true;
+            });
 
-		function draw() {
-			framesup += up;
+            window.addEventListener('touchend', evt => {
+                up = 1;
+                moving = false;
+                started = true;
+            });
 
-			if (framesup >= 30 && combo.combo > 0) {
-				combo.combo = 0;
-				combo.ticks = 0;
-				framesdown = 0;
-				framesup = 0;
-				up = 0;
-			}
+            obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 
-			canvas.background('#CCCCCC');
-			canvas.connect(trail, 4, '#2196f3');
+            // Highscores
+            updateInterface();
+        }
 
-			trail.forEach((object, key) => {
-				if (object.y > canvas.height) trail.splice(key, 1);
-				else if (moving) object.y += speed;
-			});
+        function draw() {
+            framesup += up;
 
-			if (!moving) trail.length = 0;
+            if (framesup >= 30 && combo.combo > 0) {
+                combo.combo = 0;
+                combo.ticks = 0;
+                framesdown = 0;
+                framesup = 0;
+                up = 0;
+            }
 
-			player.update();
-			player.draw();
+            canvas.background('#CCCCCC');
+            canvas.connect(trail, 4, '#2196f3');
 
-			// For collision detection
-			const circle = {
-				x: player.pos.x,
-				y: player.pos.y,
-				r: player.size
-			};
+            trail.forEach((object, key) => {
+                if (object.y > canvas.height) trail.splice(key, 1);
+                else if (moving) object.y += speed;
+            });
 
-			obstacles.forEach((object, key) => {
-				object.draw();
+            if (!moving) trail.length = 0;
 
-				if (started) {
-					if (moving) {
-						object.move();
-						score += speed / 100;
-					} else {
-						object.stop();
-						moveTime -= 0.02;
-					}
-				}
+            player.update();
+            player.draw();
 
-				// Check off-screen
-				if (object.pos.y - object.size > canvas.height) obstacles.splice(key, 1);
+            // For collision detection
+            const circle = {
+                x: player.pos.x,
+                y: player.pos.y,
+                r: player.size
+            };
 
-				const rect = {
-					x: object.pos.x,
-					y: object.pos.y,
-					w: object.size,
-					h: object.size
-				};
+            obstacles.forEach((object, key) => {
+                object.draw();
 
-				// Check collision
-				if (Math.rectCircleColliding(circle, rect)) gameOver();
+                if (started) {
+                    if (moving) {
+                        object.move();
+                        score += speed / 100;
+                    } else {
+                        object.stop();
+                        moveTime -= 0.02;
+                    }
+                }
 
-				// Check if past a certain point and spawn a new obstacle
-				if (object.pos.y >= Math.randomBetween(-10, 10) + ((canvas.height / 3)) && object.hasSpawned == false) {
-					object.hasSpawned = true;
-					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
-				}
-				combo.update()
-			});
+                // Check off-screen
+                if (object.pos.y - object.size > canvas.height) obstacles.splice(key, 1);
 
-			if (moveTime <= 0) gameOver();
+                const rect = {
+                    x: object.pos.x,
+                    y: object.pos.y,
+                    w: object.size,
+                    h: object.size
+                };
 
-			canvas.background('rgba(255, 255, 255, 0.5)');
-			canvas.text(Math.round(moveTime), 10, 25, (moveTime <= 5) ? 'red' : 'white', 20, 'left');
-			canvas.text(Math.round(score), canvas.width - 10, 25, 'white', 20, 'right');
-		}
+                // Check collision
+                if (Math.rectCircleColliding(circle, rect)) gameOver();
 
-		function gameOver() {
-			gameover = true;
-			obstacles.length = 0;
-			score = 0;
-			time = 0;
-			combo.combo = 0;
-			framesup = 0;
-			framesdown = 0;
-			noLoop();
-			canvas.text('YOU LOST', center.x, center.y, 'red', 50);
-			canvas.text('SCORE: ' + Math.round(score), center.x, center.y + 50, 'white', 30);
-		}
+                // Check if past a certain point and spawn a new obstacle
+                if (object.pos.y >= Math.randomBetween(-10, 10) + ((canvas.height / 3)) && object.hasSpawned == false) {
+                    object.hasSpawned = true;
+                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+                }
+                combo.update()
+            });
 
-		class Combo {
-			constructor() {
-				this.onscreen = false;
-				this.ticks = 0;
-				this.combo = 0;
-			}
+            if (moveTime <= 0) gameOver();
 
-			update() {
-				if ((framesdown + 1)% 100 == 0 && !this.onscreen ) {
-					this.combo += 1;
-					this.ticks = 0;
-					this.scored = false;
-					this.onscreen = true;
-				}
-				if (this.onscreen){
-					this.ticks += 1;
-					if (this.combo == 1) {
-						canvas.text("combo 1!", center.x, center.y, 'blue', 20);
-					}
-					else if (this.combo == 2) {
-						canvas.text("combo 2!", center.x, center.y, 'blue', 20);
-					}
-					else if (this.combo == 3)  {
-						canvas.text("combo 3!", center.x, center.y, 'blue', 20);
-					}
-					else if (this.combo == 4) {
-						canvas.text("combo 4!", center.x, center.y, 'blue', 20);
-					}
-					else if (this.combo >= 5) {
-						canvas.text("combo 5+!", center.x, center.y, 'blue', 20);
-					}
-					if (this.ticks > 120) {
-						this.onscreen = false;
-					}
-					if (!this.scored) {
-						this.scored = true;
-						score += this.combo * 10
-					}
-				}
-			}
-		}
+            canvas.background('rgba(255, 255, 255, 0.5)');
+            canvas.text(Math.round(moveTime), 10, 25, (moveTime <= 5) ? 'red' : 'white', 20, 'left');
+            canvas.text(Math.round(score), canvas.width - 10, 25, 'white', 20, 'right');
+        }
 
-		class Player {
-			constructor(canvas) {
-				this.count = 0;
-				this.size = 10;
-				this.speed = 0.03;
-				this.canvas = canvas;
-				this.pos = new Vector(center.x, center.y + canvas.height / 10);
-			}
+        function gameOver() {
+            noLoop();
+            canvas.text('YOU LOST', center.x, center.y, 'red', 50);
+            canvas.text('SCORE: ' + Math.round(score), center.x, center.y + 50, 'white', 30);
+            var nameSet = false;
+            if (name == ''&&name!=null){
+                name = prompt('username?', name).trim();
+                nameSet = true;
+            }
+            if (!nameSet&&name!=''&&name!=null){
+                if(!confirm('use previous name')){
+                name = prompt('username?', name).trim();
+            }}
 
-			update() {
-				this.pos.x = Math.floor((this.canvas.width / 2) + (Math.sin(this.count)) * (this.canvas.width / 2 - 30));
-				this.count += this.speed;
+            if (navigator.onLine) {
+                getJSON('test.php?name='+name+'&score='+score, function(data){
+                    updateInterface();
+                });
+            }
 
-				if (frameCount % 5 == 0 && moving) trail.push(this.pos.copy());
-			}
+            gameover = true;
+            obstacles.length = 0;
+            score = 0;
+            time = 0;
+            combo.combo = 0;
+            framesup = 0;
+            framesdown = 0;
+            noLoop();
+        }
 
-			draw() {
-				this.canvas.circle(this.pos.x, this.pos.y, this.size, '#2196f3', true);
-			}
-		}
+        class Combo {
+            constructor() {
+                this.onscreen = false;
+                this.ticks = 0;
+                this.combo = 0;
+            }
 
-		class Obstacle {
-			constructor(canvas, size, speed, xPos) {
-				this.size = size;
-// 				this.speed = speed;
-				this.canvas = canvas;
-				this.hasSpawned = false;
-				this.color = colors.random();
-				this.pos = new Vector(xPos, -this.size);
-			}
+            update() {
+                if ((framesdown + 1)% 100 == 0 && !this.onscreen && score!=0 ) {
+                    this.combo += 1;
+                    this.ticks = 0;
+                    this.scored = false;
+                    this.onscreen = true;
+                }
+                if (this.onscreen){
+                    this.ticks += 1;
+                    if (this.combo == 1) {
+                        canvas.text("combo 1!", center.x, center.y, 'blue', 20);
+                    }
+                    else if (this.combo == 2) {
+                        canvas.text("combo 2!", center.x, center.y, 'blue', 20);
+                    }
+                    else if (this.combo == 3)  {
+                        canvas.text("combo 3!", center.x, center.y, 'blue', 20);
+                    }
+                    else if (this.combo == 4) {
+                        canvas.text("combo 4!", center.x, center.y, 'blue', 20);
+                    }
+                    else if (this.combo >= 5) {
+                        canvas.text("combo 5+!", center.x, center.y, 'blue', 20);
+                    }
+                    if (this.ticks > 120) {
+                        this.onscreen = false;
+                    }
+                    if (!this.scored) {
+                        this.scored = true;
+                        score += this.combo * 10
+                    }
+                }
+            }
+        }
 
-			move() {
-				this.pos.y += speed;
-				smallspeed = speed;
-			}
+        class Player {
+            constructor(canvas) {
+                this.count = 0;
+                this.size = 10;
+                this.speed = 0.03;
+                this.canvas = canvas;
+                this.pos = new Vector(center.x, center.y + canvas.height / 10);
+            }
 
-			stop() {
-				this.pos.y += smallspeed;
-				smallspeed -= speed / 120;
-				if (smallspeed < 0) smallspeed = 0
-			}
-		draw() {
-			this.canvas.square(this.pos.x, this.pos.y, this.size, this.color, false);
-		}
-	}
+            update() {
+                this.pos.x = Math.floor((this.canvas.width / 2) + (Math.sin(this.count)) * (this.canvas.width / 2 - 30));
+                this.count += this.speed;
 
-	Array.prototype.random = function() {
-		return this[Math.floor(Math.random() * this.length)];
-	}
+                if (frameCount % 5 == 0 && moving) trail.push(this.pos.copy());
+            }
+
+            draw() {
+                this.canvas.circle(this.pos.x, this.pos.y, this.size, '#2196f3', true);
+            }
+        }
+
+        class Obstacle {
+            constructor(canvas, size, speed, xPos) {
+                this.size = size;
+//              this.speed = speed;
+                this.canvas = canvas;
+                this.hasSpawned = false;
+                this.color = colors.random();
+                this.pos = new Vector(xPos, -this.size);
+            }
+
+            move() {
+                this.pos.y += speed;
+                smallspeed = speed;
+            }
+
+            stop() {
+                this.pos.y += smallspeed;
+                smallspeed -= speed / 120;
+                if (smallspeed < 0) smallspeed = 0
+            }
+        draw() {
+            this.canvas.square(this.pos.x, this.pos.y, this.size, this.color, false);
+        }
+    }
+
+    Array.prototype.random = function() {
+        return this[Math.floor(Math.random() * this.length)];
+    }
+
+    var getJSON = function(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('get', url, true);
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+          if (xhr.status == 200) {
+            callback(xhr.response);
+          }
+        };
+        xhr.send();
+    };
+
+    var updateInterface = function() {
+        getJSON('scores.php', function(data) {
+            var scoreboard = data.scoresCSV.split('\n');
+            var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
+
+            for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
+                var split = scoreboard[i].split(",");
+                result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
+            }
+
+            document.getElementById("highscores").innerHTML = result;
+        });
+    }
 </script>
-	
-<!--  Compatibility check	 -->
-	<script type="text/javascript">
-		if (!('forEach' in [])) alert('Your browser is not supported. Download the latest Chrome or Firefox');
-	</script>
+
+<!--  Compatibility check    -->
+    <script type="text/javascript">
+        if (!('forEach' in []))
+            alert('Your browser is not supported. Download the latest Chrome or Firefox');
+    </script>
 
 </head>
 <body>
 
-	<canvas id="canvas"></canvas>
+    <canvas id="canvas"></canvas>
+    <table id="highscores" border="1"></table>
 
 </body>
 </html>
