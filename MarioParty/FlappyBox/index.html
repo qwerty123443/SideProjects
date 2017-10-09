@@ -48,6 +48,19 @@
 			document.addEventListener('keyup', evt => {
 				keyDown = false;
 			});
+
+			document.addEventListener('touchstart', evt => {
+				started = true;
+
+				if (!keyDown) {
+					keyDown = true;
+					bird.up();
+				}
+			});
+
+			document.addEventListener('touchend', evt => {
+				keyDown = false;
+			});
 		}
 
 		function draw() {
@@ -74,9 +87,6 @@
 					if (object.offscreen())
 						pipes.remove(object);
 				});
-
-				// if (frameCount % 100 == 0)
-				// 	pipes.push(new Pipe(colors.random()));
 
 				bird.update();
 			}
@@ -149,7 +159,7 @@
 				this.w = 20;
 				this.center = topBottom.randomCenter;
 
-				// Ad a powerup?
+				// Add a powerup?
 				if (Math.random() <= 0.15)
 					powerUps.push(new PowerUp(this, powerUpTypes.random()));
 			}
