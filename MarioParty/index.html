@@ -288,8 +288,9 @@
 			}
 
 			move() {
-				this.pos.y += speed;
-				smallspeed = speed;
+				this.pos.y += smallspeed;
+				if(smallspeed < speed) smallspeed += speed / 15;
+                else if (smallspeed > speed) smallspeed = speed;
 			}
 
 			stop() {
