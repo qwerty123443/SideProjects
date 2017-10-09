@@ -206,16 +206,9 @@
 			noLoop();
 			canvas.text('YOU LOST', center.x, center.y, 'red', 50);
 			canvas.text('SCORE: ' + Math.round(score), center.x, center.y + 50, 'white', 30);
-			var nameSet = false;
-			if (name == ''&&name!=null){
-				name = prompt('username?', name).trim();
-				nameSet = true;
-			}
-
 			const nameElem = document.getElementById('name');
-			const nameElemVal = nameElem.value.trim();
-
-			if (nameElemVal != '') {
+			const name = nameElem.value.trim();
+			if (name != '') {
 				if (navigator.onLine) {
 					updateInterface('?name='+name+'&score='+score)
 				}
