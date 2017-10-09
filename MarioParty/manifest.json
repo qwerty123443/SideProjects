@@ -1,0 +1,8 @@
+{
+	"name": "SineGame",
+	"short_name": "SineGame",
+	"lang": "nl",
+	"start_url": "/",
+	"display": "fullscreen",
+	"theme_color": "#add8e6"
+}
