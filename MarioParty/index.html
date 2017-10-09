@@ -253,7 +253,7 @@
 				}
 				if (this.onscreen){
 					this.ticks += 1;
-					if (this.combo == 1) {
+					if (this.combo > 0) {
 						canvas.text("combo "+this.combo+"!", center.x, center.y, 'blue', 20);
 					}
 					if (this.ticks > 120) {
