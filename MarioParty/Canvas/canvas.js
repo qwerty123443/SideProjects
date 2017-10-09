@@ -87,7 +87,14 @@ class Canvas {
 
 		// this.canvas.addEventListener('mousemove', mouse);
 	}
-
+    
+    clear() {
+        this.ctx.save();
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.restore();
+    }
+            
 	resize(w, h) {
 		h = (h == 'auto' || h == null || h == '') ? window.innerHeight : h;
 		w = (w == 'auto' || w == null || w == '') ? document.body.clientWidth : w; // window.innerWidth
