@@ -206,20 +206,11 @@
 			noLoop();
 			canvas.text('YOU LOST', center.x, center.y, 'red', 50);
 			canvas.text('SCORE: ' + Math.round(score), center.x, center.y + 50, 'white', 30);
-			var nameSet = false;
-			if (name == ''&&name!=null){
-				name = prompt('username?', name).trim();
-				nameSet = true;
-			}
-
 			const nameElem = document.getElementById('name');
-			const nameElemVal = nameElem.value.trim();
-
-			if (nameElemVal != '') {
+			const name = nameElem.value.trim();
+			if (name != '') {
 				if (navigator.onLine) {
-					getJSON('test.php?name='+name+'&score='+score, function(data) {
-						updateInterface();
-					});
+					updateInterface('?name='+name+'&score='+score)
 				}
 			} else {
 				alert('Add your name');
@@ -234,7 +225,6 @@
 			combo.combo = 0;
 			framesup = 0;
 			framesdown = 0;
-			noLoop();
 		}
 
 		class Combo {
@@ -253,7 +243,7 @@
 				}
 				if (this.onscreen){
 					this.ticks += 1;
-					if (this.combo == 1) {
+					if (this.combo > 0) {
 						canvas.text("combo "+this.combo+"!", center.x, center.y, 'blue', 20);
 					}
 					if (this.ticks > 120) {
@@ -316,31 +306,31 @@
 		return this[Math.floor(Math.random() * this.length)];
 	}
 
-	function getJSON(url, callback) {
+	function updateInterface(params) {
 		var xhr = new XMLHttpRequest();
-		xhr.open('get', url, true);
+		xhr.open('get', 'scores.php'+(params||""), true);
 		xhr.responseType = 'json';
-		xhr.onload = function() {
-			if (xhr.status == 200) {
-				callback(xhr.response);
-			}
-		};
+        if (!params) {
+            xhr.onload = function() {
+                if (xhr.status == 200) {
+                    var scoreboard = xhr.response.scoresCSV.split('\n');
+                    var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
+                    for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
+                        var split = scoreboard[i].split(",");
+                        result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
+                    }
+
+                    document.getElementById("highscores").innerHTML = result;
+                }
+            };
+        }
+        else {
+            xhr.onload = function(){
+                updateInterface()
+            }
+        }
 		xhr.send();
 	};
-
-	function updateInterface() {
-		getJSON('scores.php', function(data) {
-			var scoreboard = data.scoresCSV.split('\n');
-			var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
-
-			for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
-				var split = scoreboard[i].split(",");
-				result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
-			}
-
-			document.getElementById("highscores").innerHTML = result;
-		});
-	}
 	</script>
 
 	<!--  Compatibility check    -->
