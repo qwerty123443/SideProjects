@@ -41,7 +41,7 @@ if (isset($_GET["name"]) && isset($_GET["score"])) {
 }
 
 function generateNewString($score, $username, $fileContents, $array, $index, $arraySizeLimit) {
-	array_splice($array, $index, 0, $username . ";" . $score);
+	array_splice($array, $index, 0, $username . "," . $score);
 	$array = array_slice($array, 0, $arraySizeLimit);
 
 	return join("\n", $array);
@@ -56,7 +56,7 @@ function trimString($string) {
 
 function parseString($string) {
 	$string = trimString($string);
-	$string = str_replace(";", "", $string);
+	$string = str_replace(",", "", $string);
 
 	return $string;
 }
