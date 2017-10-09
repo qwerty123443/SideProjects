@@ -24,61 +24,61 @@
 	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
-	-->
-	<title>SineGame</title>
-	<style type="text/css">
-		body {
-			margin: 0;
-			width: 100%;
-			height: 100%;
-			display: flex;
-			position: absolute;
-			align-items: center;
-			flex-direction: column;
-			justify-content: center;
-		}
+-->
+<title>SineGame</title>
+<style type="text/css">
+body {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	position: absolute;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
+}
 
-		#highscores {
-			right: 0px;
-			position: absolute;
-		}
-	</style>
+#highscores {
+	right: 0px;
+	position: absolute;
+}
+</style>
 
-	<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="manifest.json">
 
-	<meta name="mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="application-name" content="SineGame">
-	<meta name="apple-mobile-web-app-title" content="SineGame">
-	<meta name="theme-color" content="#add8e6">
-	<meta name="msapplication-navbutton-color" content="#add8e6">
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-	<meta name="msapplication-starturl" content="/">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="application-name" content="SineGame">
+<meta name="apple-mobile-web-app-title" content="SineGame">
+<meta name="theme-color" content="#add8e6">
+<meta name="msapplication-navbutton-color" content="#add8e6">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="msapplication-starturl" content="/">
 
-	<script type="text/javascript" src="Canvas/canvas.js"></script>
-	<script type="text/javascript">
-		let player;
-		let score = 0;
-		let moveTime = 10;
-		let smallspeed = 2;
-		let moving = false;
-		let started = false;
-		let gameover = false;
-		let name = '';
+<script type="text/javascript" src="Canvas/canvas.js"></script>
+<script type="text/javascript">
+	let player;
+	let score = 0;
+	let moveTime = 10;
+	let smallspeed = 2;
+	let moving = false;
+	let started = false;
+	let gameover = false;
+	let name = '';
 
-		let up = 0;
-		let speed = 5;
-		let framesup = 0;
-		let framesdown = 0;
+	let up = 0;
+	let speed = 5;
+	let framesup = 0;
+	let framesdown = 0;
 
-		const trail = [];
-		const obstacles = [];
-		const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#f1c40f", "#e67e22", "#e74c3c", "#f39c12", "#d35400", "#c0392b"];
+	const trail = [];
+	const obstacles = [];
+	const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#f1c40f", "#e67e22", "#e74c3c", "#f39c12", "#d35400", "#c0392b"];
 
-		function setup() {
-			canvas = new Canvas(document.getElementById('canvas'), 300, 500);
-			player = new Player(canvas);
-			combo = new Combo();
+	function setup() {
+		canvas = new Canvas(document.getElementById('canvas'), 300, 500);
+		player = new Player(canvas);
+		combo = new Combo();
 
 			// Keyboard
 			window.addEventListener('keydown', evt => {
@@ -311,45 +311,45 @@
 		var xhr = new XMLHttpRequest();
 		xhr.open('get', 'scores.php'+(params||""), true);
 		xhr.responseType = 'json';
-        if (!params) {
-            xhr.onload = function() {
-                if (xhr.status == 200) {
-                    var scoreboard = xhr.response.scoresCSV.split('\n');
-                    var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
-                    for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
-                        var split = scoreboard[i].split(",");
-                        result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
-                    }
+		if (!params) {
+			xhr.onload = function() {
+				if (xhr.status == 200) {
+					var scoreboard = xhr.response.scoresCSV.split('\n');
+					var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
+					for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
+						var split = scoreboard[i].split(",");
+						result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
+					}
 
-                    document.getElementById("highscores").innerHTML = result;
-                }
-            };
-        }
-        else {
-            xhr.onload = function(){
-                updateInterface()
-            }
-        }
+					document.getElementById("highscores").innerHTML = result;
+				}
+			};
+		}
+		else {
+			xhr.onload = function(){
+				updateInterface()
+			}
+		}
 		xhr.send();
 	};
-	</script>
+</script>
 
-	<!--  Compatibility check    -->
-	<script type="text/javascript">
-		if (!('forEach' in []))
-			alert('Your browser is not supported. Download the latest Chrome or Firefox');
-	</script>
+<!--  Compatibility check    -->
+<script type="text/javascript">
+	if (!('forEach' in []))
+		alert('Your browser is not supported. Download the latest Chrome or Firefox');
+</script>
 
-	<!-- SW -->
-	<script>
-		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register('sw.js').then(reg => {
-				console.log("Serviceworker registered");
-			}).catch(err => {
-				console.log("Error regestering Serviceworker ", err)
-			});
-		}
-	</script>
+<!-- SW -->
+<script>
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('sw.js').then(reg => {
+			console.log("Serviceworker registered");
+		}).catch(err => {
+			console.log("Error regestering Serviceworker ", err)
+		});
+	}
+</script>
 </head>
 <body>
 
