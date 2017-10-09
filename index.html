@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+
+<!--
+MIT License
+
+Copyright (c) 2017 Vic
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<title>SineGame</title>
+
+<style type="text/css">
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#highscores {
+    right: 0px;
+    position: absolute;
+}
+</style>
+
+<link rel="manifest" href="manifest.json">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="application-name" content="SineGame">
+<meta name="apple-mobile-web-app-title" content="SineGame">
+<meta name="theme-color" content="#add8e6">
+<meta name="msapplication-navbutton-color" content="#add8e6">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="msapplication-starturl" content="/">
+
+<script type="text/javascript" src="Canvas/canvas.js"></script>
+<script type="text/javascript">
+    let player;
+    let score = 0;
+    let moveTime = 10;
+    let smallspeed = 2;
+    let moving = false;
+    let started = false;
+    let gameover = false;
+    let name = '';
+
+    let up = 0;
+    let speed = 5;
+    let framesup = 0;
+    let framesdown = 0;
+
+    const trail = [];
+    const obstacles = [];
+    const colors = ["#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#f1c40f", "#e67e22", "#e74c3c", "#f39c12", "#d35400", "#c0392b"];
+
+    function setup() {
+        canvas = new Canvas(document.getElementById('canvas'), 300, 500);
+        player = new Player(canvas);
+        combo = new Combo();
+
+            // Keyboard
+            window.addEventListener('keydown', evt => {
+                if (evt.ctrlKey) speed = 15;
+                else speed = 5;
+
+                if (gameover & !moving){
+                    gameover = false;
+                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+                    loop();
+                }
+                up = 0;
+                framesup = 0;
+                framesdown += 1;
+                moveTime = 10;
+                moving = true;
+            });
+
+            window.addEventListener('keyup', evt => {
+                up = 1
+                moving = false;
+                started = true;
+            });
+
+            // Touch
+            window.addEventListener('touchstart', evt => {
+                evt.preventDefault();
+                if (gameover & !moving){
+                    gameover = false;
+                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+                    loop();
+                }
+
+                framesdown += 1;
+                moveTime = 10;
+                moving = true;
+            });
+
+            window.addEventListener('touchend', evt => {
+                up = 1;
+                moving = false;
+                started = true;
+            });
+
+            obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+
+            // Highscores
+            updateInterface();
+        }
+
+        function draw() {
+            framesup += up;
+
+            if (framesup >= 30 && combo.combo > 0) {
+                combo.combo = 0;
+                combo.ticks = 0;
+                framesdown = 0;
+                framesup = 0;
+                up = 0;
+            }
+
+            canvas.background('#CCCCCC');
+            canvas.connect(trail, 4, '#2196f3');
+
+            trail.forEach((object, key) => {
+                if (object.y > canvas.height) trail.splice(key, 1);
+                else if (moving) object.y += speed;
+            });
+
+            if (!moving) trail.length = 0;
+
+            player.update();
+            player.draw();
+
+            if (!moving && started) moveTime -= 0.06;
+
+            // For collision detection
+            const circle = {
+                x: player.pos.x,
+                y: player.pos.y,
+                r: player.size
+            };
+
+            obstacles.forEach((object, key) => {
+                object.draw();
+
+                if (started) {
+                    if (moving) {
+                        object.move();
+                        score += speed / 100;
+                    } else {
+                        object.stop();
+                    }
+                }
+
+                // Check off-screen
+                if (object.pos.y - object.size > canvas.height) obstacles.splice(key, 1);
+
+                const rect = {
+                    x: object.pos.x,
+                    y: object.pos.y,
+                    w: object.size,
+                    h: object.size
+                };
+
+                // Check collision
+                if (Math.rectCircleColliding(circle, rect)) gameOver();
+
+                // Check if past a certain point and spawn a new obstacle
+                if (object.pos.y >= Math.randomBetween(-10, 10) + ((canvas.height / 3)) && object.hasSpawned == false) {
+                    object.hasSpawned = true;
+                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+                }
+                combo.update()
+            });
+
+            if (moveTime <= 0) gameOver();
+
+            canvas.background('rgba(255, 255, 255, 0.5)');
+            canvas.text(Math.round(moveTime), 10, 25, (moveTime <= 5) ? 'red' : 'white', 20, 'left');
+            canvas.text(Math.round(score), canvas.width - 10, 25, 'white', 20, 'right');
+        }
+
+        function gameOver() {
+            noLoop();
+            canvas.text('YOU LOST', center.x, center.y, 'red', 50);
+            canvas.text('SCORE: ' + Math.round(score), center.x, center.y + 50, 'white', 30);
+            var nameSet = false;
+            if (name == ''&&name!=null){
+                name = prompt('username?', name).trim();
+                nameSet = true;
+            }
+            if (!nameSet&&name!=''&&name!=null){
+                if(!confirm('use previous name')){
+                    name = prompt('username?', name).trim();
+                }}
+
+                if (navigator.onLine) {
+                    getJSON('test.php?name='+name+'&score='+score, function(data){
+                        updateInterface();
+                    });
+                }
+
+                gameover = true;
+                obstacles.length = 0;
+                score = 0;
+                time = 0;
+                combo.combo = 0;
+                framesup = 0;
+                framesdown = 0;
+                noLoop();
+            }
+
+            class Combo {
+                constructor() {
+                    this.onscreen = false;
+                    this.ticks = 0;
+                    this.combo = 0;
+                }
+
+                update() {
+                    if ((framesdown + 1)% 100 == 0 && !this.onscreen && score!=0 ) {
+                        this.combo += 1;
+                        this.ticks = 0;
+                        this.scored = false;
+                        this.onscreen = true;
+                    }
+                    if (this.onscreen){
+                        this.ticks += 1;
+                        if (this.combo == 1) {
+                            canvas.text("combo 1!", center.x, center.y, 'blue', 20);
+                        }
+                        else if (this.combo == 2) {
+                            canvas.text("combo 2!", center.x, center.y, 'blue', 20);
+                        }
+                        else if (this.combo == 3)  {
+                            canvas.text("combo 3!", center.x, center.y, 'blue', 20);
+                        }
+                        else if (this.combo == 4) {
+                            canvas.text("combo 4!", center.x, center.y, 'blue', 20);
+                        }
+                        else if (this.combo >= 5) {
+                            canvas.text("combo 5+!", center.x, center.y, 'blue', 20);
+                        }
+                        if (this.ticks > 120) {
+                            this.onscreen = false;
+                        }
+                        if (!this.scored) {
+                            this.scored = true;
+                            score += this.combo * 10
+                        }
+                    }
+                }
+            }
+
+            class Player {
+                constructor(canvas) {
+                    this.count = 0;
+                    this.size = 10;
+                    this.speed = 0.03;
+                    this.canvas = canvas;
+                    this.pos = new Vector(center.x, center.y + canvas.height / 10);
+                }
+
+                update() {
+                    this.pos.x = Math.floor((this.canvas.width / 2) + (Math.sin(this.count)) * (this.canvas.width / 2 - 30));
+                    this.count += this.speed;
+
+                    if (frameCount % 5 == 0 && moving) trail.push(this.pos.copy());
+                }
+
+                draw() {
+                    this.canvas.circle(this.pos.x, this.pos.y, this.size, '#2196f3', true);
+                }
+            }
+
+            class Obstacle {
+                constructor(canvas, size, speed, xPos) {
+                    this.size = size;
+//              this.speed = speed;
+this.canvas = canvas;
+this.hasSpawned = false;
+this.color = colors.random();
+this.pos = new Vector(xPos, -this.size);
+}
+
+move() {
+    this.pos.y += speed;
+    smallspeed = speed;
+}
+
+stop() {
+    this.pos.y += smallspeed;
+    smallspeed -= speed / 120;
+    if (smallspeed < 0) smallspeed = 0
+}
+draw() {
+    this.canvas.square(this.pos.x, this.pos.y, this.size, this.color, false);
+}
+}
+
+Array.prototype.random = function() {
+    return this[Math.floor(Math.random() * this.length)];
+}
+
+var getJSON = function(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('get', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      if (xhr.status == 200) {
+        callback(xhr.response);
+    }
+};
+xhr.send();
+};
+
+var updateInterface = function() {
+    getJSON('scores.php', function(data) {
+        var scoreboard = data.scoresCSV.split('\n');
+        var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
+
+        for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
+            var split = scoreboard[i].split(",");
+            result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
+        }
+
+        document.getElementById("highscores").innerHTML = result;
+    });
+}
+</script>
+
+<!--  Compatibility check    -->
+<script type="text/javascript">
+    if (!('forEach' in []))
+        alert('Your browser is not supported. Download the latest Chrome or Firefox');
+</script>
+
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+    <table id="highscores" border="1"></table>
+
+</body>
+</html>
