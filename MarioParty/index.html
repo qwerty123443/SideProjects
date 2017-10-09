@@ -214,143 +214,160 @@ body {
 			name = prompt('username?', name).trim();
 			nameSet = true;
 		}
-		if (!nameSet&&name!=''&&name!=null){
-			if(!confirm('use previous name')){
-				name = prompt('username?', name).trim();
-			}}
 
+		const nameElem = document.getElementById('name');
+		const nameElemVal = nameElem.value.trim();
+
+		if (nameElemVal != '') {
 			if (navigator.onLine) {
-				getJSON('test.php?name='+name+'&score='+score, function(data){
+				getJSON('test.php?name='+name+'&score='+score, function(data) {
 					updateInterface();
 				});
 			}
-
-			gameover = true;
-			obstacles.length = 0;
-			score = 0;
-			time = 0;
-			combo.combo = 0;
-			framesup = 0;
-			framesdown = 0;
-			noLoop();
+		} else {
+			alert('Add your name');
+			nameElem.focus();
+			nameElem.style.border = 'red solid 2px';
 		}
 
-		class Combo {
-			constructor() {
-				this.onscreen = false;
+		// if (!nameSet&&name!=''&&name!=null){
+		// 	if(!confirm('use previous name')){
+		// 		name = prompt('username?', name).trim();
+		// 	}
+		// }
+
+		// if (navigator.onLine) {
+		// 	getJSON('test.php?name='+name+'&score='+score, function(data){
+		// 		updateInterface();
+		// 	});
+		// }
+
+		gameover = true;
+		obstacles.length = 0;
+		score = 0;
+		time = 0;
+		combo.combo = 0;
+		framesup = 0;
+		framesdown = 0;
+		noLoop();
+	}
+
+	class Combo {
+		constructor() {
+			this.onscreen = false;
+			this.ticks = 0;
+			this.combo = 0;
+		}
+
+		update() {
+			if ((framesdown + 1)% 100 == 0 && !this.onscreen && score!=0 ) {
+				this.combo += 1;
 				this.ticks = 0;
-				this.combo = 0;
+				this.scored = false;
+				this.onscreen = true;
 			}
-
-			update() {
-				if ((framesdown + 1)% 100 == 0 && !this.onscreen && score!=0 ) {
-					this.combo += 1;
-					this.ticks = 0;
-					this.scored = false;
-					this.onscreen = true;
+			if (this.onscreen){
+				this.ticks += 1;
+				if (this.combo == 1) {
+					canvas.text("combo 1!", center.x, center.y, 'blue', 20);
 				}
-				if (this.onscreen){
-					this.ticks += 1;
-					if (this.combo == 1) {
-						canvas.text("combo 1!", center.x, center.y, 'blue', 20);
-					}
-					else if (this.combo == 2) {
-						canvas.text("combo 2!", center.x, center.y, 'blue', 20);
-					}
-					else if (this.combo == 3)  {
-						canvas.text("combo 3!", center.x, center.y, 'blue', 20);
-					}
-					else if (this.combo == 4) {
-						canvas.text("combo 4!", center.x, center.y, 'blue', 20);
-					}
-					else if (this.combo >= 5) {
-						canvas.text("combo 5+!", center.x, center.y, 'blue', 20);
-					}
-					if (this.ticks > 120) {
-						this.onscreen = false;
-					}
-					if (!this.scored) {
-						this.scored = true;
-						score += this.combo * 10
-					}
+				else if (this.combo == 2) {
+					canvas.text("combo 2!", center.x, center.y, 'blue', 20);
+				}
+				else if (this.combo == 3)  {
+					canvas.text("combo 3!", center.x, center.y, 'blue', 20);
+				}
+				else if (this.combo == 4) {
+					canvas.text("combo 4!", center.x, center.y, 'blue', 20);
+				}
+				else if (this.combo >= 5) {
+					canvas.text("combo 5+!", center.x, center.y, 'blue', 20);
+				}
+				if (this.ticks > 120) {
+					this.onscreen = false;
+				}
+				if (!this.scored) {
+					this.scored = true;
+					score += this.combo * 10
 				}
 			}
 		}
+	}
 
-		class Player {
-			constructor(canvas) {
-				this.count = 0;
-				this.size = 10;
-				this.speed = 0.03;
-				this.canvas = canvas;
-				this.pos = new Vector(center.x, center.y + canvas.height / 10);
-			}
-
-			update() {
-				this.pos.x = Math.floor((this.canvas.width / 2) + (Math.sin(this.count)) * (this.canvas.width / 2 - 30));
-				this.count += this.speed;
-
-				if (frameCount % 5 == 0 && moving) trail.push(this.pos.copy());
-			}
-
-			draw() {
-				this.canvas.circle(this.pos.x, this.pos.y, this.size, '#2196f3', true);
-			}
+	class Player {
+		constructor(canvas) {
+			this.count = 0;
+			this.size = 10;
+			this.speed = 0.03;
+			this.canvas = canvas;
+			this.pos = new Vector(center.x, center.y + canvas.height / 10);
 		}
 
-		class Obstacle {
-			constructor(canvas, size, speed, xPos) {
-				this.size = size;
-				this.canvas = canvas;
-				this.hasSpawned = false;
-				this.color = colors.random();
-				this.pos = new Vector(xPos, -this.size);
-			}
+		update() {
+			this.pos.x = Math.floor((this.canvas.width / 2) + (Math.sin(this.count)) * (this.canvas.width / 2 - 30));
+			this.count += this.speed;
 
-			move() {
-				this.pos.y += speed;
-				smallspeed = speed;
-			}
+			if (frameCount % 5 == 0 && moving) trail.push(this.pos.copy());
+		}
 
-			stop() {
-				this.pos.y += smallspeed;
-				smallspeed -= speed / 120;
-				if (smallspeed < 0) smallspeed = 0
-			}
 		draw() {
-			this.canvas.square(this.pos.x, this.pos.y, this.size, this.color, false);
+			this.canvas.circle(this.pos.x, this.pos.y, this.size, '#2196f3', true);
 		}
 	}
 
-	Array.prototype.random = function() {
-		return this[Math.floor(Math.random() * this.length)];
-	}
+	class Obstacle {
+		constructor(canvas, size, speed, xPos) {
+			this.size = size;
+			this.canvas = canvas;
+			this.hasSpawned = false;
+			this.color = colors.random();
+			this.pos = new Vector(xPos, -this.size);
+		}
 
-	var getJSON = function(url, callback) {
-		var xhr = new XMLHttpRequest();
-		xhr.open('get', url, true);
-		xhr.responseType = 'json';
-		xhr.onload = function() {
-			if (xhr.status == 200) {
-				callback(xhr.response);
-			}
-		};
-		xhr.send();
+		move() {
+			this.pos.y += speed;
+			smallspeed = speed;
+		}
+
+		stop() {
+			this.pos.y += smallspeed;
+			smallspeed -= speed / 120;
+			if (smallspeed < 0) smallspeed = 0
+		}
+	draw() {
+		this.canvas.square(this.pos.x, this.pos.y, this.size, this.color, false);
+	}
+}
+
+Array.prototype.random = function() {
+	return this[Math.floor(Math.random() * this.length)];
+}
+
+var getJSON = function(url, callback) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('get', url, true);
+	xhr.responseType = 'json';
+	xhr.onload = function() {
+		if (xhr.status == 200) {
+			callback(xhr.response);
+		}
 	};
+	xhr.send();
+};
 
-	var updateInterface = function() {
-		getJSON('scores.php', function(data) {
-			var scoreboard = data.scoresCSV.split('\n');
-			var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
+var updateInterface = function() {
+	getJSON('scores.php', function(data) {
+		var scoreboard = data.scoresCSV.split('\n');
+		var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
 
-			for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
-				var split = scoreboard[i].split(",");
-				result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
-			}
+		for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
+			var split = scoreboard[i].split(",");
+			result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
+		}
 
-			document.getElementById("highscores").innerHTML = result;
-		});
-	}
+		document.getElementById("highscores").innerHTML = result;
+	});
+}
 </script>
 
 <!--  Compatibility check    -->
@@ -374,6 +391,7 @@ body {
 <body>
 
 	<canvas id="canvas"></canvas>
+	<input type="text" id="name">
 	<table id="highscores" border="1"></table>
 
 </body>
