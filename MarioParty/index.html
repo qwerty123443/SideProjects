@@ -316,31 +316,24 @@
 		return this[Math.floor(Math.random() * this.length)];
 	}
 
-	function getJSON(url, callback) {
+	function updateInterface() {
 		var xhr = new XMLHttpRequest();
-		xhr.open('get', url, true);
+		xhr.open('get', 'https://mario.party/test.php', true);
 		xhr.responseType = 'json';
 		xhr.onload = function() {
 			if (xhr.status == 200) {
-				callback(xhr.response);
-			}
+                var scoreboard = xhr.response.scoresCSV.split('\n');
+                var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
+                for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
+                    var split = scoreboard[i].split(",");
+                    result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
+                }
+
+                document.getElementById("highscores").innerHTML = result;
+            }
 		};
 		xhr.send();
 	};
-
-	function updateInterface() {
-		getJSON('scores.php', function(data) {
-			var scoreboard = data.scoresCSV.split('\n');
-			var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
-
-			for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
-				var split = scoreboard[i].split(",");
-				result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
-			}
-
-			document.getElementById("highscores").innerHTML = result;
-		});
-	}
 	</script>
 
 	<!--  Compatibility check    -->
