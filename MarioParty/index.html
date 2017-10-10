@@ -326,10 +326,10 @@ body {
 			xhr.onload = function() {
 				if (xhr.status == 200) {
 					var scoreboard = xhr.response.scoresCSV.split('\n');
-					var result = "<tr><td><b>name</b><td><b>score</b></td></td></tr>";
+					var result = "<tr><th><b>name</b></th><th><b>score</b></th></tr>";
 					for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
 						var split = scoreboard[i].split(",");
-						result+="<tr><td>"+split[0]+"<td>"+split[1]+"</td></td></tr>";
+						result+="<tr><td>"+split[0]+"</th><td>"+split[1]+"</td></tr>";
 					}
 
 					document.getElementById("highscores").innerHTML = result;
