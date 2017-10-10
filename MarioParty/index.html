@@ -288,8 +288,9 @@ body {
 			}
 
 			move() {
-				this.pos.y += speed;
-				smallspeed = speed;
+				this.pos.y += smallspeed;
+				if(smallspeed < speed) smallspeed += speed / 15;
+				else if (smallspeed > speed) smallspeed = speed;
 			}
 
 			stop() {
@@ -333,7 +334,7 @@ body {
 	};
 </script>
 
-<!--  Compatibility check    -->
+<!--  Compatibility check	-->
 <script type="text/javascript">
 	if (!('forEach' in []))
 		alert('Your browser is not supported. Download the latest Chrome or Firefox');
