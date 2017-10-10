@@ -4,6 +4,8 @@
 	"lang": "nl",
 	"start_url": "/",
 	"display": "fullscreen",
+	"background_color": "#FAFAFA",
+	"display": "standalone",
 	"theme_color": "#add8e6",
 	"icons": [
 		{
