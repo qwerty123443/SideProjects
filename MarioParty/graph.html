@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Graph</title>
+
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript">
+		google.charts.load('current', {'packages':['corechart']});
+
+		function load() {
+			const data = new google.visualization.DataTable();
+			const options = {
+				'title': 'Highscores Total',
+				'width': 800,
+				'height': 600
+			};
+
+			data.addColumn('string', 'Topping');
+			data.addColumn('number', 'Slices');
+
+			fetch('/scores.php').then(response => {
+				response.json().then(json => {
+					if (json.success) {
+						const nameScoresObj = {};
+						const formattedArray = [];
+						const elem = document.createElement('div');
+						const chart = new google.visualization.PieChart(elem);
+
+						json.scoresCSV.split('\n').forEach((object, key) => {
+							const splitArr = object.split(',');
+
+							if (splitArr[0] in nameScoresObj)
+								nameScoresObj[splitArr[0]] += Number(splitArr[1]);
+							else
+								nameScoresObj[splitArr[0]] = Number(splitArr[1]);
+						});
+
+						for (val in nameScoresObj)
+							formattedArray.push([val, nameScoresObj[val]]);
+
+						formattedArray.sort((a, b) => {
+							return b[1] - a[1];
+						});
+
+						data.addRows(formattedArray);
+						chart.draw(data, options);
+						document.body.innerHTML = '';
+						document.body.appendChild(elem);
+					} else document.write('An error occurred: No valid JSON data.');
+				}).catch(err => {
+					console.error('An error occurred', err);
+					document.write('An error occurred: ' + err);
+				});
+			}).catch(err => {
+				console.error('An error occurred', err);
+				document.write('An error occurred: ' + err);
+			});
+		}
+
+		window.onload = load;
+	</script>
+
+</head>
+<body>
+
+	<h1>Graphs loading...</h1>
+
+</body>
+</html>
