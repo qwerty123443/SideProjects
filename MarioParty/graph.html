@@ -13,8 +13,11 @@
 				response.json().then(json => {
 					if (json.success) {
 						document.body.innerHTML = '';
-						highScoresChart(json.scoresCSV);
-						mostPlayedChart(json.scoresCSV);
+
+						const highscoresObj = highScoresChart(json.scoresCSV);
+						const mostplayedObj = mostPlayedChart(json.scoresCSV);
+
+						totalScoresChart(highscoresObj, mostplayedObj);
 					} else document.write('An error occurred: No valid JSON data.');
 				}).catch(err => {
 					console.error('An error occurred', err);
@@ -59,6 +62,8 @@
 			data.addRows(formattedArray);
 			chart.draw(data, options);
 			document.body.appendChild(elem);
+
+			return nameScoresObj;
 		}
 
 		function mostPlayedChart(scores) {
@@ -94,6 +99,35 @@
 			});
 
 			data.addRows(mostPlayedArr);
+			chart.draw(data, options);
+			document.body.appendChild(elem);
+
+			return mostPlayedObj;
+		}
+
+		function totalScoresChart(scores, playedAmount) {
+			const data = new google.visualization.DataTable();
+			const options = {
+				'title': 'Total score',
+				'width': 800,
+				'height': 600
+			};
+
+			const totalscoreArr = [];
+			const elem = document.createElement('div');
+			const chart = new google.visualization.PieChart(elem);
+
+			data.addColumn('string', 'Name');
+			data.addColumn('number', 'Total score');
+
+			for (key in scores)
+				totalscoreArr.push([key, scores[key] / playedAmount[key]]);
+
+			totalscoreArr.sort((a,b) => {
+				return b[1] - a[1];
+			});
+
+			data.addRows(totalscoreArr);
 			chart.draw(data, options);
 			document.body.appendChild(elem);
 		}
