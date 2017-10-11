@@ -26,16 +26,16 @@ function loop() {
 // 			frameCount++;
 // 		}, 1000 / frameRate);
 
-		function l() {
-			if (looping) {
-				draw();
-				frameCount++;
-				requestAnimationFrame(l);
-			}
-		}
-
+function l() {
+	if (looping) {
+		draw();
+		frameCount++;
 		requestAnimationFrame(l);
 	}
+}
+
+requestAnimationFrame(l);
+}
 }
 
 function noLoop() {
@@ -696,6 +696,11 @@ Array.prototype.remove = function(search) {
 	return arr;
 }
 
+
+Array.prototype.random = function() {
+	return this[Math.floor(Math.random() * this.length)];
+}
+
 Number.prototype.map = function(start1, stop1, start2, stop2) {
 	return ((this - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
 }
@@ -743,6 +748,25 @@ Math.rectCircleColliding = function(circle, rect) {
 	const dx = distX - rect.w / 2;
 	const dy = distY - rect.h / 2;
 	return (dx * dx + dy * dy <= (circle.r * circle.r));
+}
+
+// var circle1 = {
+// 	r: 20,
+// 	x: 5,
+// 	y: 5
+// };
+
+// var circle2 = {
+// 	r: 12,
+// 	x: 10,
+// 	y: 5
+// };
+Math.circleCircleColliding = function(circle1, circle2) {
+	const dx = circle1.x - circle2.x;
+	const dy = circle1.y - circle2.y;
+	const distance = Math.sqrt(dx * dx + dy * dy);
+
+	return distance < circle1.r + circle2.r;
 }
 
 window.onload = load;
