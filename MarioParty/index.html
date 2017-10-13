@@ -57,6 +57,7 @@ body {
 
 <script type="text/javascript" src="Canvas/canvas.js"></script>
 <script type="text/javascript">
+
 	let player;
 	let score = 0;
 	let moveTime = 10;
@@ -160,7 +161,7 @@ body {
 		player.update();
 		player.draw();
 
-		if (!moving && started && score != 0) moveTime -= 0.06;
+		if (!moving && started && score !== 0) moveTime -= 0.06;
 
 		// For collision detection
 		const circle = {
@@ -195,7 +196,7 @@ body {
 			if (Math.rectCircleColliding(circle, rect)) gameOver();
 
 			// Check if past a certain point and spawn a new obstacle
-			if (object.pos.y >= Math.randomBetween(-10, 10) + ((canvas.height / 3)) && object.hasSpawned == false) {
+			if (object.pos.y >= Math.randomBetween(-10, 10) + ((canvas.height / 3)) && object.hasSpawned === false) {
 				object.hasSpawned = true;
 				obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 			}
@@ -210,7 +211,7 @@ body {
 	}
 
 	function showUsernameMessage(nameElem) {
-        if(nameElem.value.trim() != ''){
+        if(nameElem.value.trim() !== ''){
             nameElem.style.border = '';
             canvas.canvas.focus();
         } else {
@@ -226,7 +227,7 @@ body {
 		canvas.text('SCORE: ' + Math.round(score), center.x, center.y + 50, 'white', 30);
 		const nameElem = document.getElementById('name');
 		const name = nameElem.value.trim();
-		if (name != '') {
+		if (name !== '') {
 			if (navigator.onLine) {
 				updateInterface('?name='+name+'&score='+score);
 			}
@@ -251,7 +252,7 @@ body {
 		}
 
 		update() {
-			if ((framesdown + 1)% 100 == 0 && !this.onscreen && score!=0 ) {
+			if ((framesdown + 1)% 100 === 0 && !this.onscreen && score!==0 ) {
 				this.combo += 1;
 				this.ticks = 0;
 				this.scored = false;
@@ -286,7 +287,7 @@ body {
 			this.pos.x = Math.floor((this.canvas.width / 2) + (Math.sin(this.count)) * (this.canvas.width / 2 - 30));
 			this.count += this.speed;
 
-			if (frameCount % 5 == 0 && moving) trail.push(this.pos.copy());
+			if (frameCount % 5 === 0 && moving) trail.push(this.pos.copy());
 		}
 
 		draw() {

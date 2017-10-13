@@ -19,23 +19,18 @@ function load() {
 }
 
 function loop() {
+    function l() {
+        if (looping) {
+            draw();
+            frameCount++;
+            requestAnimationFrame(l);
+        }
+    }
 	if ((typeof draw).toLowerCase() == 'function') {
 		looping = true;
-// 		int = setInterval(() => {
-// 			draw();
-// 			frameCount++;
-// 		}, 1000 / frameRate);
 
-function l() {
-	if (looping) {
-		draw();
-		frameCount++;
-		requestAnimationFrame(l);
-	}
-}
-
-requestAnimationFrame(l);
-}
+    requestAnimationFrame(l);
+    }
 }
 
 function noLoop() {
@@ -72,11 +67,11 @@ class Canvas {
 
 		this.backgroundColor = '#616161';
 
-		if (w == '' || w == null) {
+		if (w === '' || w === null) {
 			w = 'auto';
 		}
 
-		if (h == '' || h == null) {
+		if (h === '' || h === null) {
 			h = 200;
 		}
 
@@ -89,8 +84,8 @@ class Canvas {
 	}
 
 	resize(w, h) {
-		h = (h == 'auto' || h == null || h == '') ? window.innerHeight : h;
-		w = (w == 'auto' || w == null || w == '') ? document.body.clientWidth : w; // window.innerWidth
+		h = (h == 'auto' || h === null || h === '') ? window.innerHeight : h;
+		w = (w == 'auto' || w === null || w === '') ? document.body.clientWidth : w; // window.innerWidth
 
 		this.width = w;
 		this.height = h;
@@ -358,8 +353,7 @@ class Canvas {
 		const c = width / Math.PI / (frequency * 2);
 
 		for(let i = 0; i < width; i += step){
-			const x = amplitude * Math.sin(i / c);
-			this.ctx.lineTo(i, 250 + x);
+			this.ctx.lineTo(i, 250 + (amplitude * Math.sin(i / c)));
 		}
 
 		this.ctx.strokeStyle = color;
@@ -434,8 +428,8 @@ class Canvas {
 
 class Vector {
 	constructor(x, y) {
-		x = x == null ? 0 : x;
-		y = y == null ? 0 : y;
+		x = x === null ? 0 : x;
+		y = y === null ? 0 : y;
 
 		this.x = x;
 		this.y = y;
@@ -566,7 +560,7 @@ Global.Vector.add = function(v1, v2, target) {
 	}
 	target.add(v2);
 	return target;
-}
+};
 
 Global.Vector.sub = function(v1, v2, target) {
 	if (!target) {
@@ -577,12 +571,12 @@ Global.Vector.sub = function(v1, v2, target) {
 
 	target.sub(v2);
 	return target;
-}
+};
 
 Global.Vector.random2D = function() {
 	const angle = Math.random() * Math.PI * 2;
 	return new Vector(Math.cos(angle), Math.sin(angle));
-}
+};
 
 class Color {
 	constructor(...color) {
@@ -655,9 +649,9 @@ class Color {
 	opacity(opacity) {
 		const object = this.toObject();
 
-		object['a'] = opacity;
+		object.a = opacity;
 
-		this.color = `rgba(${object['r']}, ${object['g']}, ${object['b']}, ${object['a']})`;
+		this.color = `rgba(${object.r}, ${object.g}, ${object.b}, ${object.a})`;
 		return this;
 	}
 
@@ -680,7 +674,7 @@ Global.Color.random = function() {
 	}
 
 	return new Color(color);
-}
+};
 
 
 
@@ -694,16 +688,16 @@ Array.prototype.remove = function(search) {
 	});
 
 	return arr;
-}
+};
 
 
 Array.prototype.random = function() {
 	return this[Math.floor(Math.random() * this.length)];
-}
+};
 
 Number.prototype.map = function(start1, stop1, start2, stop2) {
 	return ((this - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
-}
+};
 
 Number.prototype.constrain = function(low, high) {
 	return Math.max(Math.min(this, high), low);
@@ -711,7 +705,7 @@ Number.prototype.constrain = function(low, high) {
 
 Math.randomBetween = function(min, max) {
 	return Math.random() * (max - min + 1) + min;
-}
+};
 
 Math.toRadians = function(degrees, pointUp) {
 	if (pointUp) return (degrees - 90) * Math.PI / 180;
@@ -748,7 +742,7 @@ Math.rectCircleColliding = function(circle, rect) {
 	const dx = distX - rect.w / 2;
 	const dy = distY - rect.h / 2;
 	return (dx * dx + dy * dy <= (circle.r * circle.r));
-}
+};
 
 // var circle1 = {
 // 	r: 20,
@@ -767,7 +761,7 @@ Math.circleCircleColliding = function(circle1, circle2) {
 	const distance = Math.sqrt(dx * dx + dy * dy);
 
 	return distance < circle1.r + circle2.r;
-}
+};
 
 window.onload = load;
 // window.onresize = resize;
