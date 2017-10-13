@@ -60,14 +60,13 @@ body {
 	let player;
 	let score = 0;
 	let moveTime = 10;
-	let smallspeed = 2;
+	let smallspeed = 0;
 	let moving = false;
-	let started = false;
+	let started = true;
 	let gameover = false;
-	let name = '';
 
-	let up = 0;
-	let speed = 5;
+	let up = 1;
+	let speed = 0;
 	let framesup = 0;
 	let framesdown = 0;
 
@@ -88,7 +87,7 @@ body {
 				if (evt.ctrlKey) speed = 15;
 				else speed = 5;
 
-				if (gameover & !moving){
+				if (gameover && !moving){
 					gameover = false;
 					obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 					loop();
@@ -102,23 +101,25 @@ body {
 		});
 
 		window.addEventListener('keyup', evt => {
-			up = 1
+			up = 1;
 			moving = false;
 			started = true;
 		});
 
 		// Touch
 		window.addEventListener('touchstart', evt => {
-			evt.preventDefault();
-			if (gameover & !moving){
-				gameover = false;
-				obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
-				loop();
-			}
+            if (document.activeElement != nameElem) {
+                evt.preventDefault();
+                if (gameover && !moving){
+                    gameover = false;
+                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+                    loop();
+                }
 
-			framesdown += 1;
-			moveTime = 10;
-			moving = true;
+                framesdown += 1;
+                moveTime = 10;
+                moving = true;
+            }
 		});
 
 		window.addEventListener('touchend', evt => {
@@ -159,7 +160,7 @@ body {
 		player.update();
 		player.draw();
 
-		if (!moving && started) moveTime -= 0.06;
+		if (!moving && started && score != 0) moveTime -= 0.06;
 
 		// For collision detection
 		const circle = {
@@ -198,7 +199,7 @@ body {
 				object.hasSpawned = true;
 				obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 			}
-			combo.update()
+			combo.update();
 		});
 
 		if (moveTime <= 0) gameOver();
@@ -209,9 +210,14 @@ body {
 	}
 
 	function showUsernameMessage(nameElem) {
-		alert('Add your name!\nIf you don\'t your score won\'t be saved!');
-		nameElem.focus();
-		nameElem.style.border = 'red solid 2px';
+        if(nameElem.value.trim() != ''){
+            nameElem.style.border = '';
+            canvas.canvas.focus();
+        } else {
+            alert('Add your name!\nIf you don\'t your score won\'t be saved!');
+            nameElem.focus();
+            nameElem.style.border = 'red solid 2px';
+        }
 	}
 
 	function gameOver() {
@@ -222,7 +228,7 @@ body {
 		const name = nameElem.value.trim();
 		if (name != '') {
 			if (navigator.onLine) {
-				updateInterface('?name='+name+'&score='+score)
+				updateInterface('?name='+name+'&score='+score);
 			}
 		} else {
 			showUsernameMessage(nameElem);
@@ -261,7 +267,7 @@ body {
 				}
 				if (!this.scored) {
 					this.scored = true;
-					score += this.combo * 10
+					score += this.combo * 10;
 				}
 			}
 		}
@@ -314,21 +320,17 @@ body {
 		}
 	}
 
-	Array.prototype.random = function() {
-		return this[Math.floor(Math.random() * this.length)];
-	}
-
 	function updateInterface(params) {
-		var xhr = new XMLHttpRequest();
+		let xhr = new XMLHttpRequest();
 		xhr.open('get', 'scores.php'+(params||""), true);
 		xhr.responseType = 'json';
 		if (!params) {
 			xhr.onload = function() {
 				if (xhr.status == 200) {
-					var scoreboard = xhr.response.scoresCSV.split('\n');
-					var result = "<tr><th><b>name</b></th><th><b>score</b></th></tr>";
-					for (var i = 0; i < Math.min(scoreboard.length-1,5); i++) {
-						var split = scoreboard[i].split(",");
+					let scoreboard = xhr.response.scoresCSV.split('\n');
+					let result = "<tr><th><b>name</b></th><th><b>score</b></th></tr>";
+					for (let i = 0; i < Math.min(scoreboard.length-1,5); i++) {
+						let split = scoreboard[i].split(",");
 						result+="<tr><td>"+split[0]+"</th><td>"+split[1]+"</td></tr>";
 					}
 
@@ -338,11 +340,11 @@ body {
 		}
 		else {
 			xhr.onload = function(){
-				updateInterface()
-			}
+				updateInterface();
+			};
 		}
 		xhr.send();
-	};
+	}
 </script>
 
 <!--  Compatibility check	-->
