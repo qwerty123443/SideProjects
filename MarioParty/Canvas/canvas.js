@@ -1,3 +1,27 @@
+/*
+    MIT License
+
+    Copyright (c) 2017 Vic
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+ */
+ 
 let int;
 let canvas;
 let mouseX = 0;
@@ -717,18 +741,6 @@ Math.toDegrees = function(radians, pointUp) {
 	else return radians * 180 / Math.PI;
 };
 
-
-// var circle = {
-//     x: 100,
-//     y: 290,
-//     r: 10
-// };
-// var rect = {
-//     x: 100,
-//     y: 100,
-//     w: 40,
-//     h: 100
-// };
 Math.rectCircleColliding = function(circle, rect) {
 	const distX = Math.abs(circle.x - rect.x - rect.w / 2);
 	const distY = Math.abs(circle.y - rect.y - rect.h / 2);
@@ -744,17 +756,6 @@ Math.rectCircleColliding = function(circle, rect) {
 	return (dx * dx + dy * dy <= (circle.r * circle.r));
 };
 
-// var circle1 = {
-// 	r: 20,
-// 	x: 5,
-// 	y: 5
-// };
-
-// var circle2 = {
-// 	r: 12,
-// 	x: 10,
-// 	y: 5
-// };
 Math.circleCircleColliding = function(circle1, circle2) {
 	const dx = circle1.x - circle2.x;
 	const dy = circle1.y - circle2.y;
@@ -764,4 +765,3 @@ Math.circleCircleColliding = function(circle1, circle2) {
 };
 
 window.onload = load;
-// window.onresize = resize;
