@@ -90,7 +90,7 @@ body {
 
                 if (gameover && !moving){
                     gameover = false;
-                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
                     loop();
                 }
                 up = 0;
@@ -113,7 +113,7 @@ body {
                 evt.preventDefault();
                 if (gameover && !moving){
                     gameover = false;
-                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+                    obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
                     loop();
                 }
 
@@ -129,7 +129,7 @@ body {
             started = true;
         });
 
-        obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+        obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
 
         // Highscores
         updateInterface();
@@ -188,7 +188,7 @@ body {
             // Check if past a certain point and spawn a new obstacle
             if (object.pos.y >= Math.randomBetween(-10, 10) + ((canvas.height / 3)) && object.hasSpawned === false) {
                 object.hasSpawned = true;
-                obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), speed, center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
+                obstacles.push(new Obstacle(canvas, Math.randomBetween(30, 60), center.x + Math.randomBetween(-canvas.width / 3, canvas.width / 3)));
             }
         });
         combo.update();
@@ -296,7 +296,7 @@ body {
     }
 
     class Obstacle {
-        constructor(canvas, size, speed, xPos) {
+        constructor(canvas, size, xPos) {
             this.size = size;
             this.canvas = canvas;
             this.hasSpawned = false;
